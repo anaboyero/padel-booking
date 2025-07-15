@@ -1,9 +1,12 @@
 package ana.learning.padel.padelBooking;
 
+import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.time.LocalDate;
 
 @SpringBootApplication
 public class PadelBookingApplication {
@@ -20,10 +23,12 @@ public class PadelBookingApplication {
 		Player player1 = new Player("Ana Boyero", residence1);
 		Player player2 = new Player("Javier Villuendas", residence4);
 
+		LocalDate today = LocalDate.now();
+		Booking reserva_lunes9AM = new Booking(today, Booking.TimeSlot.NINE_AM, player1);
+		Booking reserva_viernes3PM = new Booking(today.plusDays(3), Booking.TimeSlot.THREE_PM, player2);
 
-		System.out.println("**** Player1: " + player1);
-		System.out.println("**** Player2: " + player2);
-
+		System.out.println("**** Booking 1: " + reserva_lunes9AM);
+		System.out.println("**** Booking 2: " + reserva_viernes3PM);
 
 	}
 

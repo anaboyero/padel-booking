@@ -2,6 +2,8 @@ package ana.learning.padel.padelBooking.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Player {
     @Id
@@ -11,6 +13,8 @@ public class Player {
     @ManyToOne
     @JoinColumn (name = "residence_id")
     private Residence residence;
+    @OneToMany(mappedBy = "booking_owner")
+    List<Booking> bookings;
 
     public Player() {
     }
@@ -44,12 +48,21 @@ public class Player {
         this.residence = residence;
     }
 
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
     @Override
     public String toString() {
         return "Player{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", residence=" + residence +
+                ", bookings=" + bookings +
                 '}';
     }
 }
