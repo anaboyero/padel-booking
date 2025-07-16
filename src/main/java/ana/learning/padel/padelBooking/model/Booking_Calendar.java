@@ -6,17 +6,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class BookingCalendar {
+public class Booking_Calendar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate lastUpdate;
+    @OneToMany
+    @JoinColumn(name = "available_booking_id")
     private List<Booking> available_bookings;
     @OneToMany
-    @JoinColumn(name = "booking_id")
+    @JoinColumn(name = "reserved_booking_id")
     private List<Booking> reserved_bookings;
 
-    public BookingCalendar() {
+    public Booking_Calendar() {
     }
 
     public Long getId() {

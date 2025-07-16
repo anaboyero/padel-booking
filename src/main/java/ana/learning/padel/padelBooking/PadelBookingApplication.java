@@ -1,7 +1,7 @@
 package ana.learning.padel.padelBooking;
 
 import ana.learning.padel.padelBooking.model.Booking;
-import ana.learning.padel.padelBooking.model.BookingCalendar;
+import ana.learning.padel.padelBooking.model.Booking_Calendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import org.springframework.boot.SpringApplication;
@@ -37,9 +37,9 @@ public class PadelBookingApplication {
 		System.out.println("**** Booking 1: " + reserva_lunes9AM);
 		System.out.println("**** Booking 2: " + reserva_viernes3PM);
 
-//		BookingCalendar calendar = new BookingCalendar();
-//		calendar.setReserved_bookings(reservations);
-//		System.out.println("**** Calendar " + calendar);
+		Booking_Calendar bookingCalendar = new Booking_Calendar();
+		bookingCalendar.setReserved_bookings(reservations);
+		System.out.println("**** Calendar " + bookingCalendar);
 
 	}
 
