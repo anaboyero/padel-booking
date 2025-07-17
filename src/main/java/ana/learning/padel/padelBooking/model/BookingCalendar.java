@@ -6,19 +6,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Booking_Calendar {
+public class BookingCalendar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate lastUpdate;
     @OneToMany
     @JoinColumn(name = "available_booking_id")
-    private List<Booking> available_bookings;
+    private List<Booking> availableBookings;
     @OneToMany
     @JoinColumn(name = "reserved_booking_id")
-    private List<Booking> reserved_bookings;
+    private List<Booking> reservedBookings;
 
-    public Booking_Calendar() {
+    public BookingCalendar() {
     }
 
     public Long getId() {
@@ -37,20 +37,20 @@ public class Booking_Calendar {
         this.lastUpdate = lastUpdate;
     }
 
-    public List<Booking> getAvailable_bookings() {
-        return available_bookings;
+    public List<Booking> getAvailableBookings() {
+        return availableBookings;
     }
 
-    public void setAvailable_bookings(List<Booking> available_bookings) {
-        this.available_bookings = available_bookings;
+    public void setAvailableBookings(List<Booking> availableBookings) {
+        this.availableBookings = availableBookings;
     }
 
-    public List<Booking> getReserved_bookings() {
-        return reserved_bookings;
+    public List<Booking> getReservedBookings() {
+        return reservedBookings;
     }
 
-    public void setReserved_bookings(List<Booking> reserved_bookings) {
-        this.reserved_bookings = reserved_bookings;
+    public void setReservedBookings(List<Booking> reservedBookings) {
+        this.reservedBookings = reservedBookings;
     }
 
     @Override
@@ -58,8 +58,8 @@ public class Booking_Calendar {
         return "BookingCalendar{" +
                 "id=" + id +
                 ", lastUpdate=" + lastUpdate +
-                ", available_bookings=" + available_bookings +
-                ", reserved_bookings=" + reserved_bookings +
+                ", availableBookings=" + availableBookings +
+                ", reserved_bookings=" + reservedBookings +
                 '}';
     }
 }
