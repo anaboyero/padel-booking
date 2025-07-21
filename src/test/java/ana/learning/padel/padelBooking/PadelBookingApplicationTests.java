@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.StatusResultMatchersExtensionsKt.isEqualTo;
 
 @SpringBootTest
 class PadelBookingApplicationTests {
@@ -23,6 +24,8 @@ class PadelBookingApplicationTests {
 	private static final Residence RESIDENCE_OF_PLAYER2 = new Residence(Residence.Building.RAMIREZ_PRADO_7, Residence.Floor.SECOND_FLOOR, Residence.Letter.E);
 	private static final Booking.TimeSlot SLOT = Booking.TimeSlot.NINE_AM;
 	private static final LocalDate TODAY = LocalDate.now();
+	private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 13*7;
+
 
 
 	@Test
@@ -35,6 +38,8 @@ class PadelBookingApplicationTests {
 		Player player1 = new Player(NAME_OF_PLAYER1, RESIDENCE_OF_PLAYER1);
 		assertThat(player1.getName()).isEqualTo(NAME_OF_PLAYER1);
 		assertThat(player1.getResidence()).isEqualTo(RESIDENCE_OF_PLAYER1);
+		System.out.println("****** Should create a new player:" + player1);
+
 	}
 
 	@Test
@@ -45,15 +50,18 @@ class PadelBookingApplicationTests {
 		assertThat(booking.getDay()).isEqualTo(TODAY);
 		assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
 		assertThat(booking.getBooking_owner()).isEqualTo(player1);
+		System.out.println("****** Should create a new Booking" + booking);
+
 	}
 
-//	@Test
-//	@DisplayName("Should create a new Calendar")
-//	public void shouldCreateANewBookingCalendar() {
-//		BookingCalendar bookingCalendar = new BookingCalendar();
-//		assertThat(bookingCalendar.getAvailableBookings()).isNotNull();
-//		assertThat(bookingCalendar.getReservedBookings()).isNotNull();
-//	}
+	@Test
+	@DisplayName("Given a date, should create a new Calendar")
+	public void shouldCreateANewBookingCalendarGivenADate() {
+		BookingCalendar bookingCalendar = new BookingCalendar(TODAY);
+		assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+		assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(0);
+
+	}
 
 
 }
