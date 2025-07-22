@@ -35,12 +35,6 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(LocalDate bookingDate, TimeSlot timeSlot, Player bookingOwner) {
-        this.bookingDate = bookingDate;
-        this.timeSlot = timeSlot;
-        this.bookingOwner = bookingOwner;
-    }
-
     public Long getId() {
         return id;
     }

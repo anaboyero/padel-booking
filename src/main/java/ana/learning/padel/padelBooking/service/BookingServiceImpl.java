@@ -13,7 +13,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking saveBooking(Booking booking) {
-        // Logic to save the booking using bookingRepository
-        return null; // Placeholder return statement
+        return bookingRepository.save(booking);
     }
 }

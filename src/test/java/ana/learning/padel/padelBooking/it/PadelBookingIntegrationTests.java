@@ -6,6 +6,7 @@ import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.PlayerRepository;
 import ana.learning.padel.padelBooking.repository.ResidenceRepository;
+import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import ana.learning.padel.padelBooking.service.BookingService;
 import ana.learning.padel.padelBooking.service.PlayerService;
 import ana.learning.padel.padelBooking.service.ResidenceService;
@@ -30,75 +31,83 @@ public class PadelBookingIntegrationTests {
     @Autowired
     BookingService bookingService;
 
+    @Autowired
+    BookingCalendarService bookingCalendarService;
+
     private static final String NAME_OF_PLAYER1 = "Ana";
     private static final String NAME_OF_PLAYER2 = "Javier";
     private static final Residence.Building RESIDENCE_BUILDING_PLAYER1 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_FLOOR_PLAYER1 = Residence.Floor.FIFTH_FLOOR;
-//    private static final Residence RESIDENCE_OF_PLAYER1 = new Residence(Residence.Building.JUAN_MARTIN_EMPECINADO_21, Residence.Floor.FIFTH_FLOOR, Residence.Letter.A);
-//    private static final Residence RESIDENCE_OF_PLAYER2 = new Residence(Residence.Building.RAMIREZ_PRADO_7, Residence.Floor.SECOND_FLOOR, Residence.Letter.E);
+    private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.NINE_AM;
     private static final LocalDate TODAY = LocalDate.now();
     private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 13*7;
-
 
     @Test
     @DisplayName("Should create and persist a new player from scratch")
     public void shouldCreateAndPersistANewPlayerFromScratch () {
 
-        Residence residence1 = new Residence();
-        residence1.setBuilding(Residence.Building.JUAN_MARTIN_EMPECINADO_21);
-        residence1.setFloor(Residence.Floor.FIFTH_FLOOR);
-        Residence savedResidence = residenceService.saveResidence(residence1);
+        Residence residence = new Residence();
+        residence.setBuilding(Residence.Building.JUAN_MARTIN_EMPECINADO_21);
+        residence.setFloor(Residence.Floor.FIFTH_FLOOR);
+        residence.setLetter(Residence.Letter.A);
+        residence = residenceService.saveResidence(residence);
+        System.out.println("****** Should persisted a new player with id: " + residence);
 
-        Player player1 = new Player();
-        player1.setName(NAME_OF_PLAYER1);
-        player1.setResidence(savedResidence);
-        Player savedPlayer = playerService.savePlayer(player1);
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(residence);
+        player = playerService.savePlayer(player);
+        System.out.println("****** Should persisted a new player with id: " + player);
 
-        assertThat(savedPlayer.getId()).isNotNull();
-        System.out.println("****** Should persisted a new player with id: " + savedPlayer);
+        assertThat(player.getId()).isNotNull();
     }
 
     @Test
     @DisplayName("Should create and persist a new Booking given a persistent player")
     public void ShouldCreateAndPersistANewBooking_GivenAPersistentPlayer() {
-        Residence residence1 = new Residence();
-        residence1.setBuilding(Residence.Building.JUAN_MARTIN_EMPECINADO_21);
-        residence1.setFloor(Residence.Floor.FIFTH_FLOOR);
-        Residence savedResidence = residenceService.saveResidence(residence1);
+        Residence residence = new Residence();
+        residence.setBuilding(Residence.Building.JUAN_MARTIN_EMPECINADO_21);
+        residence.setFloor(Residence.Floor.FIFTH_FLOOR);
+        residence.setLetter(Residence.Letter.A);
+        residence = residenceService.saveResidence(residence);
+        System.out.println("****** Should persisted a new residence with id: " + residence);
 
-        Player player1 = new Player();
-        player1.setName(NAME_OF_PLAYER1);
-        player1.setResidence(savedResidence);
-        Player savedPlayer = playerService.savePlayer(player1);
-
-        assertThat(savedPlayer.getId()).isNotNull();
-        System.out.println("****** Should persisted a new player with id: " + savedPlayer);
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(residence);
+        player = playerService.savePlayer(player);
+        System.out.println("****** Should persisted a new player with id: " + player);
+        assertThat(player.getId()).isNotNull();
 
         Booking booking = new Booking();
         booking.setBookingDate(TODAY);
         booking.setTimeSlot(SLOT);
-        booking.setBookingOwner(savedPlayer);
-        System.out.println("****** el booking con owner y todo (sin persistir) es: " + booking);
+        booking.setBookingOwner(player);
+        System.out.println("****** Should have a booking without id: " + booking);
+        booking = bookingService.saveBooking(booking);
+        System.out.println("****** Should have persisted a new booking with id: " + booking);
+        assertThat(booking.getId()).isNotNull();
 
-        Booking savedBooking = bookingService.saveBooking(booking);
-        System.out.println("****** Should have persisted a new booking with id: " + savedBooking);
-
-//        assertThat(savedBooking.getBookingDate()).isEqualTo(TODAY);
-//        assertThat(savedBooking.getTimeSlot()).isEqualTo(SLOT);
-//        assertThat(savedBooking.getBookingOwner()).isEqualTo(savedPlayer);
-//        assertThat(savedBooking.getId()).isNotNull();
-//        System.out.println("****** Should create a new Booking" + booking);
+        assertThat(booking.getBookingDate()).isEqualTo(TODAY);
+        assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
+        assertThat(booking.getBookingOwner()).isEqualTo(player);
+        assertThat(booking.getId()).isNotNull();
+        System.out.println("****** Should create a new Booking" + booking);
     }
-//
+
 //    @Test
-//    @DisplayName("Given a date, should create a new Calendar")
-//    public void shouldCreateANewBookingCalendarGivenADate() {
-//        BookingCalendar bookingCalendar = new BookingCalendar(TODAY);
+//    @DisplayName("Given a date, should persist a new Calendar")
+//    public void GivenADate_ShouldPersistANewCalendar() {
+//        BookingCalendar bookingCalendar = new BookingCalendar();
+//        bookingCalendar.setLastUpdate(TODAY);
+//        bookingCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
+//
 //        assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
 //        assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(0);
 //        assertThat(bookingCalendar.getId()).isNotNull();
-//        System.out.println("****** Should create a new bookingCalendar" + bookingCalendar);
+//        System.out.println("****** Should persist a new bookingCalendar" + bookingCalendar);
 //    }
+
 
 }

@@ -69,7 +69,8 @@ public class Residence {
 
     @Override
     public String toString() {
-        return "{Calle " +
+        return "{   ID: " + id +
+                ", Calle " +
                 building +
                 ", " + floor +
                 ", " + letter +

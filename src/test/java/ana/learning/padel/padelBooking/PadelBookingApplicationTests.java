@@ -45,11 +45,18 @@ class PadelBookingApplicationTests {
 	@Test
 	@DisplayName("Should create a new Booking")
 	public void shouldCreateANewBooking() {
-		Player player1 = new Player(NAME_OF_PLAYER1, RESIDENCE_OF_PLAYER1);
-		Booking booking = new Booking(TODAY, SLOT, player1);
+		Player player = new Player(NAME_OF_PLAYER1, RESIDENCE_OF_PLAYER1);
+		player.setName(NAME_OF_PLAYER1);
+		player.setResidence(RESIDENCE_OF_PLAYER1);
+
+		Booking booking = new Booking();
+		booking.setBookingDate(TODAY);
+		booking.setTimeSlot(SLOT);
+		booking.setBookingOwner(player);
+
 		assertThat(booking.getBookingDate()).isEqualTo(TODAY);
 		assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
-		assertThat(booking.getBookingOwner()).isEqualTo(player1);
+		assertThat(booking.getBookingOwner()).isEqualTo(player);
 		System.out.println("****** Should create a new Booking" + booking);
 
 	}
@@ -62,6 +69,5 @@ class PadelBookingApplicationTests {
 		assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(0);
 
 	}
-
 
 }
