@@ -47,9 +47,9 @@ class PadelBookingApplicationTests {
 	public void shouldCreateANewBooking() {
 		Player player1 = new Player(NAME_OF_PLAYER1, RESIDENCE_OF_PLAYER1);
 		Booking booking = new Booking(TODAY, SLOT, player1);
-		assertThat(booking.getDay()).isEqualTo(TODAY);
+		assertThat(booking.getBookingDate()).isEqualTo(TODAY);
 		assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
-		assertThat(booking.getBooking_owner()).isEqualTo(player1);
+		assertThat(booking.getBookingOwner()).isEqualTo(player1);
 		System.out.println("****** Should create a new Booking" + booking);
 
 	}

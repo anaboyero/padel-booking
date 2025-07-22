@@ -34,9 +34,9 @@ public class BookingCalendar {
             LocalDate day = startDate.plusDays(i);
             for (Booking.TimeSlot timeSlot : Booking.TimeSlot.values()) {
                 Booking booking = new Booking();
-                booking.setDay(day);
+                booking.setBookingDate(day);
                 booking.setTimeSlot(timeSlot);
-                booking.setBooking_owner(null);
+                booking.setBookingOwner(null);
                 System.out.println("****** creado el booking = " + booking);
                 generatedBookings.add(booking);
             }

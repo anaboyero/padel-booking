@@ -10,11 +10,11 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     // LocalDate	Represents a date (year, month, day (yyyy-MM-dd))
-    private LocalDate day;
+    private LocalDate bookingDate;
     private TimeSlot timeSlot;
     @ManyToOne
-    @JoinColumn(name = "booking_owner_id")
-    private Player booking_owner;
+    @JoinColumn(name = "bookingOwner_id")
+    private Player bookingOwner;
 
 
     public enum TimeSlot {
@@ -36,10 +36,10 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(LocalDate day, TimeSlot timeSlot, Player booking_owner) {
-        this.day = day;
+    public Booking(LocalDate bookingDate, TimeSlot timeSlot, Player bookingOwner) {
+        this.bookingDate = bookingDate;
         this.timeSlot = timeSlot;
-        this.booking_owner = booking_owner;
+        this.bookingOwner = bookingOwner;
     }
 
     public Long getId() {
@@ -50,12 +50,12 @@ public class Booking {
         this.id = id;
     }
 
-    public LocalDate getDay() {
-        return day;
+    public LocalDate getBookingDate() {
+        return bookingDate;
     }
 
-    public void setDay(LocalDate day) {
-        this.day = day;
+    public void setBookingDate(LocalDate bookingDate) {
+        this.bookingDate = bookingDate;
     }
 
     public TimeSlot getTimeSlot() {
@@ -66,21 +66,21 @@ public class Booking {
         this.timeSlot = timeSlot;
     }
 
-    public Player getBooking_owner() {
-        return booking_owner;
+    public Player getBookingOwner() {
+        return bookingOwner;
     }
 
-    public void setBooking_owner(Player booking_owner) {
-        this.booking_owner = booking_owner;
+    public void setBookingOwner(Player booking_owner) {
+        this.bookingOwner = bookingOwner;
     }
 
     @Override
     public String toString() {
         return "Booking{" +
                 "id=" + id +
-                ", day=" + day +
+                ", bookingDate=" + bookingDate +
                 ", timeSlot=" + timeSlot +
-                ", booking_owner=" + booking_owner +
+                ", bookingOwner=" + bookingOwner +
                 '}';
     }
 }
