@@ -9,7 +9,6 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    // LocalDate	Represents a date (year, month, day (yyyy-MM-dd))
     private LocalDate bookingDate;
     private TimeSlot timeSlot;
     @ManyToOne
@@ -70,7 +69,7 @@ public class Booking {
         return bookingOwner;
     }
 
-    public void setBookingOwner(Player booking_owner) {
+    public void setBookingOwner(Player bookingOwner) {
         this.bookingOwner = bookingOwner;
     }
 

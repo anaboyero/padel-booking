@@ -13,7 +13,7 @@ public class Player {
     @ManyToOne
     @JoinColumn (name = "residence_id")
     private Residence residence;
-    @OneToMany(mappedBy = "bookingOwner")
+    @OneToMany(mappedBy = "bookingOwner", cascade = CascadeType.PERSIST)
     List<Booking> bookings;
 
     public Player() {

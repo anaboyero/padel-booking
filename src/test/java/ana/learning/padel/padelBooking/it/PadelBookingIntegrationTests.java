@@ -45,7 +45,6 @@ public class PadelBookingIntegrationTests {
     @DisplayName("Should create and persist a new player from scratch")
     public void shouldCreateAndPersistANewPlayerFromScratch () {
 
-
         Residence residence1 = new Residence();
         residence1.setBuilding(Residence.Building.JUAN_MARTIN_EMPECINADO_21);
         residence1.setFloor(Residence.Floor.FIFTH_FLOOR);
@@ -55,13 +54,14 @@ public class PadelBookingIntegrationTests {
         player1.setName(NAME_OF_PLAYER1);
         player1.setResidence(savedResidence);
         Player savedPlayer = playerService.savePlayer(player1);
+
         assertThat(savedPlayer.getId()).isNotNull();
         System.out.println("****** Should persisted a new player with id: " + savedPlayer);
     }
 
     @Test
-    @DisplayName("Should create a new Booking")
-    public void shouldCreateANewBooking() {
+    @DisplayName("Should create and persist a new Booking given a persistent player")
+    public void ShouldCreateAndPersistANewBooking_GivenAPersistentPlayer() {
         Residence residence1 = new Residence();
         residence1.setBuilding(Residence.Building.JUAN_MARTIN_EMPECINADO_21);
         residence1.setFloor(Residence.Floor.FIFTH_FLOOR);
@@ -71,6 +71,7 @@ public class PadelBookingIntegrationTests {
         player1.setName(NAME_OF_PLAYER1);
         player1.setResidence(savedResidence);
         Player savedPlayer = playerService.savePlayer(player1);
+
         assertThat(savedPlayer.getId()).isNotNull();
         System.out.println("****** Should persisted a new player with id: " + savedPlayer);
 
@@ -78,9 +79,10 @@ public class PadelBookingIntegrationTests {
         booking.setBookingDate(TODAY);
         booking.setTimeSlot(SLOT);
         booking.setBookingOwner(savedPlayer);
-        Booking savedBooking = bookingService.saveBooking(booking);
-        System.out.println("****** Should persisted a new player with id: " + savedPlayer);
+        System.out.println("****** el booking con owner y todo (sin persistir) es: " + booking);
 
+        Booking savedBooking = bookingService.saveBooking(booking);
+        System.out.println("****** Should have persisted a new booking with id: " + savedBooking);
 
 //        assertThat(savedBooking.getBookingDate()).isEqualTo(TODAY);
 //        assertThat(savedBooking.getTimeSlot()).isEqualTo(SLOT);
