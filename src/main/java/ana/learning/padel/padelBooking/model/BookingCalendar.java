@@ -4,45 +4,47 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 @Entity
 public class BookingCalendar {
+
+    private static final Logger log = LoggerFactory.getLogger(BookingCalendar.class);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate lastUpdate;
+    private LocalDate startDay;
     @OneToMany
     @JoinColumn(name = "available_booking_id")
-    private List<Booking> availableBookings = new ArrayList<>();
+    private List<Booking> availableBookings;
     @OneToMany
     @JoinColumn(name = "reserved_booking_id")
-    private List<Booking> reservedBookings = new ArrayList<>();
+    private List<Booking> reservedBookings;
 
-    public BookingCalendar() {}
-
-    public BookingCalendar(LocalDate localDate) {
-        lastUpdate = localDate;
-        availableBookings = generateAvailableBookings(localDate);
+    public BookingCalendar() {
         reservedBookings  = new ArrayList<>();
-        System.out.println("****** Nuevo BookingCalendar creado a partir del día " + localDate);
+        availableBookings  = new ArrayList<>();
     }
-    private List<Booking> generateAvailableBookings(LocalDate startDate){
-        List<Booking> generatedBookings = new ArrayList<>();
+    public List<Booking> generateAvailableBookings(){
+        if (startDay == null) {
+            log.warn("No se ha podido generar un calendario de reservas porque no hay fecha de inicio.");
+        }
         for (int i = 0; i<7; i++) {
-            LocalDate day = startDate.plusDays(i);
+            LocalDate day = startDay.plusDays(i);
             for (Booking.TimeSlot timeSlot : Booking.TimeSlot.values()) {
                 Booking booking = new Booking();
                 booking.setBookingDate(day);
                 booking.setTimeSlot(timeSlot);
                 booking.setBookingOwner(null);
-                System.out.println("****** creado el booking = " + booking);
-                generatedBookings.add(booking);
+                availableBookings.add(booking);
             }
         }
-        return generatedBookings;
-
+        return availableBookings;
     }
 
     public Long getId() {
@@ -53,12 +55,12 @@ public class BookingCalendar {
         this.id = id;
     }
 
-    public LocalDate getLastUpdate() {
-        return lastUpdate;
+    public LocalDate getStartDay() {
+        return startDay;
     }
 
-    public void setLastUpdate(LocalDate lastUpdate) {
-        this.lastUpdate = lastUpdate;
+    public void setStartDay(LocalDate startDay) {
+        this.startDay = startDay;
     }
 
     public List<Booking> getAvailableBookings() {
@@ -81,7 +83,7 @@ public class BookingCalendar {
     public String toString() {
         return "BookingCalendar{" +
                 "id=" + id +
-                ", lastUpdate=" + lastUpdate +
+                ", startDay=" + startDay +
                 ", availableBookings=" + availableBookings +
                 ", reserved_bookings=" + reservedBookings +
                 '}';

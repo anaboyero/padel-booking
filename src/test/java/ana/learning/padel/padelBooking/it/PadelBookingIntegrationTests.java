@@ -17,10 +17,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class PadelBookingIntegrationTests {
+
+    private static final Logger log = LoggerFactory.getLogger(PadelBookingIntegrationTests.class);
 
     @Autowired
     PlayerService playerService;
@@ -52,13 +58,13 @@ public class PadelBookingIntegrationTests {
         residence.setFloor(Residence.Floor.FIFTH_FLOOR);
         residence.setLetter(Residence.Letter.A);
         residence = residenceService.saveResidence(residence);
-        System.out.println("****** Should persisted a new player with id: " + residence);
+        log.info("****** Should persisted a new player with id: " + residence);
 
         Player player = new Player();
         player.setName(NAME_OF_PLAYER1);
         player.setResidence(residence);
         player = playerService.savePlayer(player);
-        System.out.println("****** Should persisted a new player with id: " + player);
+        log.info("****** Should persisted a new player with id: " + player);
 
         assertThat(player.getId()).isNotNull();
     }
@@ -71,7 +77,7 @@ public class PadelBookingIntegrationTests {
         residence.setFloor(Residence.Floor.FIFTH_FLOOR);
         residence.setLetter(Residence.Letter.A);
         residence = residenceService.saveResidence(residence);
-        System.out.println("****** Should persisted a new residence with id: " + residence);
+        log.info("****** Should persisted a new residence with id: " + residence);
 
         Player player = new Player();
         player.setName(NAME_OF_PLAYER1);
@@ -84,30 +90,28 @@ public class PadelBookingIntegrationTests {
         booking.setBookingDate(TODAY);
         booking.setTimeSlot(SLOT);
         booking.setBookingOwner(player);
-        System.out.println("****** Should have a booking without id: " + booking);
+        log.info("****** Should have a booking without id: " + booking);
         booking = bookingService.saveBooking(booking);
-        System.out.println("****** Should have persisted a new booking with id: " + booking);
+        log.info("****** Should have persisted a new booking with id: " + booking);
         assertThat(booking.getId()).isNotNull();
 
         assertThat(booking.getBookingDate()).isEqualTo(TODAY);
         assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
         assertThat(booking.getBookingOwner()).isEqualTo(player);
         assertThat(booking.getId()).isNotNull();
-        System.out.println("****** Should create a new Booking" + booking);
+        log.info("****** Should create a new Booking" + booking);
     }
 
-//    @Test
-//    @DisplayName("Given a date, should persist a new Calendar")
-//    public void GivenADate_ShouldPersistANewCalendar() {
-//        BookingCalendar bookingCalendar = new BookingCalendar();
-//        bookingCalendar.setLastUpdate(TODAY);
-//        bookingCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
-//
-//        assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-//        assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(0);
-//        assertThat(bookingCalendar.getId()).isNotNull();
-//        System.out.println("****** Should persist a new bookingCalendar" + bookingCalendar);
-//    }
+    @Test
+    @DisplayName("Given a date, should persist a new Calendar")
+    public void GivenADate_ShouldPersistANewCalendar() {
+        BookingCalendar bookingCalendar = new BookingCalendar();
+        bookingCalendar.setStartDay(TODAY);
+        bookingCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
+        assertThat(bookingCalendar.getId()).isNotNull();
+        log.info("****** Should persist a new bookingCalendar" + bookingCalendar);
+    }
+
 
 
 }
