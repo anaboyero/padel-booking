@@ -69,11 +69,11 @@ public class Booking {
 
     @Override
     public String toString() {
-        return "Booking{" +
+        return "|||" +
                 "id=" + id +
-                ", bookingDate=" + bookingDate +
-                ", timeSlot=" + timeSlot +
-                ", bookingOwner=" + bookingOwner +
-                '}';
+                "/" + bookingDate +
+                "/" + timeSlot +
+                "/" + bookingOwner +
+                "|||";
     }
 }

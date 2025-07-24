@@ -83,9 +83,9 @@ public class BookingCalendar {
     public String toString() {
         return "BookingCalendar{" +
                 "id=" + id +
-                ", startDay=" + startDay +
-                ", availableBookings=" + availableBookings +
-                ", reserved_bookings=" + reservedBookings +
+                "7 days from=" + startDay +
+                ". AvailableBookings=" + availableBookings +
+                ". Reserved_bookings=" + reservedBookings +
                 '}';
     }
 }
