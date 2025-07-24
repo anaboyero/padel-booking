@@ -4,6 +4,7 @@ import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import jakarta.persistence.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,21 +25,33 @@ public class PadelBookingBookingTests {
 
     private static final String NAME_OF_PLAYER1 = "Ana";
     private static final String NAME_OF_PLAYER2 = "Javier";
-    private static final Residence RESIDENCE_OF_PLAYER1 = new Residence(Residence.Building.JUAN_MARTIN_EMPECINADO_21, Residence.Floor.FIFTH_FLOOR, Residence.Letter.A);
-    private static final Residence RESIDENCE_OF_PLAYER2 = new Residence(Residence.Building.RAMIREZ_PRADO_7, Residence.Floor.SECOND_FLOOR, Residence.Letter.E);
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
+    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
+    private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.NINE_AM;
     private static final LocalDate TODAY = LocalDate.now();
     private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 13*7;
+    Residence residence;
+    Player player;
 
     private static final Logger log = LoggerFactory.getLogger(PadelBookingBookingTests.class);
+
+    @BeforeEach
+    public void setUp(){
+        residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+
+        player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(residence);
+
+    }
 
     @Test
     @DisplayName("Should create a new Booking")
     public void shouldCreateANewBooking() {
-
-        Player player = new Player(NAME_OF_PLAYER1, RESIDENCE_OF_PLAYER1);
-        player.setName(NAME_OF_PLAYER1);
-        player.setResidence(RESIDENCE_OF_PLAYER1);
 
         Booking booking = new Booking();
         booking.setBookingDate(TODAY);

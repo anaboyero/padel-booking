@@ -29,11 +29,11 @@ public class Residence {
     public Residence() {
     }
 
-    public Residence(Building building, Floor floor, Letter letter) {
-        this.building = building;
-        this.floor = floor;
-        this.letter = letter;
-    }
+//    public Residence(Building building, Floor floor, Letter letter) {
+//        this.building = building;
+//        this.floor = floor;
+//        this.letter = letter;
+//    }
 
     public Long getId() {
         return id;

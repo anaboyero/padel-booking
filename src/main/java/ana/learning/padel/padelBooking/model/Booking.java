@@ -74,6 +74,6 @@ public class Booking {
                 "/" + bookingDate +
                 "/" + timeSlot +
                 "/" + bookingOwner +
-                "|||";
+                "||| +\n";
     }
 }

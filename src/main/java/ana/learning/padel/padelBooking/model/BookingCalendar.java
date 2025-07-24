@@ -81,11 +81,11 @@ public class BookingCalendar {
 
     @Override
     public String toString() {
-        return "BookingCalendar{" +
+        return "\n + BookingCalendar{" +
                 "id=" + id +
                 "7 days from=" + startDay +
-                ". AvailableBookings=" + availableBookings +
-                ". Reserved_bookings=" + reservedBookings +
+                "\n + AvailableBookings= +\n" + availableBookings +
+                "\n + Reserved_bookings= + \n"  + reservedBookings +
                 '}';
     }
 }
