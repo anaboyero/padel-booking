@@ -88,4 +88,13 @@ public class BookingCalendar {
                 "\n + Reserved_bookings= + \n"  + reservedBookings +
                 '}';
     }
+
+    public Booking reserveBooking(Booking booking){
+        log.info("\n*** Este es el booking calendar antes de hacer la reserva \n" + this);
+        availableBookings.remove(booking);
+        reservedBookings.add(booking);
+        log.info("\n*** Este es el booking calendar después de hacer la reserva \n" + this);
+        return booking;
+    }
+
 }
