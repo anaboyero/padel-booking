@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 @Entity
 public class BookingCalendar {
@@ -106,10 +105,15 @@ public class BookingCalendar {
         return Optional.empty();
     }
 
-    public Boolean isBookingAvailable(Booking tentativeBooking){
-        if (tentativeBooking.getBookingDate().isBefore(this.getStartDay())) {
+    public boolean isBookingAvailable(Booking tentativeBooking) {
+
+        if (isDateBeyondCalendarRange(tentativeBooking)) {
             return false;
         }
-        return true;
+        return availableBookings.contains(tentativeBooking);
     }
+
+    private boolean isDateBeyondCalendarRange(Booking tentativeBooking){
+        return (tentativeBooking.getBookingDate().isBefore(getStartDay()) || (tentativeBooking.getBookingDate().isAfter(getStartDay().plusDays(8))));
+        }
 }

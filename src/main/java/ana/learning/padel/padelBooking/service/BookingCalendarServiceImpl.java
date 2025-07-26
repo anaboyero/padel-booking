@@ -22,19 +22,13 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
     @Override
     public boolean isBookingAvailable(Booking booking, BookingCalendar bookingCalendar){
-        if (booking.getBookingDate().isBefore(bookingCalendar.getStartDay())) {
-            return false;
-        }
-        return true;
+        return bookingCalendar.isBookingAvailable(booking);
     }
 
-//    @Override
-//    public Optional<Booking> reserveBooking(Booking booking, BookingCalendar bookingCalendar){
-//        if (isBookingAvailable(booking, bookingCalendar)){
-//            return Optional.of(bookingCalendar.reserve(booking));
-//        }
-//        return Optional.empty();
-//    }
+    @Override
+    public Optional<Booking> reserveBooking(Booking booking, BookingCalendar bookingCalendar){
+        return bookingCalendar.reserveBooking(booking);
+    }
 
 
 }

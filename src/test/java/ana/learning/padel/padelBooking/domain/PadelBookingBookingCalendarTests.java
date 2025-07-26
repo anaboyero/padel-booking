@@ -38,6 +38,7 @@ public class PadelBookingBookingCalendarTests {
     private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 4*7;
     BookingCalendar bookingCalendar;
     Player player;
+    Booking tentativeBooking;
 
     private static final Logger log = LoggerFactory.getLogger(PadelBookingBookingCalendarTests.class);
 
@@ -56,20 +57,20 @@ public class PadelBookingBookingCalendarTests {
     public void shouldCreateANewBookingCalendarGivenADate() {
 
         bookingCalendar.setStartDay(TODAY);
-        assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(0);
+        assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
     }
 
     @Test
     public void shouldConfirmAnAvailableBooking(){
 
-        Booking tentativeBooking = new Booking();
+        tentativeBooking = new Booking();
         tentativeBooking.setBookingDate(TODAY);
         tentativeBooking.setTimeSlot(SLOT);
 
-        Boolean isAvailable = bookingCalendar.isBookingAvailable(tentativeBooking);
+        Boolean result = bookingCalendar.isBookingAvailable(tentativeBooking);
+        assertThat(result).isTrue();
 
-        assertThat(isAvailable).isTrue();
     }
 
     @Test
@@ -81,7 +82,6 @@ public class PadelBookingBookingCalendarTests {
         tentativeBooking.setBookingOwner(player);
 
         Boolean isAvailable = bookingCalendar.isBookingAvailable(tentativeBooking);
-
         assertThat(isAvailable).isFalse();
     }
 
@@ -101,10 +101,13 @@ public class PadelBookingBookingCalendarTests {
         assertThat(reservedBooking.get().getBookingDate()).isEqualTo(TODAY);
         assertThat(reservedBooking.get().getTimeSlot()).isEqualTo(SLOT);
         assertThat(reservedBooking.get().getBookingOwner()).isEqualTo(player);
+        assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(1);
+        assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
+
     }
 
     @Test
-    public void shouldNotConfirmAReservedBooking(){
+    public void shouldNotReserveAnUnavailableBooking(){
 
         Booking firstBooking = new Booking();
         firstBooking.setBookingDate(TODAY);
@@ -122,7 +125,11 @@ public class PadelBookingBookingCalendarTests {
         Optional<Booking> attemptedBooking = bookingCalendar.reserveBooking(tentativeBooking);
 
         assertThat(reservedBooking.get()).isEqualTo(tentativeBooking);
+        assertThat(reservedBooking.get().getBookingOwner()).isEqualTo(player);
+        assertThat(reservedBooking.get().getBookingOwner()).isNotEqualTo(player2);
         assertTrue(attemptedBooking.isEmpty());
+        assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(1);
+        assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
     }
 
 }

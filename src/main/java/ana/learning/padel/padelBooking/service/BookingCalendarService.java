@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface BookingCalendarService {
     public BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar);
     public boolean isBookingAvailable(Booking booking, BookingCalendar bookingCalendar);
-//    public Optional<Booking> reserveBooking(Booking booking, BookingCalendar bookingCalendar);
+    public Optional<Booking> reserveBooking(Booking booking, BookingCalendar bookingCalendar);
 }
