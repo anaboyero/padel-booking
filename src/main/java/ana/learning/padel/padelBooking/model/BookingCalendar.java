@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,8 @@ public class BookingCalendar {
         reservedBookings  = new ArrayList<>();
         availableBookings  = new ArrayList<>();
     }
-    public List<Booking> generateAvailableBookings(){
+    private List<Booking> generateAvailableBookings(){
+        availableBookings  = new ArrayList<>();
         if (startDay == null) {
             log.warn("No se ha podido generar un calendario de reservas porque no hay fecha de inicio.");
         }
@@ -60,7 +62,9 @@ public class BookingCalendar {
     }
 
     public void setStartDay(LocalDate startDay) {
+
         this.startDay = startDay;
+        generateAvailableBookings();
     }
 
     public List<Booking> getAvailableBookings() {
@@ -89,12 +93,23 @@ public class BookingCalendar {
                 '}';
     }
 
-    public Booking reserveBooking(Booking booking){
-        log.info("\n*** Este es el booking calendar antes de hacer la reserva \n" + this);
-        availableBookings.remove(booking);
-        reservedBookings.add(booking);
-        log.info("\n*** Este es el booking calendar después de hacer la reserva \n" + this);
-        return booking;
+    public Optional<Booking> reserveBooking(Booking tentativeBooking){
+        Optional<Booking> response;
+
+        if (availableBookings.contains(tentativeBooking)) {
+            availableBookings.remove(tentativeBooking);
+            reservedBookings.add(tentativeBooking);
+            log.info("\n*** RESERVA HECHA");
+            return Optional.of(tentativeBooking);
+        }
+        log.info("\n*** NO SE PUEDE HACER A RESERVA");
+        return Optional.empty();
     }
 
+    public Boolean isBookingAvailable(Booking tentativeBooking){
+        if (tentativeBooking.getBookingDate().isBefore(this.getStartDay())) {
+            return false;
+        }
+        return true;
+    }
 }

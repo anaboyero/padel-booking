@@ -7,7 +7,6 @@ import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import ana.learning.padel.padelBooking.service.PlayerService;
 import ana.learning.padel.padelBooking.service.ResidenceService;
-import jakarta.persistence.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,14 +19,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.StatusResultMatchersExtensionsKt.isEqualTo;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 
-@SpringBootTest
+//@SpringBootTest
 public class PadelBookingBookingCalendarTests {
 
     private static final String NAME_OF_PLAYER1 = "Ana";
@@ -35,18 +33,11 @@ public class PadelBookingBookingCalendarTests {
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
-    private static final Booking.TimeSlot SLOT = Booking.TimeSlot.NINE_AM;
+    private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
-    private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 13*7;
-    Player player;
+    private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 4*7;
     BookingCalendar bookingCalendar;
-    Residence residence;
-    @Autowired
-    ResidenceService residenceService;
-    @Autowired
-    PlayerService playerService;
-    @Autowired
-    BookingCalendarService bookingCalendarService;
+    Player player;
 
     private static final Logger log = LoggerFactory.getLogger(PadelBookingBookingCalendarTests.class);
 
@@ -58,109 +49,80 @@ public class PadelBookingBookingCalendarTests {
 
         player = new Player();
         player.setName(NAME_OF_PLAYER1);
-
-        bookingCalendar = new BookingCalendar();
-        bookingCalendar.setStartDay(TODAY);
     }
 
     @Test
     @DisplayName("****** Given a date, should create a new Calendar")
     public void shouldCreateANewBookingCalendarGivenADate() {
 
-        BookingCalendar bookingCalendar = new BookingCalendar();
         bookingCalendar.setStartDay(TODAY);
-        bookingCalendar.generateAvailableBookings();
         assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(0);
-        log.info("*********** TEST! ***********");
-        log.info(bookingCalendar.toString());
-
     }
-
-//        @Test
-//    @DisplayName("should register a new player")
-//    public void ShouldRegisterANewPlayer() {
-//        // As a player, I want to register in the calendar so that I can book a slot to play padel.
-//            // GIVEN that I am not registered, WHEN I register my data THEN I receive my confirmation and id.
-//            Player newPlayer = new Player();
-//
-//        }
-
 
     @Test
     public void shouldConfirmAnAvailableBooking(){
 
-        Booking booking = new Booking();
-        booking.setBookingDate(TODAY);
-        booking.setTimeSlot(SLOT);
-        booking.setBookingOwner(player);
+        Booking tentativeBooking = new Booking();
+        tentativeBooking.setBookingDate(TODAY);
+        tentativeBooking.setTimeSlot(SLOT);
 
-        Boolean isAvailable = bookingCalendarService.isBookingAvailable(booking, bookingCalendar);
+        Boolean isAvailable = bookingCalendar.isBookingAvailable(tentativeBooking);
+
         assertThat(isAvailable).isTrue();
     }
 
     @Test
     public void shouldNotConfirmAPastBooking(){
 
-        Booking booking = new Booking();
-        booking.setBookingDate(TODAY.minusDays(1));
-        booking.setTimeSlot(SLOT);
-        booking.setBookingOwner(player);
+        Booking tentativeBooking = new Booking();
+        tentativeBooking.setBookingDate(TODAY.minusDays(1));
+        tentativeBooking.setTimeSlot(SLOT);
+        tentativeBooking.setBookingOwner(player);
 
-        Boolean isAvailable = bookingCalendarService.isBookingAvailable(booking, bookingCalendar);
+        Boolean isAvailable = bookingCalendar.isBookingAvailable(tentativeBooking);
 
         assertThat(isAvailable).isFalse();
     }
 
+
     @Test
     public void shouldReserveAnAvailableBooking(){
 
-        Booking booking = new Booking();
-        booking.setBookingDate(TODAY.minusDays(1));
-        booking.setTimeSlot(SLOT);
-        booking.setBookingOwner(player);
+        Booking tentativeBooking = new Booking();
+        tentativeBooking.setBookingDate(TODAY);
+        tentativeBooking.setTimeSlot(SLOT);
+        tentativeBooking.setBookingOwner(player);
+        log.info("\n ***** El calendario \n" + bookingCalendar.toString());
+        log.info("\n ***** Fechas disponibles del calendario \n" + bookingCalendar.getAvailableBookings().toString());
 
-        Booking confirmedBooking = bookingCalendar.reserveBooking(booking);
-        assertThat(confirmedBooking).isEqualTo(booking);
+        Optional<Booking> reservedBooking = bookingCalendar.reserveBooking(tentativeBooking);
+        assertThat(reservedBooking.get()).isEqualTo(tentativeBooking);
+        assertThat(reservedBooking.get().getBookingDate()).isEqualTo(TODAY);
+        assertThat(reservedBooking.get().getTimeSlot()).isEqualTo(SLOT);
+        assertThat(reservedBooking.get().getBookingOwner()).isEqualTo(player);
     }
 
+    @Test
+    public void shouldNotConfirmAReservedBooking(){
 
+        Booking firstBooking = new Booking();
+        firstBooking.setBookingDate(TODAY);
+        firstBooking.setTimeSlot(SLOT);
+        firstBooking.setBookingOwner(player);
 
-//    @Test
-//    @DisplayName("****** should confirm and book an available slot")
-//    public void shouldConfirmAndBookAnAvailableSlot() {
-//
-//        // As a player, I want to book an available slot in the calendar so that I can play padel.
-//
-//        Player player = new Player();
-//        player.setName(NAME_OF_PLAYER1);
-//        player.setResidence(RESIDENCE_OF_PLAYER1);
-//
-//
-//        BookingCalendar bookingCalendar = new BookingCalendar();
-//        bookingCalendar.setStartDay(TODAY);
-//        bookingCalendar.generateAvailableBookings();
-//
-//        Player player1 = new Player(NAME_OF_PLAYER1, RESIDENCE_OF_PLAYER1);
-//
-//
-//        Booking desiredBooking = new Booking();
-//        desiredBooking.setBookingDate(TODAY);
-//        desiredBooking.setTimeSlot(SLOT);
-//        desiredBooking.setBookingOwner(player1);
-//
-//        Optional<Booking> confirmedBooking = player.bookingCalendarService.askForBooking(desiredBooking);
-//
-//        Booking booking = new Booking(SLOT, player1, player2);
-//        bookingCalendar.confirmAndBook(booking);
-//
-//        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
-//        assertThat(bookingCalendar.getReservedBookings().size()).isEqualTo(1);
-//
-//    }
+        Player player2 = new Player();
+        player2.setName(NAME_OF_PLAYER2);
+        Booking tentativeBooking = new Booking();
+        tentativeBooking.setBookingDate(TODAY);
+        tentativeBooking.setTimeSlot(SLOT);
+        tentativeBooking.setBookingOwner(player2);
 
+        Optional<Booking> reservedBooking = bookingCalendar.reserveBooking(firstBooking);
+        Optional<Booking> attemptedBooking = bookingCalendar.reserveBooking(tentativeBooking);
 
-
-
+        assertThat(reservedBooking.get()).isEqualTo(tentativeBooking);
+        assertTrue(attemptedBooking.isEmpty());
+    }
 
 }

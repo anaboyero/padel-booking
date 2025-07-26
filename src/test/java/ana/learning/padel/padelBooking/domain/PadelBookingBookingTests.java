@@ -28,9 +28,9 @@ public class PadelBookingBookingTests {
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
-    private static final Booking.TimeSlot SLOT = Booking.TimeSlot.NINE_AM;
+    private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
-    private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 13*7;
+    private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 4*7;
     Residence residence;
     Player player;
 

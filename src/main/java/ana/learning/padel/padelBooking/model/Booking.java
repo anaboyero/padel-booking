@@ -3,6 +3,7 @@ package ana.learning.padel.padelBooking.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 public class Booking {
@@ -17,19 +18,19 @@ public class Booking {
 
 
     public enum TimeSlot {
-        NINE_AM,
-        TEN_AM,
-        ELEVEN_AM,
-        TWELVE_PM,
-        ONE_PM,
+//        NINE_AM,
+//        TEN_AM,
+//        ELEVEN_AM,
+//        TWELVE_PM,
+//        ONE_PM,
         TWO_PM,
         THREE_PM,
         FOUR_PM,
         FIVE_PM,
-        SIX_PM,
-        SEVEN_PM,
-        EIGHT_PM,
-        NINE_PM;
+//        SIX_PM,
+//        SEVEN_PM,
+//        EIGHT_PM,
+//        NINE_PM;
     }
 
     public Booking() {
@@ -75,5 +76,17 @@ public class Booking {
                 "/" + timeSlot +
                 "/" + bookingOwner +
                 "||| +\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return Objects.equals(bookingDate, booking.bookingDate) && timeSlot == booking.timeSlot;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bookingDate, timeSlot);
     }
 }
