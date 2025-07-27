@@ -93,23 +93,27 @@ public class BookingCalendar {
     }
 
     public Optional<Booking> reserveBooking(Booking tentativeBooking){
-        Optional<Booking> response;
-
-        if (availableBookings.contains(tentativeBooking)) {
-            availableBookings.remove(tentativeBooking);
-            reservedBookings.add(tentativeBooking);
-            log.info("\n*** RESERVA HECHA");
-            return Optional.of(tentativeBooking);
+        if (isBookingValid(tentativeBooking) && (availableBookings.contains(tentativeBooking))) {
+                availableBookings.remove(tentativeBooking);
+                reservedBookings.add(tentativeBooking);
+                log.info("\n*** RESERVA HECHA");
+                return Optional.of(tentativeBooking);
         }
         log.info("\n*** NO SE PUEDE HACER A RESERVA");
         return Optional.empty();
     }
 
-    public boolean isBookingAvailable(Booking tentativeBooking) {
-
+    private boolean isBookingValid(Booking tentativeBooking) {
         if (isDateBeyondCalendarRange(tentativeBooking)) {
             return false;
         }
+        if (tentativeBooking.getBookingOwner()==null) {
+            return false;
+        }
+        return tentativeBooking.getBookingOwner().getResidence() != null;
+    }
+
+    public boolean isBookingAvailable(Booking tentativeBooking) {
         return availableBookings.contains(tentativeBooking);
     }
 
