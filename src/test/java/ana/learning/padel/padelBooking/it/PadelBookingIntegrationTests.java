@@ -26,9 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class PadelBookingIntegrationTests {
-
-    private static final Logger log = LoggerFactory.getLogger(PadelBookingIntegrationTests.class);
-
     @Autowired
     PlayerService playerService;
 
@@ -42,13 +39,14 @@ public class PadelBookingIntegrationTests {
     BookingCalendarService bookingCalendarService;
 
     private static final String NAME_OF_PLAYER1 = "Ana";
-    private static final String NAME_OF_PLAYER2 = "Javier";
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
-    private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 13*7;
+
+    private static final Logger log = LoggerFactory.getLogger(PadelBookingIntegrationTests.class);
+
     Residence residence;
     Player player;
 
@@ -66,18 +64,13 @@ public class PadelBookingIntegrationTests {
     }
 
     @Test
-    @DisplayName("should register a new player")
     public void ShouldRegisterANewPlayer() {
-
         player = playerService.savePlayer(player);
         assertThat(player.getId()).isNotNull();
-        log.info("****** Should persisted a new player with id: " + player);
     }
 
     @Test
-    @DisplayName("Should create and persist a new Booking given a persistent player")
-    public void ShouldCreateAndPersistANewBooking_GivenAPersistentPlayer() {
-        residence = residenceService.saveResidence(residence);
+    public void ShouldPersistABooking_GivenAPersistentPlayer() {
         player = playerService.savePlayer(player);
         assertThat(player.getId()).isNotNull();
         assertThat(residence.getId()).isNotNull();
@@ -93,20 +86,12 @@ public class PadelBookingIntegrationTests {
         assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
         assertThat(booking.getBookingOwner()).isEqualTo(player);
         assertThat(booking.getId()).isNotNull();
-        log.info("****** Should create a new Booking" + booking);
     }
 
     @Test
-    @DisplayName("Given a date, should persist a new Calendar")
-    public void GivenADate_ShouldPersistANewCalendar() {
+    public void shouldPersistCalendarGivenADate() {
         BookingCalendar bookingCalendar = new BookingCalendar();
         bookingCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
         assertThat(bookingCalendar.getId()).isNotNull();
-        log.info("****** Should persist a new bookingCalendar" + bookingCalendar);
     }
-
-
-
-
-
 }

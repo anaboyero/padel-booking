@@ -22,14 +22,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ResidenceServiceTests {
 
-    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO25 = Residence.Building.JUAN_MARTIN_EMPECINADO_25;
-    private static final Residence.Floor RESIDENCE_2FLOOR = Residence.Floor.SECOND_FLOOR;
-    private static final Residence.Letter RESIDENCE_LETTER_B = Residence.Letter.B;
-    private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
-    private static final LocalDate TODAY = LocalDate.now();
 
     Residence residenceToSave;
 
@@ -52,7 +47,6 @@ public class ResidenceServiceTests {
 
     @Test
     public void shouldSaveAResidenceUsingRepository(){
-
         when(residenceRepository.save(any(Residence.class))).thenReturn(residenceToSave);
 
         Residence newResidence = residenceService.saveResidence(new Residence());
@@ -62,5 +56,4 @@ public class ResidenceServiceTests {
         assertEquals(RESIDENCE_LETTER_A, newResidence.getLetter());
         verify(residenceRepository).save(any(Residence.class));
     }
-
 }

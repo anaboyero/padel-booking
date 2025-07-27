@@ -16,13 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PadelBookingBookingCalendarTests {
+public class BookingCalendarTests {
 
     private static final String NAME_OF_PLAYER1 = "Ana";
     private static final String NAME_OF_PLAYER2 = "Javier";
-    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
-    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
-    private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
     private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 4*7;
@@ -30,7 +27,7 @@ public class PadelBookingBookingCalendarTests {
     Player player;
     Booking tentativeBooking;
 
-    private static final Logger log = LoggerFactory.getLogger(PadelBookingBookingCalendarTests.class);
+    private static final Logger log = LoggerFactory.getLogger(BookingCalendarTests.class);
 
     @BeforeEach
     public void setUp(){
@@ -40,6 +37,11 @@ public class PadelBookingBookingCalendarTests {
         player = new Player();
         player.setName(NAME_OF_PLAYER1);
         player.setResidence(new Residence());
+
+        tentativeBooking = new Booking();
+        tentativeBooking.setBookingDate(TODAY);
+        tentativeBooking.setTimeSlot(SLOT);
+        tentativeBooking.setBookingOwner(player);
     }
 
     @Test
@@ -52,36 +54,24 @@ public class PadelBookingBookingCalendarTests {
 
     @Test
     public void shouldConfirmAnAvailableBooking(){
-        tentativeBooking = new Booking();
-        tentativeBooking.setBookingDate(TODAY);
-        tentativeBooking.setTimeSlot(SLOT);
-
         Boolean result = bookingCalendar.isBookingAvailable(tentativeBooking);
+
         assertThat(result).isTrue();
     }
 
     @Test
     public void shouldNotConfirmAPastBooking(){
-        Booking tentativeBooking = new Booking();
         tentativeBooking.setBookingDate(TODAY.minusDays(1));
         tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingOwner(player);
 
-        Boolean isAvailable = bookingCalendar.isBookingAvailable(tentativeBooking);
-        assertThat(isAvailable).isFalse();
+        assertThat(bookingCalendar.isBookingAvailable(tentativeBooking)).isFalse();
     }
 
 
     @Test
     public void shouldReserveAnAvailableBooking(){
-        Booking tentativeBooking = new Booking();
-        tentativeBooking.setBookingDate(TODAY);
-        tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingOwner(player);
-        log.info("\n ***** El calendario \n" + bookingCalendar.toString());
-        log.info("\n ***** Fechas disponibles del calendario \n" + bookingCalendar.getAvailableBookings().toString());
-
         Optional<Booking> reservedBooking = bookingCalendar.reserveBooking(tentativeBooking);
+
         assertThat(reservedBooking.get()).isEqualTo(tentativeBooking);
         assertThat(reservedBooking.get().getBookingDate()).isEqualTo(TODAY);
         assertThat(reservedBooking.get().getTimeSlot()).isEqualTo(SLOT);
@@ -99,9 +89,6 @@ public class PadelBookingBookingCalendarTests {
 
         Player player2 = new Player();
         player2.setName(NAME_OF_PLAYER2);
-        Booking tentativeBooking = new Booking();
-        tentativeBooking.setBookingDate(TODAY);
-        tentativeBooking.setTimeSlot(SLOT);
         tentativeBooking.setBookingOwner(player2);
 
         Optional<Booking> reservedBooking = bookingCalendar.reserveBooking(firstBooking);
@@ -117,27 +104,16 @@ public class PadelBookingBookingCalendarTests {
 
     @Test
     public void shouldNotRegisterABookingWithoutAPlayer(){
-        tentativeBooking = new Booking();
-        tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingDate(TODAY);
-
-        Optional<Booking> reserve = bookingCalendar.reserveBooking(tentativeBooking);
-
-        assertThat((reserve.isEmpty())).isTrue();
+        tentativeBooking.setBookingOwner(null);
+        assertThat(bookingCalendar.reserveBooking(tentativeBooking)).isEmpty();
     }
 
     @Test
     public void shouldNotRegisterABookingWithAPlayerWithoutResidence(){
         Player playerWithNoResidence = new Player();
-        playerWithNoResidence.setName(NAME_OF_PLAYER1);
-        tentativeBooking = new Booking();
-        tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingDate(TODAY);
         tentativeBooking.setBookingOwner(playerWithNoResidence);
 
-        Optional<Booking> reserve = bookingCalendar.reserveBooking(tentativeBooking);
-
-        assertThat((reserve.isEmpty())).isTrue();
+        assertThat(bookingCalendar.reserveBooking(tentativeBooking)).isEmpty();
     }
 
 }

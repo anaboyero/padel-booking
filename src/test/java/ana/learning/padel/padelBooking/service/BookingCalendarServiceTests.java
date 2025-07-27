@@ -25,15 +25,8 @@ public class BookingCalendarServiceTests {
 
     private static final String NAME_OF_PLAYER1 = "Ana";
     private static final String NAME_OF_PLAYER2 = "Javier";
-    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
-    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
-    private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
-    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO25 = Residence.Building.JUAN_MARTIN_EMPECINADO_25;
-    private static final Residence.Floor RESIDENCE_2FLOOR = Residence.Floor.SECOND_FLOOR;
-    private static final Residence.Letter RESIDENCE_LETTER_B = Residence.Letter.B;
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
-    private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 4*7;
     Player player1;
     Player player2;
     Booking tentativeBooking;
@@ -53,12 +46,18 @@ public class BookingCalendarServiceTests {
         player1 = new Player();
         player1.setName(NAME_OF_PLAYER1);
         player1.setResidence(new Residence());
+
         player2 = new Player();
         player2.setName(NAME_OF_PLAYER2);
         player2.setResidence(new Residence());
 
         bookingCalendar = new BookingCalendar();
         bookingCalendar.setStartDay(TODAY);
+
+        tentativeBooking = new Booking();
+        tentativeBooking.setBookingDate(TODAY);
+        tentativeBooking.setTimeSlot(SLOT);
+        tentativeBooking.setBookingOwner(player1);
     }
 
     @Test
@@ -80,14 +79,7 @@ public class BookingCalendarServiceTests {
 
     @Test
     public void shouldConfirmAnAvailableBooking(){
-        tentativeBooking = new Booking();
-        tentativeBooking.setBookingDate(TODAY);
-        tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingOwner(player1);
-        log.info("****Veamos el concenido de tentativeBooking" + tentativeBooking.toString());
-
-        Boolean result = bookingCalendarService.isBookingAvailable(tentativeBooking, bookingCalendar);
-        assertThat(result).isTrue();
+        assertThat(bookingCalendarService.isBookingAvailable(tentativeBooking, bookingCalendar)).isTrue();
     }
 
     @Test
@@ -95,27 +87,15 @@ public class BookingCalendarServiceTests {
         Booking firstBooking = new Booking();
         firstBooking.setBookingDate(TODAY);
         firstBooking.setTimeSlot(SLOT);
-        firstBooking.setBookingOwner(player1);
-
-        tentativeBooking = new Booking();
-        tentativeBooking.setBookingDate(TODAY);
-        tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingOwner(player2);
+        firstBooking.setBookingOwner(player2);
 
         bookingCalendarService.reserveBooking(firstBooking, bookingCalendar);
-        Boolean result = bookingCalendarService.isBookingAvailable(tentativeBooking, bookingCalendar);
-        assertThat(result).isFalse();
+        assertThat(bookingCalendarService.isBookingAvailable(tentativeBooking, bookingCalendar)).isFalse();
     }
 
     @Test
     public void shouldReserveAnAvailableBooking(){
-        tentativeBooking = new Booking();
-        tentativeBooking.setBookingDate(TODAY);
-        tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingOwner(player1);
-
-        Boolean result = bookingCalendarService.isBookingAvailable(tentativeBooking, bookingCalendar);
-        assertThat(result).isTrue();
+        assertThat(bookingCalendarService.isBookingAvailable(tentativeBooking, bookingCalendar)).isTrue();
     }
 
     @Test
@@ -123,12 +103,7 @@ public class BookingCalendarServiceTests {
         Booking firstBooking = new Booking();
         firstBooking.setBookingDate(TODAY);
         firstBooking.setTimeSlot(SLOT);
-        firstBooking.setBookingOwner(player1);
-
-        tentativeBooking = new Booking();
-        tentativeBooking.setBookingDate(TODAY);
-        tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingOwner(player2);
+        firstBooking.setBookingOwner(player2);
 
         Optional<Booking> availableAttempt = bookingCalendarService.reserveBooking(firstBooking, bookingCalendar);
         Optional<Booking> unavailableAttempt = bookingCalendarService.reserveBooking(tentativeBooking, bookingCalendar);
@@ -141,7 +116,7 @@ public class BookingCalendarServiceTests {
         Booking earlyBooking = new Booking();
         earlyBooking.setBookingDate(TODAY.minusDays(30));
         earlyBooking.setTimeSlot(SLOT);
-        player1.setResidence(new Residence());
+//        player1.setResidence(new Residence());
         earlyBooking.setBookingOwner(player1);
 
         Booking noResidenceBooking = new Booking();
@@ -166,12 +141,6 @@ public class BookingCalendarServiceTests {
 
     @Test
     public void shouldPersistAConfirmedBooking(){
-
-        tentativeBooking = new Booking();
-        tentativeBooking.setBookingDate(TODAY);
-        tentativeBooking.setTimeSlot(SLOT);
-        tentativeBooking.setBookingOwner(player1);
-
         BookingCalendar bookingCalendarToSave = new BookingCalendar();
         bookingCalendarToSave.setStartDay(TODAY);
         bookingCalendarToSave.setId(1L);
@@ -184,8 +153,5 @@ public class BookingCalendarServiceTests {
         assertThat(bookingCalendar.getStartDay()).isEqualTo(TODAY);
         assertThat(bookingCalendar.getId()).isEqualTo(1L);
         verify(bookingCalendarRepository).save(any(BookingCalendar.class));
-
     }
-
-
 }
