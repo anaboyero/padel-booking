@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.it;
 
+import ana.learning.padel.padelBooking.controller.PlayerController;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
@@ -17,9 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +42,9 @@ public class PadelBookingIntegrationTests {
 
     @Autowired
     BookingCalendarService bookingCalendarService;
+
+    @Autowired
+    PlayerController playerController;
 
     private static final String NAME_OF_PLAYER1 = "Ana";
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
@@ -94,4 +102,27 @@ public class PadelBookingIntegrationTests {
         bookingCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
         assertThat(bookingCalendar.getId()).isNotNull();
     }
+
+    @Test
+    void shouldGetAnEmptyListWhenThereAreNoPlayers() {
+        ResponseEntity<List<Player>> response = playerController.getAllPlayers();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(new ArrayList<>());
+    }
+
+//    @Test
+//    void shouldReturnAnIDWhenCreateAPlayer(){
+//        PlayerDTO playerDTO = new PlayerDTO("Ana");
+//        ResponseEntity<PlayerDTO> playerDTO = playerController.save()
+//    }
+//    @Test
+//    void shouldGetAListOfPlayers(){
+//
+//        ResponseEntity<List<Player>> response = playerController.getAllPlayers();
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody()).isEqualTo(new ArrayList<>());
+//
+//
+//    }
+
 }
