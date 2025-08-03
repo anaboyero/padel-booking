@@ -22,7 +22,7 @@ public class MapperTest {
     private Residence residence;
     private ResidenceDTO residenceDTO;
 
-    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO_21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
 
@@ -33,7 +33,7 @@ public class MapperTest {
         playerDTO.setId(1L);
         residenceDTO = new ResidenceDTO();
         residenceDTO.setBuilding("JUAN_MARTIN_EMPECINADO_21");
-        residenceDTO.setFloor("5");
+        residenceDTO.setFloor("FIFTH");
         residenceDTO.setLetter("A");
     }
 
@@ -47,7 +47,7 @@ public class MapperTest {
     @Test
     public void shouldMapToResidence() {
         residence = residenceMapper.toResidence(residenceDTO);
-        assertThat(residence.getBuilding()).isEqualTo(RESIDENCE_BUILDING_EMPECINADO21);
+        assertThat(residence.getBuilding()).isEqualTo(RESIDENCE_BUILDING_EMPECINADO_21);
         assertThat(residence.getFloor()).isEqualTo(RESIDENCE_5FLOOR);
         assertThat(residence.getLetter()).isEqualTo(RESIDENCE_LETTER_A);
     }
