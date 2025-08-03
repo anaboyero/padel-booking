@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayerService {
-    public Player savePlayer(PlayerDTO dto);
+    public Player savePlayer(Player player);
 
     List<Player> getAllPlayers();
+
+    void deleteAllPlayers();
 }

@@ -20,12 +20,17 @@ public class PlayerServiceImpl implements PlayerService {
     PlayerMapper mapper;
 
     @Override
-    public Player savePlayer(PlayerDTO dto) {
-        return playerRepository.save(mapper.toPlayer(dto));
+    public Player savePlayer(Player player) {
+        return playerRepository.save(player);
     }
 
     @Override
     public List<Player> getAllPlayers() {
         return playerRepository.findAll();
+    }
+
+    @Override
+    public void deleteAllPlayers() {
+        playerRepository.deleteAll();
     }
 }

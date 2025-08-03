@@ -42,7 +42,6 @@ public class ResidenceServiceTests {
         residenceToSave.setBuilding(RESIDENCE_BUILDING_EMPECINADO25);
         residenceToSave.setFloor(RESIDENCE_5FLOOR);
         residenceToSave.setLetter(RESIDENCE_LETTER_A);
-
     }
 
     @Test
@@ -56,4 +55,5 @@ public class ResidenceServiceTests {
         assertEquals(RESIDENCE_LETTER_A, newResidence.getLetter());
         verify(residenceRepository).save(any(Residence.class));
     }
+
 }

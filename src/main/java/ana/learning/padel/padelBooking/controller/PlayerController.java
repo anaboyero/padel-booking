@@ -6,10 +6,7 @@ import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.service.PlayerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +29,18 @@ public class PlayerController {
         return ResponseEntity.ok(players);
     }
 
-    @PostMapping("/player")
-    public Player savePlayer(@RequestBody PlayerDTO dto) {
-        return playerService.savePlayer(dto);
+    @PostMapping("/players")
+    public PlayerDTO savePlayer(@RequestBody PlayerDTO dto) {
+        Player player = playerService.savePlayer(mapper.toPlayer(dto));
+        return mapper.toDTO(player);
+    }
+
+    @DeleteMapping("/players")
+    public ResponseEntity<List<Player>> DeleteAllPlayers() {
+        playerService.deleteAllPlayers();
+        List<Player> players = playerService.getAllPlayers();
+        return ResponseEntity.ok(players);
+
+
     }
 }
