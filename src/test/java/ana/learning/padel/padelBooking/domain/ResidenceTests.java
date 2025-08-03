@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class ResidenceTests {
 
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
-    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
+    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
 
     private static final Logger log = LoggerFactory.getLogger(ResidenceTests.class);
@@ -26,8 +26,7 @@ public class ResidenceTests {
         residence.setFloor(RESIDENCE_5FLOOR);
         residence.setLetter(RESIDENCE_LETTER_A);
         assertThat(residence.getBuilding()).isEqualTo(Residence.Building.JUAN_MARTIN_EMPECINADO_21);
-        assertThat(residence.getFloor()).isEqualTo(Residence.Floor.FIFTH_FLOOR);
+        assertThat(residence.getFloor()).isEqualTo(Residence.Floor.FIFTH);
         assertThat(residence.getLetter()).isEqualTo(Residence.Letter.A);
-
     }
 }

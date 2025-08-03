@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ResidenceServiceTests {
 
-    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH_FLOOR;
+    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO25 = Residence.Building.JUAN_MARTIN_EMPECINADO_25;
 

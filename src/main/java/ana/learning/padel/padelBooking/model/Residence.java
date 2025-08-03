@@ -23,7 +23,7 @@ public class Residence {
         RAMIREZ_PRADO_8;
     }
 
-    public enum Floor {GROUND_FLOOR, FIRST_FLOOR, SECOND_FLOOR, THIRD_FLOOR, FOURTH_FLOOR, FIFTH_FLOOR, SIXTH_FLOOR, SEVENTH_FLOOR;}
+    public enum Floor {GROUND, FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH, SEVENTH;}
     public enum Letter {A, B, C, D, E, F, G;}
 
     public Residence() {
