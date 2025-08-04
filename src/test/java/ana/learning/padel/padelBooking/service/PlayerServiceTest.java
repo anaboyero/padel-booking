@@ -1,6 +1,7 @@
 package ana.learning.padel.padelBooking.service;
 
 import ana.learning.padel.padelBooking.model.Player;
+import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.PlayerRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,8 +28,16 @@ public class PlayerServiceTest {
     @InjectMocks
     private PlayerService playerService = new PlayerServiceImpl();
 
+    @InjectMocks
+    private ResidenceService residenceService = new ResidenceServiceImpl();
+
     private Player player1;
     private Player player2;
+
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO_21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO_23 = Residence.Building.JUAN_MARTIN_EMPECINADO_23;
+    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
+    private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
 
 
     @BeforeEach
@@ -48,9 +57,6 @@ public class PlayerServiceTest {
         assertThat(testPlayer.getId()).isEqualTo(1L);
         assertThat(testPlayer.getName()).isEqualTo("Javier");
     }
-
-
-
 
 }
 

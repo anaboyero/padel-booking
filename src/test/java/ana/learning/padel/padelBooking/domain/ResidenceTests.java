@@ -29,4 +29,5 @@ public class ResidenceTests {
         assertThat(residence.getFloor()).isEqualTo(Residence.Floor.FIFTH);
         assertThat(residence.getLetter()).isEqualTo(Residence.Letter.A);
     }
+
 }
