@@ -6,8 +6,18 @@ meta {
 
 post {
   url: http://localhost:8080/api/v1/players
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {"name":"Ana", 
+   "id":null, 
+   "residence": 
+     {"building": "JUAN_MARTIN_EMPECINADO_21",
+     "floor": "FIFTH",
+     "letter": "A"}
+  }
 }
 
 settings {

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,14 @@ public class PlayerController {
 
     @GetMapping
     public ResponseEntity<List<Player>> getAllPlayers(){
+        // Nota: no parece prudente devolver la direccion de cualquier persona,
+        // pero de momento me es util para saber que funciona
+
         List<Player> players = playerService.getAllPlayers();
+        if (players.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
         return ResponseEntity.ok(players);
     }
 
@@ -41,7 +49,7 @@ public class PlayerController {
     public ResponseEntity<Optional<Player>> getPlayerById(@PathVariable Long id) {
         Optional<Player> player = playerService.getPlayerById(id);
         if (player.isEmpty()){
-            return ResponseEntity.ok(Optional.empty());
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(Optional.of(player.get()));
     }
@@ -53,11 +61,20 @@ public class PlayerController {
     }
 
     @DeleteMapping
-    public ResponseEntity<List<Player>> DeleteAllPlayers() {
+    public ResponseEntity<Player> DeleteAllPlayers() {
         playerService.deleteAllPlayers();
-        List<Player> players = playerService.getAllPlayers();
-        return ResponseEntity.ok(players);
+        return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Player> deletePlayerById (@PathVariable Long id) {
+        Optional<Player> result = playerService.getPlayerById(id);
+        if (result.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(result.get());
+    }
+
     @PostMapping("/{id}")
     public Optional<PlayerDTO> addResidenceToPlayer(@PathVariable Long id, @RequestBody ResidenceDTO residenceDTO) {
         Optional<PlayerDTO> resultDTO;

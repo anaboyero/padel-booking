@@ -18,9 +18,9 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,15 +28,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public class PlayerControllerTest {
 
-    private MockMvc mockMvc;
-
-    private PlayerMapper playerMapper;
-
-    private ObjectMapper objectMapper;
-
-    private PlayerRepository playerRepository;
-
-    private BookingRepository bookingRepository;
+    private final MockMvc mockMvc;
+    private final PlayerMapper playerMapper;
+    private final ObjectMapper objectMapper;
+    private final PlayerRepository playerRepository;
+    private final BookingRepository bookingRepository;
 
     private static final Logger log = LoggerFactory.getLogger(PlayerControllerTest.class);
 
@@ -51,44 +47,74 @@ public class PlayerControllerTest {
 
     @BeforeEach
     void setUp() {
-        log.info("\n*** TEST. Entrando en @BeforeEach");
+        log.info("\n*** Limpiando repositorios en @BeforeEach");
         bookingRepository.deleteAll();
         playerRepository.deleteAll();
     }
 
-//    @Test
-//    public void shouldSaveAPlayer() throws Exception {
-//        log.info("\n*** TEST. Entrando en shouldSaveAPlayer");
-//        Player player = new Player();
-//        player.setName("Ana");
-//
-//        mockMvc.perform(post("/players")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(player)))
-//                .andExpect(status().isOk());
-//    }
-}
+    @Test
+    public void shouldSaveAPlayer() throws Exception {
+        Player player = new Player();
+        player.setName("Ana");
 
-//
-////    @Test
-////    public void should
-//
-////    @Test
-////    public void shouldSaveAPlayer() throws Exception {
-////        // ARRANGE
-////        PlayerDTO dto = new PlayerDTO("Ana");
-////
-////        // Mock
-////        Player savedPlayer = new Player();
-////        savedPlayer.setName("Ana");
-////        savedPlayer.setId(1L);
-////        when(playerService.savePlayer(any(Player.class))).thenReturn(savedPlayer);
-////
-////        // ACT
-////        ResponseEntity<PlayerDTO> response = mockMvc.perform(post("/players"))
-////                .contentType(MediaType.APPLICATION_JSON)
-////                .content(new ObjectMapper().writeValueAsString(dto));
-////
-////
-////    }
-//}
+        mockMvc.perform(post("/api/v1/players")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(playerMapper.toDTO(player))))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Ana"));
+
+    }
+
+    @Test
+    public void shouldReturnNoContentWhenDeletingAllPlayers() throws Exception {
+        mockMvc.perform(delete("/api/v1/players"))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/players"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void shouldReturnListOfPlayersWhenPlayersExist() throws Exception {
+        Player player1 = new Player();
+        player1.setName("Ana");
+        playerRepository.save(player1);
+        Player player2 = new Player();
+        player2.setName("Pepe");
+        playerRepository.save(player2);
+
+        mockMvc.perform(get("/api/v1/players"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value("Ana"))
+                .andExpect(jsonPath("$[1].name").value("Pepe"));
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenDeletingNonExistentPlayer() throws Exception {
+        Long playerId = 1L;
+        mockMvc.perform(delete("/api/v1/players/{id}", playerId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldReturnOkAndDeletedPlayerWhenDeletingExistingPlayer() throws Exception {
+        Player player = new Player();
+        player.setName("Ana");
+        Player savedPlayer = playerRepository.save(player);
+
+        mockMvc.perform(delete("/api/v1/players/{id}", savedPlayer.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Ana"))
+        ;
+
+    }
+
+
+
+
+
+
+}
