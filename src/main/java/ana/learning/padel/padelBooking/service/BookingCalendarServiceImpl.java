@@ -5,6 +5,8 @@ import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import ana.learning.padel.padelBooking.repository.BookingRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +17,33 @@ import java.util.Optional;
 public class BookingCalendarServiceImpl implements BookingCalendarService{
     @Autowired
     BookingCalendarRepository bookingCalendarRepository;
+    @Autowired
+    BookingService bookingService;
+    private static final Logger log = LoggerFactory.getLogger(BookingCalendarServiceImpl.class);
+
+    public BookingCalendarServiceImpl(BookingCalendarRepository bookingCalendarRepository, BookingService bookingService) {
+        this.bookingCalendarRepository = bookingCalendarRepository;
+        this.bookingService = bookingService;
+    }
+
+    private void persistAvailableBookings(BookingCalendar bookingCalendar){
+        log.info("\n*** Entro en el bucle for para persistir los bookings");
+        for (Booking booking : bookingCalendar.getAvailableBookings()) {
+            bookingService.saveBooking(booking);
+        }
+
+    }
+
     @Override
     public BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar){
+        if (bookingCalendar.getId() == null) {
+            log.info("\n*** Como es la primera vez que vamos a persistir el calendario, persisto antes los bookings disponibles y sin asignar(o sea, todos)");
+            persistAvailableBookings(bookingCalendar);
+        }
+        // save available bookings first
+
+
+        log.info("\n*** Persistidos los bookings y persistido el calendario");
         return bookingCalendarRepository.save(bookingCalendar);
     }
 

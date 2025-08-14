@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.time.LocalDate;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,8 +41,13 @@ public class BookingCalendarServiceTests {
     @Mock
     private BookingCalendarRepository bookingCalendarRepository;
 
+    // Lo mockeo para usarlo en el constructor de BookingCalendarService.
+    // Autowired no sirve, por que???
+    @Mock
+    private BookingService bookingService;
+
     @InjectMocks
-    private BookingCalendarService bookingCalendarService = new BookingCalendarServiceImpl();
+    private BookingCalendarService bookingCalendarService = new BookingCalendarServiceImpl(bookingCalendarRepository, bookingService);
 
     @BeforeEach
     public void setUp(){
@@ -58,6 +66,21 @@ public class BookingCalendarServiceTests {
         tentativeBooking.setBookingDate(TODAY);
         tentativeBooking.setTimeSlot(SLOT);
         tentativeBooking.setBookingOwner(player1);
+    }
+
+    @Test
+    public void shouldCreateANewCalendarWithAProperDate(){
+        BookingCalendar bookingCalendarToSave = new BookingCalendar();
+        bookingCalendarToSave.setStartDay(TODAY);
+        bookingCalendarToSave.setId(1L);
+
+        when(bookingCalendarRepository.save(any(BookingCalendar.class))).thenReturn(bookingCalendarToSave);
+
+        bookingCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
+
+        assertThat(bookingCalendar.getStartDay()).isEqualTo(TODAY);
+        assertThat(bookingCalendar.getId()).isEqualTo(1L);
+        verify(bookingCalendarRepository).save(any(BookingCalendar.class));
     }
 
     @Test
@@ -154,4 +177,6 @@ public class BookingCalendarServiceTests {
         assertThat(bookingCalendar.getId()).isEqualTo(1L);
         verify(bookingCalendarRepository).save(any(BookingCalendar.class));
     }
+
+
 }

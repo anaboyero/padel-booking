@@ -1,6 +1,5 @@
-package ana.learning.padel.padelBooking;
+package ana.learning.padel.padelBooking.controller;
 
-import ana.learning.padel.padelBooking.controller.PlayerController;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.repository.BookingRepository;
@@ -111,6 +110,9 @@ public class PlayerControllerTest {
         ;
 
     }
+
+
+
 
 
 
