@@ -7,14 +7,13 @@ import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/booking-calendars")
@@ -24,14 +23,21 @@ public class BookingCalendarController {
 
 
     final BookingCalendarService bookingCalendarService;
-    final BookingCalendarRepository bookingCalendarRepository;
+//    final BookingCalendarRepository bookingCalendarRepository;
     private final Logger log = LoggerFactory.getLogger(BookingCalendarController.class);
 
 
-    public BookingCalendarController(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository) {
+    public BookingCalendarController(BookingCalendarService bookingCalendarService) {
         this.bookingCalendarService = bookingCalendarService;
-        this.bookingCalendarRepository = bookingCalendarRepository;
+//        this.bookingCalendarRepository = bookingCalendarRepository;
     }
+
+    @GetMapping
+    public List<BookingCalendar> getBookingCalendars() {
+        return bookingCalendarService.getAllBookingCalendars();
+        //return new ArrayList<>();
+    }
+
 
     @PostMapping
     public ResponseEntity<BookingCalendar> createCalendar(@RequestBody CreateCalendarRequest createCalendarRequest) {

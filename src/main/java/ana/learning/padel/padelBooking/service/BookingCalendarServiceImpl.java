@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,6 +34,12 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         }
 
     }
+
+    @Override
+    public List<BookingCalendar> getAllBookingCalendars(){
+        return (List<BookingCalendar>) bookingCalendarRepository.findAll();
+    }
+
 
     @Override
     public BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar){

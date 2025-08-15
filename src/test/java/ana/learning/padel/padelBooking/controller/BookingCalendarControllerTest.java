@@ -6,6 +6,7 @@ import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -46,11 +49,14 @@ public class BookingCalendarControllerTest {
         this.objectMapper = objectMapper;
     }
 
+    @BeforeEach
+    public void setUp() {
+        bookingCalendarRepository.deleteAll();
+        log.info("\n*** Limpiando repositorios en @BeforeEach");
+    }
 
     @Test
     public void shouldCreateCalendarWithStartDay() throws Exception{
-
-        log.info("\n***" + TODAY.toString());
 
         CreateCalendarRequest createCalendarRequest = new CreateCalendarRequest(TODAY);
 
@@ -62,9 +68,40 @@ public class BookingCalendarControllerTest {
                 .andExpect(jsonPath("$.startDay").value(TODAY.toString()))
                 .andReturn();
 
-        // Imprimir el contenido como String
         String jsonResponse = result.getResponse().getContentAsString();
-        log.info("\n*** RESPUESTA DEL POST: " + jsonResponse);
+        log.info("\n*** Response (POST): " + jsonResponse);
     }
+
+    @Test
+    public void shouldReturnEmptyListWhenThereIsNoCalendar() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(0)))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response (GET): " + jsonResponse);
+
+    }
+
+    @Test
+    public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
+
+        BookingCalendar calendar = new BookingCalendar();
+        bookingCalendarService.saveBookingCalendar(calendar);
+
+        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response (GET): " + jsonResponse);
+
+    }
+
+
 
 }
