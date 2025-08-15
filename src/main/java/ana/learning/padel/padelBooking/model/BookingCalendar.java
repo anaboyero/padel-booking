@@ -96,10 +96,10 @@ public class BookingCalendar {
         if (isBookingValid(tentativeBooking) && (availableBookings.contains(tentativeBooking))) {
                 availableBookings.remove(tentativeBooking);
                 reservedBookings.add(tentativeBooking);
-                log.info("\n*** RESERVA HECHA");
+                log.info("\n*** Congratulations, you just booked a reservation!");
                 return Optional.of(tentativeBooking);
         }
-        log.info("\n*** NO SE PUEDE HACER A RESERVA");
+        log.info("\n*** Sorry, we couldn't process your booking. This may be due to a lack of availability or invalid booking details");
         return Optional.empty();
     }
 
