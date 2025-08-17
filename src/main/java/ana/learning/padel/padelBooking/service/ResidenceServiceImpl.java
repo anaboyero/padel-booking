@@ -11,9 +11,11 @@ public class ResidenceServiceImpl implements ResidenceService{
     ResidenceRepository residenceRepository;
 
     @Override
-    public Residence saveResidence(Residence residence) {
-        // Logic to save the residence
-        // This could involve calling a repository method to persist the residence entity
-        return residenceRepository.save(residence); // Placeholder return statement
+    public Residence saveResidence(Residence residence) throws InvalidResidenceException {
+        if (residence.getBuilding()==null || residence.getFloor()==null || residence.getLetter()==null ){
+            throw new InvalidResidenceException("Residence could not be persisted. There are missing fields");
+        }
+        return residenceRepository.save(residence);
+
     }
 }

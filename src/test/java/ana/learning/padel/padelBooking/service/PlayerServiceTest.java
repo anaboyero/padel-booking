@@ -25,14 +25,17 @@ public class PlayerServiceTest {
     @Mock
     private PlayerRepository playerRepository;
 
+    @Mock
+    private PlayerRepository residenceRepository;
+
     @InjectMocks
     private PlayerService playerService = new PlayerServiceImpl();
 
     @InjectMocks
     private ResidenceService residenceService = new ResidenceServiceImpl();
 
+    private Player player0;
     private Player player1;
-    private Player player2;
 
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO_21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO_23 = Residence.Building.JUAN_MARTIN_EMPECINADO_23;
@@ -42,21 +45,32 @@ public class PlayerServiceTest {
 
     @BeforeEach
     public void setUp() {
+        player0 = new Player();
+        player0.setName("Ana");
+        player0.setId(null);
         player1 = new Player();
-        player2 = new Player();
-        player1.setName("Ana");
-        player1.setId(null);
-        player2.setName("Javier");
-        player2.setId(1L);
+        player1.setName("Javier");
+        player1.setId(1L);
     }
 
     @Test
     public void shouldSaveANewPlayer() {
-        when(playerRepository.save(any(Player.class))).thenReturn(player2);
-        Player testPlayer = playerService.savePlayer(player1);
+        when(playerRepository.save(any(Player.class))).thenReturn(player1);
+        Player testPlayer = playerService.savePlayer(player0);
         assertThat(testPlayer.getId()).isEqualTo(1L);
         assertThat(testPlayer.getName()).isEqualTo("Javier");
     }
+    
+//    @Test
+//    public void shouldSavePersistedResidence() {
+//        Residence residence0 = new Residence();
+//
+//        when(playerRepository.save(any(Player.class))).thenReturn(player1);
+//        when(residenceRepository.save(any(Residence.class))).thenReturn(residence1);
+//
+//
+//
+//    }
 
 }
 

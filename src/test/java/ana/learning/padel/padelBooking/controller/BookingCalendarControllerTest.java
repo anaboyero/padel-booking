@@ -3,8 +3,11 @@ package ana.learning.padel.padelBooking.controller;
 
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequest;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
+import ana.learning.padel.padelBooking.model.Player;
+import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import ana.learning.padel.padelBooking.service.BookingCalendarService;
+import ana.learning.padel.padelBooking.service.PlayerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,24 +38,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BookingCalendarControllerTest {
 
     private static final LocalDate TODAY = LocalDate.now();
+    private static final String NAME_OF_PLAYER1 = "Ana";
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
+    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
+    private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
 
     final BookingCalendarService bookingCalendarService;
     final BookingCalendarRepository bookingCalendarRepository;
+    final PlayerService playerService;
     final MockMvc mockMvc;
     final ObjectMapper objectMapper;
     private final Logger log = LoggerFactory.getLogger(BookingCalendarControllerTest.class);
 
-    public BookingCalendarControllerTest(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository, MockMvc mockMvc, ObjectMapper objectMapper){
+
+    public BookingCalendarControllerTest(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository, MockMvc mockMvc, ObjectMapper objectMapper, PlayerService playerService){
         this.bookingCalendarService = bookingCalendarService;
         this.bookingCalendarRepository = bookingCalendarRepository;
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
+        this.playerService = playerService;
     }
 
     @BeforeEach
     public void setUp() {
         bookingCalendarRepository.deleteAll();
-        log.info("\n*** Limpiando repositorios en @BeforeEach");
+        log.info("\n*** Limpiando repositorios de Booking Calendar en @BeforeEach");
     }
 
     @Test
@@ -99,6 +109,26 @@ public class BookingCalendarControllerTest {
 
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response (GET): " + jsonResponse);
+
+    }
+
+    @Test
+    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
+        BookingCalendar calendar = new BookingCalendar();
+        calendar.setStartDay(TODAY);
+        bookingCalendarService.saveBookingCalendar(calendar);
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        playerService.addResidenceToPlayer(player, residence);
+//        player.setResidence(residence);
+        Player savedPlayer = playerService.savePlayer(player);
+        Long id = savedPlayer.getId();
+        log.info("Test in progress");
+
 
     }
 

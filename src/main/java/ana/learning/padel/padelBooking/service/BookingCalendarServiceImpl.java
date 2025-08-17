@@ -32,7 +32,6 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         for (Booking booking : bookingCalendar.getAvailableBookings()) {
             bookingService.saveBooking(booking);
         }
-
     }
 
     @Override
@@ -47,10 +46,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
             log.info("\n*** Como es la primera vez que vamos a persistir el calendario, persisto antes los bookings disponibles y sin asignar(o sea, todos)");
             persistAvailableBookings(bookingCalendar);
         }
-        // save available bookings first
-
-
-        log.info("\n*** Persistidos los bookings y persistido el calendario");
+        log.info("\n*** Persisto el calendario");
         return bookingCalendarRepository.save(bookingCalendar);
     }
 

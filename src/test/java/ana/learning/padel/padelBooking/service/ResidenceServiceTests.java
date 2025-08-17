@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,6 +26,10 @@ public class ResidenceServiceTests {
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO25 = Residence.Building.JUAN_MARTIN_EMPECINADO_25;
+    private static final Residence.Floor RESIDENCE_2FLOOR = Residence.Floor.SECOND;
+    private static final Residence.Letter RESIDENCE_LETTER_B = Residence.Letter.B;
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO23 = Residence.Building.JUAN_MARTIN_EMPECINADO_23;
+
 
     Residence residenceToSave;
 
@@ -47,13 +52,29 @@ public class ResidenceServiceTests {
     @Test
     public void shouldSaveAResidenceUsingRepository(){
         when(residenceRepository.save(any(Residence.class))).thenReturn(residenceToSave);
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO23);
+        residence.setFloor(RESIDENCE_2FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_B);
 
-        Residence newResidence = residenceService.saveResidence(new Residence());
+        Residence newResidence = residenceService.saveResidence(residence);
 
         assertEquals(RESIDENCE_BUILDING_EMPECINADO25, newResidence.getBuilding());
         assertEquals(RESIDENCE_5FLOOR, newResidence.getFloor());
         assertEquals(RESIDENCE_LETTER_A, newResidence.getLetter());
         verify(residenceRepository).save(any(Residence.class));
+    }
+
+
+    @Test
+    public void shouldThrowExceptionWhenSavingIncompletePlayer(){
+
+        Residence residenceWithMissingFields = new Residence();
+        InvalidResidenceException exception = assertThrows(InvalidResidenceException.class,
+                ()-> residenceService.saveResidence(residenceWithMissingFields));
+
+        assertEquals("Residence could not be persisted. There are missing fields", exception.getMessage());
+
     }
 
 }
