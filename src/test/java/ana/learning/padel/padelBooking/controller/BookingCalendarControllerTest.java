@@ -112,25 +112,26 @@ public class BookingCalendarControllerTest {
 
     }
 
-    @Test
-    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
-        BookingCalendar calendar = new BookingCalendar();
-        calendar.setStartDay(TODAY);
-        bookingCalendarService.saveBookingCalendar(calendar);
-        Residence residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
-        Player player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        playerService.addResidenceToPlayer(player, residence);
-//        player.setResidence(residence);
-        Player savedPlayer = playerService.savePlayer(player);
-        Long id = savedPlayer.getId();
-        log.info("Test in progress");
-
-
-    }
+//    @Test
+//    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
+//        BookingCalendar calendar = new BookingCalendar();
+//        calendar.setStartDay(TODAY);
+//        bookingCalendarService.saveBookingCalendar(calendar);
+//        Residence residence = new Residence();
+//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+//        residence.setFloor(RESIDENCE_5FLOOR);
+//        residence.setLetter(RESIDENCE_LETTER_A);
+//
+//        Player player = new Player();
+//        player.setName(NAME_OF_PLAYER1);
+////        player.setResidence(residence);
+//        Player savedPlayer = playerService.savePlayer(player);
+//        playerService.addResidenceToPlayer(player, residence);
+//        Long id = savedPlayer.getId();
+//        log.info("Test in progress");
+//
+//
+//    }
 
 
 

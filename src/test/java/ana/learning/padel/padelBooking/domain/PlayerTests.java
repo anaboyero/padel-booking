@@ -35,6 +35,7 @@ public class PlayerTests {
         residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
         residence.setFloor(RESIDENCE_5FLOOR);
         residence.setLetter(RESIDENCE_LETTER_A);
+        residence.setId(1L); // esto lo estoy falseando yo, como si se hubiera persistido
     }
 
     @Test

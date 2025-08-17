@@ -23,6 +23,11 @@ public class BookingCalendarTests {
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
     private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 4*7;
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
+    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
+    private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
+
+
     BookingCalendar bookingCalendar;
     Player player;
     Booking tentativeBooking;
@@ -33,10 +38,15 @@ public class BookingCalendarTests {
     public void setUp(){
         bookingCalendar = new BookingCalendar();
         bookingCalendar.setStartDay(TODAY);
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        residence.setId(12L);
 
         player = new Player();
         player.setName(NAME_OF_PLAYER1);
-        player.setResidence(new Residence());
+        player.setResidence(residence);
 
         tentativeBooking = new Booking();
         tentativeBooking.setBookingDate(TODAY);
@@ -71,13 +81,17 @@ public class BookingCalendarTests {
     @Test
     public void shouldReserveAnAvailableBooking(){
         Optional<Booking> reservedBooking = bookingCalendar.reserveBooking(tentativeBooking);
-
+        log.info("\n***Hasta aquí va bien");
         assertThat(reservedBooking.get()).isEqualTo(tentativeBooking);
         assertThat(reservedBooking.get().getBookingDate()).isEqualTo(TODAY);
         assertThat(reservedBooking.get().getTimeSlot()).isEqualTo(SLOT);
         assertThat(reservedBooking.get().getBookingOwner()).isEqualTo(player);
+        log.info("\n***Hasta aquí va bien");
         assertThat((bookingCalendar.getReservedBookings()).size()).isEqualTo(1);
+        log.info("\n***Hasta aquí va bien");
         assertThat((bookingCalendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
+        log.info("\n***Hasta aquí va bien");
+
     }
 
     @Test

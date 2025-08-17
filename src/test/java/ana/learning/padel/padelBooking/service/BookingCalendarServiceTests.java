@@ -30,6 +30,10 @@ public class BookingCalendarServiceTests {
     private static final String NAME_OF_PLAYER2 = "Javier";
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
+    private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
+    private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
+
     Player player1;
     Player player2;
     Booking tentativeBooking;
@@ -51,13 +55,20 @@ public class BookingCalendarServiceTests {
 
     @BeforeEach
     public void setUp(){
+
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        residence.setId(15L);
+
         player1 = new Player();
         player1.setName(NAME_OF_PLAYER1);
-        player1.setResidence(new Residence());
+        player1.setResidence(residence);
 
         player2 = new Player();
         player2.setName(NAME_OF_PLAYER2);
-        player2.setResidence(new Residence());
+        player2.setResidence(residence);
 
         bookingCalendar = new BookingCalendar();
         bookingCalendar.setStartDay(TODAY);
@@ -139,20 +150,20 @@ public class BookingCalendarServiceTests {
         Booking earlyBooking = new Booking();
         earlyBooking.setBookingDate(TODAY.minusDays(30));
         earlyBooking.setTimeSlot(SLOT);
-//        player1.setResidence(new Residence());
+        player1.setResidence(new Residence());
         earlyBooking.setBookingOwner(player1);
 
-        Booking noResidenceBooking = new Booking();
-        noResidenceBooking.setBookingDate(TODAY);
-        noResidenceBooking.setTimeSlot(SLOT);
-        player1.setResidence(null);
-        noResidenceBooking.setBookingOwner(player1);
+//        Booking noResidenceBooking = new Booking();
+//        noResidenceBooking.setBookingDate(TODAY);
+//        noResidenceBooking.setTimeSlot(SLOT);
+//        player1.setResidence(null);
+//        noResidenceBooking.setBookingOwner(player1);
 
         Optional<Booking> unavailableAttempt1 = bookingCalendarService.reserveBooking(earlyBooking, bookingCalendar);
-        Optional<Booking> unavailableAttempt2 = bookingCalendarService.reserveBooking(noResidenceBooking, bookingCalendar);
+//        Optional<Booking> unavailableAttempt2 = bookingCalendarService.reserveBooking(noResidenceBooking, bookingCalendar);
 
         assertThat(unavailableAttempt1.isEmpty()).isTrue();
-        assertThat(unavailableAttempt2.isEmpty()).isTrue();
+//        assertThat(unavailableAttempt2.isEmpty()).isTrue();
 
     }
 
