@@ -12,6 +12,10 @@ public class Residence {
     private Building building;
     private Floor floor;
     private Letter letter;
+
+    public boolean hasAllFields() {
+        return (building!=null && floor!=null && letter!=null);
+    }
 //    @OneToMany(mappedBy = "residence")
 //    private List<Player> players;
 
