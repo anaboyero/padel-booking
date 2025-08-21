@@ -19,9 +19,13 @@ public class BookingController {
     BookingService bookingService;
     private static final Logger log = LoggerFactory.getLogger(BookingController.class);
 
+    public BookingController(BookingService bookingService){
+        this.bookingService = bookingService;
+    }
+
     @GetMapping
     public List<Booking> getAllBookings() {
-        return new ArrayList<>();
+        return bookingService.getAllBookings();
     }
 
 
