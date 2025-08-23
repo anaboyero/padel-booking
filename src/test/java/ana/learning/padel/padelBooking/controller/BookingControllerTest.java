@@ -55,6 +55,7 @@ public class BookingControllerTest {
     private final PlayerService playerService;
     Player player;
     Residence residence;
+    Booking savedBooking;
 
 
     public BookingControllerTest(MockMvc mockMvc, BookingService bookingService, ResidenceService residenceService, PlayerService playerService, BookingRepository bookingRepository) {
@@ -94,7 +95,7 @@ public class BookingControllerTest {
 //        booking.setBookingOwner(savedPlayer);
         // Cuando guardo un booking con un playerOwner, debería ir despues a Player para persistir esa booking.
 
-        Booking savedBooking = bookingService.saveBooking(booking);
+        savedBooking = bookingService.saveBooking(booking);
 
         log.info("\n *** savedBooking = " + savedBooking);
 
@@ -118,7 +119,6 @@ public class BookingControllerTest {
     @Test
     public void shouldReturnABookingListWhenThereAreBookings() throws Exception {
 
-
         MvcResult result = mockMvc.perform(get("/api/v1/bookings"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
@@ -131,4 +131,32 @@ public class BookingControllerTest {
 
     }
 
+    @Test
+    public void shouldReturnBookingWhenConsultingAnExistingBooking() throws Exception {
+        Long id = savedBooking.getId();
+        MvcResult result = mockMvc.perform(get("/api/v1/bookings/" + id))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.bookingDate").value(TODAY.toString()))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response de get by existing Id: " + jsonResponse);
+    }
+
+    // sería útil saber si está available? Tengo un metodo en calendar y otro en booking.
+
+
+
+
+    @Test
+    public void shouldReturn404NotFoundWhenConsultingANonExistingBooking() throws Exception {
+        Long nonExistingId = 1L;
+        MvcResult result = mockMvc.perform(get("/api/v1/bookings/" + nonExistingId))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response de get by Non existing Id: " + jsonResponse);
+    }
 }

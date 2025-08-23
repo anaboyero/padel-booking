@@ -68,6 +68,11 @@ public class Booking {
         this.bookingOwner = bookingOwner;
     }
 
+    public Boolean isAvailable(){
+        return (getBookingOwner()==null);
+        // Importante en el futuro cuando el calendario termine que BORRE las bookings.
+    }
+
     @Override
     public String toString() {
         return "|||" +
