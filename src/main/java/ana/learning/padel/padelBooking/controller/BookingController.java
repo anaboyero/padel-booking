@@ -25,6 +25,8 @@ public class BookingController {
 
     @GetMapping
     public List<Booking> getAllBookings() {
+
+        log.info("\n ***Entrando en BookingController: getAllBookings()");
         return bookingService.getAllBookings();
     }
 

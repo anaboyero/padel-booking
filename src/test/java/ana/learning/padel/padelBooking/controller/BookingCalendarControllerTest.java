@@ -112,29 +112,47 @@ public class BookingCalendarControllerTest {
 
     }
 
-    @Test
-    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
-        BookingCalendar calendar = new BookingCalendar();
-        calendar.setStartDay(TODAY);
-        bookingCalendarService.saveBookingCalendar(calendar);
 
-        Residence residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
 
-        Player player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        player.setResidence(residence);
-        Player savedPlayer = playerService.savePlayer(player);
 
-        Long id = savedPlayer.getId();
 
+
+//    @Test
+//    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
+//        BookingCalendar calendar = new BookingCalendar();
+//        calendar.setStartDay(TODAY);
+//        bookingCalendarService.saveBookingCalendar(calendar);
+//
+//        Residence residence = new Residence();
+//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+//        residence.setFloor(RESIDENCE_5FLOOR);
+//        residence.setLetter(RESIDENCE_LETTER_A);
+//
+//        Player player = new Player();
+//        player.setName(NAME_OF_PLAYER1);
+//        player.setResidence(residence);
+//        Player savedPlayer = playerService.savePlayer(player);
+//
+//        Long id = savedPlayer.getId();
+//
+//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars/idBooking/")
+//                        .content()
+//                        .contentType((MediaType.APPLICATION_JSON)))
+//                .andExpect(status().isOk())
+//                .andExpect()
+//
 //        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
-
-
-        log.info("Test in progress");
-    }
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$", hasSize(1)))
+//                .andReturn();
+//
+//        String jsonResponse = result.getResponse().getContentAsString();
+//        log.info("\n*** Response (GET): " + jsonResponse);
+//
+//
+//        log.info("Test in progress");
+//    }
 
 
 

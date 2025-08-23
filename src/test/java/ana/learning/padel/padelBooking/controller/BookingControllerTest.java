@@ -20,14 +20,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 
 import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -43,7 +47,7 @@ public class BookingControllerTest {
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
 
-    private static final Logger log = LoggerFactory.getLogger(BookingController.class);
+    private static final Logger log = LoggerFactory.getLogger(BookingControllerTest.class);
     final MockMvc mockMvc;
     private final BookingService bookingService;
     private final BookingRepository bookingRepository;
@@ -87,16 +91,21 @@ public class BookingControllerTest {
         Booking booking = new Booking();
         booking.setBookingDate(TODAY);
         booking.setTimeSlot(SLOT);
-        booking.setBookingOwner(savedPlayer);
+//        booking.setBookingOwner(savedPlayer);
+        // Cuando guardo un booking con un playerOwner, debería ir despues a Player para persistir esa booking.
+
         Booking savedBooking = bookingService.saveBooking(booking);
 
         log.info("\n *** savedBooking = " + savedBooking);
+
 
 
     }
 
     @Test
     public void shouldReturnEmptyListWhenThereIsNoBookings() throws Exception {
+
+        bookingRepository.deleteAll();
 
         mockMvc.perform(get("/api/v1/bookings")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -109,15 +118,17 @@ public class BookingControllerTest {
     @Test
     public void shouldReturnABookingListWhenThereAreBookings() throws Exception {
 
-        mockMvc.perform(get("/api/v1/bookings")
-                        .contentType(MediaType.APPLICATION_JSON))
+
+        MvcResult result = mockMvc.perform(get("/api/v1/bookings"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)));
-//                .andExpect(jsonPath("$.BookingDate").value(TODAY));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].bookingDate").value(TODAY.toString()))
+                .andReturn();
 
-        log.info("Test in progress");
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response (GET): " + jsonResponse);
+
     }
-
 
 }
