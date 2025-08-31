@@ -1,12 +1,15 @@
 package ana.learning.padel.padelBooking.controller;
 
+import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Booking;
+import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingRepository;
 import ana.learning.padel.padelBooking.service.BookingService;
 import ana.learning.padel.padelBooking.service.PlayerService;
 import ana.learning.padel.padelBooking.service.ResidenceService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +51,7 @@ public class BookingControllerTest {
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
 
     private static final Logger log = LoggerFactory.getLogger(BookingControllerTest.class);
-    final MockMvc mockMvc;
+    private final MockMvc mockMvc;
     private final BookingService bookingService;
     private final BookingRepository bookingRepository;
     private final ResidenceService residenceService;
@@ -145,6 +148,51 @@ public class BookingControllerTest {
     }
 
     // sería útil saber si está available? Tengo un metodo en calendar y otro en booking.
+
+
+    // PENSE PONER ESTO EN BOOKING PERO CREO QUE MEJOR EN BOOKING CALENDAR
+//    @Test
+//    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
+//        BookingCalendar calendar = new BookingCalendar();
+//        calendar.setStartDay(TODAY);
+//        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
+//
+//        Residence residence = new Residence();
+//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+//        residence.setFloor(RESIDENCE_5FLOOR);
+//        residence.setLetter(RESIDENCE_LETTER_A);
+//
+//        Player player = new Player();
+//        player.setName(NAME_OF_PLAYER1);
+//        player.setResidence(residence);
+//        Player savedPlayer = playerService.savePlayer(player);
+//
+//        Long playerId = savedPlayer.getId();
+//        Long calendarId = savedCalendar.getId();
+//        Long bookingId = savedCalendar.getAvailableBookings().getFirst().getId();
+//
+//        MvcResult result = mockMvc.perform(post("/api/v1/bookings/{bookingId}", bookingId)
+//                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(player))))
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$", hasSize(1)))
+//                .andReturn();
+//
+//        String jsonResponse = result.getResponse().getContentAsString();
+//        log.info("\n*** Response (GET): " + jsonResponse);
+//
+//
+//        log.info("Test in progress");
+//
+//
+//
+//    }
+
 
 
 

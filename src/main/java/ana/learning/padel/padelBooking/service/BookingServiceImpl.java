@@ -1,7 +1,10 @@
 package ana.learning.padel.padelBooking.service;
 
 import ana.learning.padel.padelBooking.model.Booking;
+import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.repository.BookingRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     BookingRepository bookingRepository;
+
+    Logger log = LoggerFactory.getLogger(BookingServiceImpl.class);
 
     @Override
     public Booking saveBooking(Booking booking) {
@@ -29,5 +34,12 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findById(id);
     }
 
+    @Override
+    public Booking reserveBooking(Booking booking, Player player) {
+        log.info("FALTA: Avisar de que la reserva deje de estar available");
+        log.info("ANUNCIO: Reserva hecha");
+        booking.setBookingOwner(player);
+        return saveBooking(booking);
+    }
 
 }

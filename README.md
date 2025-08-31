@@ -5,11 +5,22 @@ PADEL BOOKING
 MVP: Aplicación de gestión de reservas de la pista de pádel de la urbanización.
 
 
-- Cualquier usuario podrá consultar reservas y tramos disponibles de una pista.
-- Cualquier usuario podrá reservar una hora de pista de pádel.
-- Un usuario podrá editar o cancelar su reserva (no aplicable a reservas pasadas).
-- Un usuario podrá reservar sin límites.
+--- Cualquiera con acceso a la página podrá consultar el calendario (reservas y tramos disponibles) de una PISTA---> Implementado en API.
+--- Un jugador podrá registrarse y obtendrá un ID. ---> Implementado en API.
+--- Un jugador podrá asociar su direccion a su ID.---> Implementado en API.
+--- Cualquier jugador con direccion registrada podrá hacer una reserva en el calendario, si ese slot está disponible.
+------ ---El jugador proporciona su id y elige el booking que quiere reservar (escribe el bookingId)
+--- Un usuario podrá editar o cancelar su reserva (no aplicable a reservas caducadas).
+
+NOTAS: 
+
+- En MVP, un usuario puede hacer reservas sin limite.
 - Semanalmente, aparece un nuevo calendario de reservas.
+- 
+- FUNCIONALIDADES INTERNAS (NO DEPENDEN DEL USUARIO):
+
+- Crear un nuevo calendario semanalmente. Archivar los datos del calendario cerrado.
+- 
 
 
 A futuro:
@@ -18,6 +29,10 @@ A futuro:
 - Establecer un sistema de reglas y limitaciones para poder reservar (máximo de reservas activas, máximo de reservas por día… ).
 
 
+--------
+
+Hay que distinguir entre las cosas que tiene que poder hacer el USUARIO a través del controlador 
+y las cosas que necesitamos hacer de manera INTERNA para proporcionar ese servicio.
 
 
 https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&dark=auto#G1F7YAcZhY5pEYzXbr9k_0oZaryzbQqKlm

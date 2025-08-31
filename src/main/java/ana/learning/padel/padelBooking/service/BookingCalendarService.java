@@ -13,4 +13,5 @@ public interface BookingCalendarService {
     boolean isBookingAvailable(Booking booking, BookingCalendar bookingCalendar);
     Optional<Booking> reserveBooking(Booking booking, BookingCalendar bookingCalendar);
     List<BookingCalendar> getAllBookingCalendars();
+    Optional<BookingCalendar> getBookingCalendarById(Long id);
 }

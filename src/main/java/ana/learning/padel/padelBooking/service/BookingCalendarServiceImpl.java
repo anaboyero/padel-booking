@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +61,8 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         return bookingCalendar.reserveBooking(booking);
     }
 
-
-
+    @Override
+    public Optional<BookingCalendar> getBookingCalendarById(Long id){
+        return bookingCalendarRepository.findById(id);
+    }
 }

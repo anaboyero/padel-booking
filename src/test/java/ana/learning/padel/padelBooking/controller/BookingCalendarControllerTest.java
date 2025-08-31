@@ -2,12 +2,15 @@ package ana.learning.padel.padelBooking.controller;
 
 
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequest;
+import ana.learning.padel.padelBooking.mappers.PlayerMapper;
+import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import ana.learning.padel.padelBooking.service.PlayerService;
+import ana.learning.padel.padelBooking.service.ResidenceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,17 +49,23 @@ public class BookingCalendarControllerTest {
     final BookingCalendarService bookingCalendarService;
     final BookingCalendarRepository bookingCalendarRepository;
     final PlayerService playerService;
+    private final ResidenceService residenceService;
     final MockMvc mockMvc;
     final ObjectMapper objectMapper;
+    private final PlayerMapper playerMapper;
+
     private final Logger log = LoggerFactory.getLogger(BookingCalendarControllerTest.class);
+    Long bookingCalendarId;
 
 
-    public BookingCalendarControllerTest(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository, MockMvc mockMvc, ObjectMapper objectMapper, PlayerService playerService){
+    public BookingCalendarControllerTest(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository, ResidenceService residenceService, MockMvc mockMvc, ObjectMapper objectMapper, PlayerService playerService, PlayerMapper playerMapper){
         this.bookingCalendarService = bookingCalendarService;
         this.bookingCalendarRepository = bookingCalendarRepository;
+        this.residenceService = residenceService;
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
         this.playerService = playerService;
+        this.playerMapper = playerMapper;
     }
 
     @BeforeEach
@@ -93,7 +102,24 @@ public class BookingCalendarControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response (GET): " + jsonResponse);
 
+        //
     }
+
+//    @Test // ACASO NO VEMOS EXACTAMENTE ESTO CUANDO HACEMOS GET DE UN CALENDARIO????
+//    public void shouldReturnAvailableBookings() throws Exception {
+//        CreateCalendarRequest createCalendarRequest = new CreateCalendarRequest(TODAY);
+//
+//        Long calendarId = 1L;
+//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars/{calendarId}/available-bookings", calendarId))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
+////                .andExpect(jsonPath("$.bookingDate").value(TODAY.toString()))
+//                .andExpect(jsonPath("$", hasSize(1)))
+//                .andReturn();
+//
+//        String jsonResponse = result.getResponse().getContentAsString();
+//        log.info("\n*** Response de get available bookings " + jsonResponse);
+//    }
 
     @Test
     public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
@@ -112,48 +138,52 @@ public class BookingCalendarControllerTest {
 
     }
 
-
-
-
-
-
-//    @Test
+//  EN PROCESO
+//
+//
+//  @Test
 //    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
 //        BookingCalendar calendar = new BookingCalendar();
 //        calendar.setStartDay(TODAY);
-//        bookingCalendarService.saveBookingCalendar(calendar);
+//        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
 //
 //        Residence residence = new Residence();
 //        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
 //        residence.setFloor(RESIDENCE_5FLOOR);
 //        residence.setLetter(RESIDENCE_LETTER_A);
+//        Residence savedResidence = residenceService.saveResidence(residence);
 //
 //        Player player = new Player();
 //        player.setName(NAME_OF_PLAYER1);
-//        player.setResidence(residence);
+//        player.setResidence(savedResidence);
 //        Player savedPlayer = playerService.savePlayer(player);
 //
-//        Long id = savedPlayer.getId();
+//        Long calendarId = savedCalendar.getId();
+//        Booking booking = savedCalendar.getAvailableBookings().get(0);
+//        Long bookingId = booking.getId();
 //
-//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars/idBooking/")
-//                        .content()
-//                        .contentType((MediaType.APPLICATION_JSON)))
-//                .andExpect(status().isOk())
-//                .andExpect()
+//        log.info("\n  *** ESTOS SON LOS DATOS CON LOS QUE ENTRO AL TEST");
+//        log.info(savedPlayer.toString());
+//        log.info(savedResidence.toString());
+//        log.info(savedCalendar.toString());
+//        log.info(booking.toString());
 //
-//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
-//                .andExpect(status().isOk())
+//
+//        MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars/{calendarId}/bookings/{bookingId}", calendarId, bookingId)
+//                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(savedPlayer)))
+//                        .contentType(MediaType.APPLICATION_JSON))
 //                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$", hasSize(1)))
+////                .andExpect(jsonPath("$.bookingOwner").value(savedPlayer))
 //                .andReturn();
 //
 //        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Response (GET): " + jsonResponse);
+//        log.info("\n*** Debería devolverme el booking ya modificado con el nuevo player: " + jsonResponse);
 //
+//        log.info("Test in progress: RED");
 //
-//        log.info("Test in progress");
 //    }
-
+//
+//
 
 
 }
