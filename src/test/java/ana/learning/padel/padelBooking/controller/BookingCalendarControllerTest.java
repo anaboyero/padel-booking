@@ -157,6 +157,7 @@ public class BookingCalendarControllerTest {
 //        player.setName(NAME_OF_PLAYER1);
 //        player.setResidence(savedResidence);
 //        Player savedPlayer = playerService.savePlayer(player);
+//        Long playerId = savedPlayer.getId();
 //
 //        Long calendarId = savedCalendar.getId();
 //        Booking booking = savedCalendar.getAvailableBookings().get(0);
@@ -173,17 +174,17 @@ public class BookingCalendarControllerTest {
 //                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(savedPlayer)))
 //                        .contentType(MediaType.APPLICATION_JSON))
 //                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-////                .andExpect(jsonPath("$.bookingOwner").value(savedPlayer))
+//                .andExpect(jsonPath("$.bookingOwner.id").value(savedPlayer.getId()))
 //                .andReturn();
 //
 //        String jsonResponse = result.getResponse().getContentAsString();
 //        log.info("\n*** Debería devolverme el booking ya modificado con el nuevo player: " + jsonResponse);
 //
 //        log.info("Test in progress: RED");
-//
+
 //    }
-//
-//
+
+
 
 
 }
