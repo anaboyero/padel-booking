@@ -103,17 +103,29 @@ public class BookingCalendar {
                 return Optional.of(tentativeBooking);
         }
         log.info("\n*** Sorry, we couldn't process your booking. This may be due to a lack of availability or invalid booking details");
+        log.info("\n*** EL FALLO ES ISBOOKINGVALID?" + !isBookingValid(tentativeBooking));
+        log.info("\n*** RECORDEMOS: TENTATIVE BOOKING ES" + tentativeBooking);
+        log.info("\n*** RECORDEMOS: START DAY IN CALENDAR ES" + startDay);
+
+        log.info("\n*** EL FALLO ES CALENDARIO NO CONTIENE EL BOOKING?" + !availableBookings.contains(tentativeBooking));
+
         return Optional.empty();
     }
 
     private boolean isBookingValid(Booking tentativeBooking) {
         if (isDateBeyondCalendarRange(tentativeBooking)) {
+            log.info("\n*** NO SE PUEDE RESERVAR PORQUE + isDateBeyondCalendarRange(tentativeBooking)");
             return false;
         }
         if (tentativeBooking.getBookingOwner()==null) {
+            log.info("\n*** NO SE PUEDE RESERVAR PORQUE + tentativeBooking.getBookingOwner()==null");
             return false;
         }
-        return tentativeBooking.getBookingOwner().getResidence() != null;
+        if (tentativeBooking.getBookingOwner().getResidence() == null) {
+            log.info("\n*** NO SE PUEDE RESERVAR PORQUE + tentativeBooking.getBookingOwner()==null");
+            return false;
+        }
+        return true;
     }
 
     public boolean isBookingAvailable(Booking tentativeBooking) {

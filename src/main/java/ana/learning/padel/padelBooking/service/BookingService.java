@@ -1,7 +1,6 @@
 package ana.learning.padel.padelBooking.service;
 
 import ana.learning.padel.padelBooking.model.Booking;
-import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 
 import java.util.List;
@@ -11,6 +10,6 @@ public interface BookingService {
     Booking saveBooking(Booking booking);
     List<Booking> getAllBookings();
     Optional<Booking> getBookingById(Long id);
-    Booking reserveBooking(Booking booking, Player player);
+    Booking assignBookingToPlayer(Booking booking, Player player);
 //    Boolean isAvailable();
 }

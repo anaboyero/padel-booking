@@ -139,50 +139,50 @@ public class BookingCalendarControllerTest {
     }
 
 //  EN PROCESO
-//
-//
-//  @Test
-//    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
-//        BookingCalendar calendar = new BookingCalendar();
-//        calendar.setStartDay(TODAY);
-//        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
-//
-//        Residence residence = new Residence();
-//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-//        residence.setFloor(RESIDENCE_5FLOOR);
-//        residence.setLetter(RESIDENCE_LETTER_A);
-//        Residence savedResidence = residenceService.saveResidence(residence);
-//
-//        Player player = new Player();
-//        player.setName(NAME_OF_PLAYER1);
-//        player.setResidence(savedResidence);
-//        Player savedPlayer = playerService.savePlayer(player);
-//        Long playerId = savedPlayer.getId();
-//
-//        Long calendarId = savedCalendar.getId();
-//        Booking booking = savedCalendar.getAvailableBookings().get(0);
-//        Long bookingId = booking.getId();
-//
-//        log.info("\n  *** ESTOS SON LOS DATOS CON LOS QUE ENTRO AL TEST");
-//        log.info(savedPlayer.toString());
-//        log.info(savedResidence.toString());
-//        log.info(savedCalendar.toString());
-//        log.info(booking.toString());
-//
-//
-//        MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars/{calendarId}/bookings/{bookingId}", calendarId, bookingId)
-//                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(savedPlayer)))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.bookingOwner.id").value(savedPlayer.getId()))
-//                .andReturn();
-//
-//        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Debería devolverme el booking ya modificado con el nuevo player: " + jsonResponse);
-//
-//        log.info("Test in progress: RED");
 
-//    }
+
+  @Test
+    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
+        BookingCalendar calendar = new BookingCalendar();
+        calendar.setStartDay(TODAY);
+        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
+
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        Residence savedResidence = residenceService.saveResidence(residence);
+
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(savedResidence);
+        Player savedPlayer = playerService.savePlayer(player);
+        Long playerId = savedPlayer.getId();
+
+        Long calendarId = savedCalendar.getId();
+        Booking booking = savedCalendar.getAvailableBookings().get(0);
+        Long bookingId = booking.getId();
+
+        log.info("\n  *** ESTOS SON LOS DATOS CON LOS QUE ENTRO AL TEST");
+        log.info(savedPlayer.toString());
+        log.info(savedResidence.toString());
+        log.info(savedCalendar.toString());
+        log.info(booking.toString());
+
+
+        MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars/{calendarId}/bookings/{bookingId}", calendarId, bookingId)
+                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(savedPlayer)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.bookingOwner.id").value(savedPlayer.getId()))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Debería devolverme el booking ya modificado con el nuevo player: " + jsonResponse);
+
+        log.info("Test in progress: RED");
+
+    }
 
 
 

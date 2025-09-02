@@ -4,7 +4,6 @@ import ana.learning.padel.padelBooking.DTO.CreateCalendarRequest;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
-import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import ana.learning.padel.padelBooking.service.BookingService;
 import ana.learning.padel.padelBooking.service.PlayerService;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -71,24 +69,27 @@ public class BookingCalendarController {
     }
 
 
-//    @PostMapping("/{calendarId}/bookings/{bookingId}")
-//    public Booking reserveBooking(@PathVariable Long calendarId, @PathVariable Long bookingId, @RequestBody Player player){
-//        // primera iteracion: asumo booking esta disponible
-//        log.info("\n  *** ESTOS SON LOS DATOS CON LOS QUE SE HA LLAMADO AL CONTROLADOR");
-//        log.info(calendarId.toString());
-//        log.info(player.toString());
-//        log.info(bookingId.toString());
-//        Booking booking = bookingService.getBookingById(bookingId).get();
-//        BookingCalendar calendar = bookingCalendarService.getBookingCalendarById(calendarId).get();
-//        Player savedPlayer = playerService.getPlayerById(player.getId()).get();
-//        Booking savedBooking = bookingService.reserveBooking(booking, savedPlayer);
-//        return bookingCalendarService.reserveBooking(savedBooking, calendar).get();
-//    }
+    @PostMapping("/{calendarId}/bookings/{bookingId}")
+    public Booking reserveBooking(@PathVariable Long calendarId, @PathVariable Long bookingId, @RequestBody Player player){
+        // primera iteracion: asumo booking esta disponible
+        log.info("\n  *** Esto necesitará validaciones y manejo de errores, pero de momento asumo que todo es correcto");
+        Booking availableBooking = bookingService.getBookingById(bookingId).get();
+        BookingCalendar calendar = bookingCalendarService.getBookingCalendarById(calendarId).get();
+        Player savedPlayer = playerService.getPlayerById(player.getId()).get();
 
-    // El problema es un bucle infinito de referencias circulares.
-    // Se conoce como: // Stack overflow o recursión infinita en serialización JSON
-    // Estoy devolviendo un player con mucha informacion, cuando seria suficiente devolver solo su id y nombre.
+        log.info("\n  *** ESTOS SON LOS DATOS CON LOS QUE TRABAJO");
+        log.info("\n  *** calendarId: " + calendarId.toString());
+        log.info("\n  *** savedPlayer " + savedPlayer.toString());
+        log.info("\n  *** bookingId " + bookingId.toString());
 
-    // Por otra parte, estoy devolviendo una entidad JAVA en lugar de un DTO, que es lo que deberia devolver para no saturar.
+        log.info("\n  *** Asumiendo que player y reserva son válidos, hago la reserva tentativa con el jugador");
+        Booking tentativeBookingWithPlayer = bookingService.assignBookingToPlayer(availableBooking, savedPlayer);
+        log.info("\n  *** y después intento actualizar el calendario");
+        Booking savedBookingInCalendar = bookingCalendarService.reserveBooking(tentativeBookingWithPlayer, calendar).get();
+
+        return savedBookingInCalendar;
+    }
+
+// EL TEST ESTA EN GREEN. TOCA REFACTOR.
 
 }
