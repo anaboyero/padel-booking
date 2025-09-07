@@ -18,4 +18,9 @@ public class ResidenceServiceImpl implements ResidenceService{
         return residenceRepository.save(residence);
 
     }
+
+    @Override
+    public boolean isACompleteResidence(Residence residence) {
+        return residence.isACompleteResidence();
+    }
 }

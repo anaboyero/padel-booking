@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/booking-calendars")
@@ -74,22 +75,22 @@ public class BookingCalendarController {
 
 
     @PostMapping("/{calendarId}/bookings/{bookingId}")
-    public BookingDTO reserveBooking(@PathVariable Long calendarId, @PathVariable Long bookingId, @RequestBody Player player){
-        log.info("\n  *** \n ENTRAMOS EN EL NUEVO POST DE RESERVAR UN BOOKING CONCRETO EN CALENDAR CONCRETO\n\n");
+    public ResponseEntity<BookingDTO> reserveBooking(@PathVariable Long calendarId, @PathVariable Long bookingId, @RequestBody Player player){
 
-        log.info("\n  *** Escenario: todo available y todo correcto");
+        Optional<Booking> temptativeBooking = bookingService.getBookingById(bookingId);
+        Optional<Player> temptativePlayer = playerService.getPlayerById(player.getId());
+        Optional<BookingCalendar> temptativeCalendar = bookingCalendarService.getBookingCalendarById(calendarId);
 
-        Booking availableBooking = bookingService.getBookingById(bookingId).get();
-        BookingCalendar calendar = bookingCalendarService.getBookingCalendarById(calendarId).get();
-        Player savedPlayer = playerService.getPlayerById(player.getId()).get();
+        if ((temptativeBooking.isEmpty()) || (temptativePlayer.isEmpty()) || (temptativeCalendar.isEmpty()) ) {
+            return ResponseEntity.badRequest().body(null);
+        }
 
-        log.info("\n  *** Hago la reserva tentativa con el jugador");
-        Booking tentativeBookingWithPlayer = bookingService.assignBookingToPlayer(availableBooking, savedPlayer);
-        log.info("\n  *** Y después actualizo el calendario");
-        Booking reservedBooking = bookingCalendarService.reserveBooking(tentativeBookingWithPlayer, calendar).get();
-        return bookingMapper.toDTO(reservedBooking);
+        Optional<Booking> reservation = bookingCalendarService.reserveBooking(temptativeBooking.get(), temptativePlayer.get(), temptativeCalendar.get());
+        if (reservation.isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok().body(bookingMapper.toDTO(reservation.get()));
     }
-
 
 
 }

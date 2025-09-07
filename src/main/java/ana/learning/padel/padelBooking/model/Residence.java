@@ -66,6 +66,12 @@ public class Residence {
         this.letter = letter;
     }
 
+    public boolean isACompleteResidence(){
+        return ((this.getBuilding()!=null) && ((this.getFloor()!=null)) &&((this.getLetter()!=null)));
+    }
+
+
+
     @Override
     public String toString() {
         return "{   ID: " + id +

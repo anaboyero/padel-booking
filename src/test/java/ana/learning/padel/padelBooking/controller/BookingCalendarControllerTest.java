@@ -148,8 +148,7 @@ public class BookingCalendarControllerTest {
     }
 
   @Test
-    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
-
+    public void shouldReserveAnAvailableBookingByAPlayerWithResidence() throws Exception {
         // Arrange
         BookingCalendar calendar = new BookingCalendar();
         calendar.setStartDay(TODAY);
@@ -183,7 +182,41 @@ public class BookingCalendarControllerTest {
         // Logging
 
       String jsonResponse = result.getResponse().getContentAsString();
-      log.info("\n*** GREEN!!! / Response de get available bookings " + jsonResponse);
+      log.info("\n*** RESPONSE: " + jsonResponse);
     }
+
+    @Test
+    public void shouldNotReserveAnAvailableBookingByAPlayerWithNoResidence() throws Exception {
+
+        // Arrange
+        BookingCalendar calendar = new BookingCalendar();
+        calendar.setStartDay(TODAY);
+        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
+        Long calendarId = savedCalendar.getId();
+
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        Player savedPlayer = playerService.savePlayer(player);
+
+        Booking availableBooking = savedCalendar.getAvailableBookings().get(0);
+        Long availableBookingId = availableBooking.getId();
+
+        // Act & Assert
+
+        MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars/{calendarId}/bookings/{availableBookingId}", calendarId, availableBookingId)
+                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(savedPlayer)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        // Logging
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** RESPONSE: " + jsonResponse);
+    }
+
+//    @Test
+//    public void shouldNotReserveAnUnavailableBookingByAPlayerWithResidence() throws Exception {
+//    }
 
 }

@@ -18,4 +18,8 @@ public interface PlayerService {
     Optional<Player> getPlayerById(Long id);
 
     Optional<Player> addResidenceToPlayer(Player player, Residence residence);
+
+    boolean hasAProperResidence(Player player);
+
+    boolean isAProperPlayerToMakeAReservation(Player player);
 }

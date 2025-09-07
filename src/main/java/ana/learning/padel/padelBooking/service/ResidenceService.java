@@ -3,5 +3,6 @@ package ana.learning.padel.padelBooking.service;
 import ana.learning.padel.padelBooking.model.Residence;
 
 public interface ResidenceService {
-    public Residence saveResidence(Residence residence) throws InvalidResidenceException;
+    Residence saveResidence(Residence residence) throws InvalidResidenceException;
+    boolean isACompleteResidence(Residence residence);
 }

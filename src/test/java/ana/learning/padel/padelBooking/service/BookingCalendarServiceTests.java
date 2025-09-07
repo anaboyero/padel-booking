@@ -123,7 +123,7 @@ public class BookingCalendarServiceTests {
         firstBooking.setTimeSlot(SLOT);
         firstBooking.setBookingOwner(player2);
 
-        bookingCalendarService.reserveBooking(firstBooking, bookingCalendar);
+        bookingCalendarService.confirmBooking(firstBooking, bookingCalendar);
         assertThat(bookingCalendarService.isBookingAvailable(tentativeBooking, bookingCalendar)).isFalse();
     }
 
@@ -139,8 +139,8 @@ public class BookingCalendarServiceTests {
         firstBooking.setTimeSlot(SLOT);
         firstBooking.setBookingOwner(player2);
 
-        Optional<Booking> availableAttempt = bookingCalendarService.reserveBooking(firstBooking, bookingCalendar);
-        Optional<Booking> unavailableAttempt = bookingCalendarService.reserveBooking(tentativeBooking, bookingCalendar);
+        Optional<Booking> availableAttempt = bookingCalendarService.confirmBooking(firstBooking, bookingCalendar);
+        Optional<Booking> unavailableAttempt = bookingCalendarService.confirmBooking(tentativeBooking, bookingCalendar);
         assertThat(availableAttempt.isEmpty()).isFalse();
         assertThat(unavailableAttempt.isEmpty()).isTrue();
     }
@@ -159,7 +159,7 @@ public class BookingCalendarServiceTests {
 //        player1.setResidence(null);
 //        noResidenceBooking.setBookingOwner(player1);
 
-        Optional<Booking> unavailableAttempt1 = bookingCalendarService.reserveBooking(earlyBooking, bookingCalendar);
+        Optional<Booking> unavailableAttempt1 = bookingCalendarService.confirmBooking(earlyBooking, bookingCalendar);
 //        Optional<Booking> unavailableAttempt2 = bookingCalendarService.reserveBooking(noResidenceBooking, bookingCalendar);
 
         assertThat(unavailableAttempt1.isEmpty()).isTrue();

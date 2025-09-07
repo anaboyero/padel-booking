@@ -1,7 +1,5 @@
 package ana.learning.padel.padelBooking.service;
 
-import ana.learning.padel.padelBooking.DTO.PlayerDTO;
-import ana.learning.padel.padelBooking.controller.PlayerController;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
@@ -57,5 +55,16 @@ public class PlayerServiceImpl implements PlayerService {
             return Optional.of(player);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public boolean hasAProperResidence(Player player){
+        boolean result = (player.getResidence() != null) && (residenceService.isACompleteResidence(player.getResidence()));
+        return result;
+    }
+
+    @Override
+    public boolean isAProperPlayerToMakeAReservation(Player player) {
+        return ((player !=null) && (player.getId()!=null) && (this.hasAProperResidence(player)));
     }
 }
