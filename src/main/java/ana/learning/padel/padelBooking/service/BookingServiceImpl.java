@@ -35,8 +35,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking reserveBooking(Booking booking, Player player) {
+    public Booking assignBookingToPlayer(Booking booking, Player player) {
         log.info("FALTA: Avisar de que la reserva deje de estar available");
+<<<<<<< HEAD
+=======
+        log.info("ANUNCIO: booking reservada para jugador. Falta confirmar en calendario");
+>>>>>>> 6cd1a169dd17c1dbfc28498d56b9b75c428e583c
         booking.setBookingOwner(player);
         log.info("ANUNCIO: Reserva hecha");
         return saveBooking(booking);

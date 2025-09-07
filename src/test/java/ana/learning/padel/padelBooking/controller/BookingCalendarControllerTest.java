@@ -107,6 +107,22 @@ public class BookingCalendarControllerTest {
         //
     }
 
+//    @Test // ACASO NO VEMOS EXACTAMENTE ESTO CUANDO HACEMOS GET DE UN CALENDARIO????
+//    public void shouldReturnAvailableBookings() throws Exception {
+//        CreateCalendarRequest createCalendarRequest = new CreateCalendarRequest(TODAY);
+//
+//        Long calendarId = 1L;
+//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars/{calendarId}/available-bookings", calendarId))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
+////                .andExpect(jsonPath("$.bookingDate").value(TODAY.toString()))
+//                .andExpect(jsonPath("$", hasSize(1)))
+//                .andReturn();
+//
+//        String jsonResponse = result.getResponse().getContentAsString();
+//        log.info("\n*** Response de get available bookings " + jsonResponse);
+//    }
+
     @Test
     public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
 
@@ -148,7 +164,6 @@ public class BookingCalendarControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response de get available bookings " + jsonResponse);
     }
-
 
 //  EN PROCESO
 //
