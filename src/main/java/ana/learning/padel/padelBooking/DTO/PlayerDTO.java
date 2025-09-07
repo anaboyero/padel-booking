@@ -3,6 +3,7 @@ package ana.learning.padel.padelBooking.DTO;
 public class PlayerDTO {
     private Long id;
     private String name;
+//    private Long residenceId;
 
     public PlayerDTO() {
     }

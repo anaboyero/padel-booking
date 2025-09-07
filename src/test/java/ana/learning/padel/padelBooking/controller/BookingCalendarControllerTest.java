@@ -41,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BookingCalendarControllerTest {
 
     private static final LocalDate TODAY = LocalDate.now();
+    private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
+    private static final LocalDate AFTER_TOMORROW = LocalDate.now().plusDays(2);
     private static final String NAME_OF_PLAYER1 = "Ana";
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
@@ -105,22 +107,6 @@ public class BookingCalendarControllerTest {
         //
     }
 
-//    @Test // ACASO NO VEMOS EXACTAMENTE ESTO CUANDO HACEMOS GET DE UN CALENDARIO????
-//    public void shouldReturnAvailableBookings() throws Exception {
-//        CreateCalendarRequest createCalendarRequest = new CreateCalendarRequest(TODAY);
-//
-//        Long calendarId = 1L;
-//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars/{calendarId}/available-bookings", calendarId))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
-////                .andExpect(jsonPath("$.bookingDate").value(TODAY.toString()))
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andReturn();
-//
-//        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Response de get available bookings " + jsonResponse);
-//    }
-
     @Test
     public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
 
@@ -135,8 +121,34 @@ public class BookingCalendarControllerTest {
 
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response (GET): " + jsonResponse);
-
     }
+
+    @Test
+    public void shouldReturnListOfBookingCalendars() throws Exception {
+
+        BookingCalendar bookingCalendarToday = new BookingCalendar();
+        bookingCalendarToday.setStartDay(TODAY);
+        BookingCalendar savedBookingCalendarToday  = bookingCalendarService.saveBookingCalendar(bookingCalendarToday);
+
+        BookingCalendar bookingCalendarTomorrow = new BookingCalendar();
+        bookingCalendarTomorrow.setStartDay(TOMORROW);
+        BookingCalendar savedBookingCalendarTomorrow  = bookingCalendarService.saveBookingCalendar(bookingCalendarTomorrow);
+
+        BookingCalendar bookingCalendarAfterTomorrow = new BookingCalendar();
+        bookingCalendarAfterTomorrow.setStartDay(AFTER_TOMORROW);
+        BookingCalendar savedBookingCalendarAfterTomorrow = bookingCalendarService.saveBookingCalendar(bookingCalendarAfterTomorrow);
+
+        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].startDay").value(TODAY.toString()))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response de get available bookings " + jsonResponse);
+    }
+
 
 //  EN PROCESO
 //
@@ -146,6 +158,7 @@ public class BookingCalendarControllerTest {
 //        BookingCalendar calendar = new BookingCalendar();
 //        calendar.setStartDay(TODAY);
 //        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
+//        Long calendarId = savedCalendar.getId();
 //
 //        Residence residence = new Residence();
 //        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
@@ -158,7 +171,6 @@ public class BookingCalendarControllerTest {
 //        player.setResidence(savedResidence);
 //        Player savedPlayer = playerService.savePlayer(player);
 //
-//        Long calendarId = savedCalendar.getId();
 //        Booking booking = savedCalendar.getAvailableBookings().get(0);
 //        Long bookingId = booking.getId();
 //
@@ -173,17 +185,17 @@ public class BookingCalendarControllerTest {
 //                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(savedPlayer)))
 //                        .contentType(MediaType.APPLICATION_JSON))
 //                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-////                .andExpect(jsonPath("$.bookingOwner").value(savedPlayer))
+//                .andExpect(jsonPath("$.bookingOwner").value(savedPlayer))
 //                .andReturn();
-//
-//        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Debería devolverme el booking ya modificado con el nuevo player: " + jsonResponse);
+////
+////        String jsonResponse = result.getResponse().getContentAsString();
+////        log.info("\n*** Debería devolverme el booking ya modificado con el nuevo player: " + jsonResponse);
 //
 //        log.info("Test in progress: RED");
 //
 //    }
-//
-//
+
+
 
 
 }

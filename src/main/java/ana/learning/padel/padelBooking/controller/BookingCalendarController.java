@@ -68,17 +68,17 @@ public class BookingCalendarController {
     }
 
 
-//    @PostMapping("/{calendarId}/bookings/{bookingId}")
-//    public Booking reserveBooking(@PathVariable Long calendarId, @PathVariable Long bookingId, @RequestBody Player player){
-//        // primera iteracion: asumo booking esta disponible
-//        log.info("\n  *** ESTOS SON LOS DATOS CON LOS QUE SE HA LLAMADO AL CONTROLADOR");
-//        log.info(calendarId.toString());
-//        log.info(player.toString());
-//        log.info(bookingId.toString());
-//        Booking booking = bookingService.getBookingById(bookingId).get();
-//        BookingCalendar calendar = bookingCalendarService.getBookingCalendarById(calendarId).get();
-//        Booking savedBooking = bookingService.reserveBooking(booking, player);
-//        return bookingCalendarService.reserveBooking(savedBooking, calendar).get();
+    @PostMapping("/{calendarId}/bookings/{bookingId}")
+    public Booking reserveBooking(@PathVariable Long calendarId, @PathVariable Long bookingId, @RequestBody Player player){
+        // primera iteracion: asumo booking esta disponible
+        log.info("\n  *** ESTOS SON LOS DATOS CON LOS QUE SE HA LLAMADO AL CONTROLADOR");
+        log.info(calendarId.toString());
+        log.info(player.toString());
+        log.info(bookingId.toString());
+        Booking booking = bookingService.getBookingById(bookingId).get();
+        BookingCalendar calendar = bookingCalendarService.getBookingCalendarById(calendarId).get();
+        Booking savedBooking = bookingService.reserveBooking(booking, player);
+        return bookingCalendarService.reserveBooking(savedBooking, calendar).get();
 
 
         ///  EL PROBLEMA AQUI ESTA SIENDO QUE EL PLAYER CON EL QUE SE LLAMA AL CONTROLADOR TIENE RESIDENCIA NULL
@@ -95,6 +95,6 @@ public class BookingCalendarController {
         /// 2025-08-31T20:44:50.426+02:00  INFO 22037 --- [padelBooking] [main] a.l.p.p.model.BookingCalendar            :
         /// *** Sorry, we couldn't process your booking. This may be due to a lack of availability or invalid booking details
 
-   /// }
+    }
 
 }
