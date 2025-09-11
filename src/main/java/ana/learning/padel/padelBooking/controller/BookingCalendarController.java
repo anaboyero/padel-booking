@@ -1,7 +1,7 @@
 package ana.learning.padel.padelBooking.controller;
 
 import ana.learning.padel.padelBooking.DTO.BookingDTO;
-import ana.learning.padel.padelBooking.DTO.CreateCalendarRequest;
+import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -29,12 +29,10 @@ public class BookingCalendarController {
     private final BookingService bookingService;
     private final PlayerService playerService;
     private final BookingMapper bookingMapper;
-//    final BookingCalendarRepository bookingCalendarRepository;
     private final Logger log = LoggerFactory.getLogger(BookingCalendarController.class);
 
     public BookingCalendarController(BookingCalendarService bookingCalendarService, BookingService bookingService, PlayerService playerService, BookingMapper bookingMapper) {
         this.bookingCalendarService = bookingCalendarService;
-//        this.bookingCalendarRepository = bookingCalendarRepository;
         this.bookingService = bookingService;
         this.playerService = playerService;
         this.bookingMapper = bookingMapper;
@@ -43,32 +41,20 @@ public class BookingCalendarController {
     @GetMapping
     public List<BookingCalendar> getBookingCalendars() {
         return bookingCalendarService.getAllBookingCalendars();
-        //return new ArrayList<>();
     }
 
 
     @PostMapping
-    public ResponseEntity<BookingCalendar> createCalendar(@RequestBody CreateCalendarRequest createCalendarRequest) {
-        log.info("\n*** ENTRA EN EL CONTROLADOR (POST). Entra en createCalendar");
-
+    public ResponseEntity<BookingCalendar> createCalendar(@RequestBody CreateCalendarRequestDTO createCalendarRequestDTO) {
         BookingCalendar bookingCalendar = new BookingCalendar();
-        bookingCalendar.setStartDay(createCalendarRequest.getStartDay());
-
-        log.info("\n*** Antes de persistir: " + bookingCalendar);
+        bookingCalendar.setStartDay(createCalendarRequestDTO.getStartDay());
 
         BookingCalendar savedBookingCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
-
-        log.info("\n*** Después de persistir: " + bookingCalendar);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedBookingCalendar.getId())
                 .toUri();
-
-        log.info("\n*** Este es el URI de location: " + location);
-
-        log.info("\n*** Este es el calendariosalvado del body: " + savedBookingCalendar);
-
 
         return ResponseEntity.created(location).body(savedBookingCalendar);
     }

@@ -8,8 +8,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface PlayerMapper {
 
-//    PlayerMapper INSTANCE = Mappers.getMapper(PlayerMapper.class);
-
     PlayerDTO toDTO(Player player);
     Player toPlayer(PlayerDTO dto);
 }

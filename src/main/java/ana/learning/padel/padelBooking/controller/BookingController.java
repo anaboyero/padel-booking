@@ -1,5 +1,7 @@
 package ana.learning.padel.padelBooking.controller;
 
+import ana.learning.padel.padelBooking.DTO.BookingDTO;
+import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.service.BookingService;
 import org.slf4j.Logger;
@@ -20,9 +22,11 @@ public class BookingController {
 
     BookingService bookingService;
     private static final Logger log = LoggerFactory.getLogger(BookingController.class);
+    private BookingMapper bookingMapper;
 
-    public BookingController(BookingService bookingService){
+    public BookingController(BookingService bookingService, BookingMapper bookingMapper){
         this.bookingService = bookingService;
+        this.bookingMapper = bookingMapper;
     }
 
     @GetMapping
@@ -31,13 +35,17 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
+    public ResponseEntity<BookingDTO> getBookingById(@PathVariable Long id) {
         Optional<Booking> result = bookingService.getBookingById(id);
         if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(result.get());
+        BookingDTO bookingDTO = bookingMapper.toDTO(result.get());
+                //(result.get().getId(), result.get().getDate(), result.get().getTimeSlot(), result.get().getPlayer().getId());
+        return ResponseEntity.ok(bookingDTO);
     }
+
+
 
 
 }

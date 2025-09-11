@@ -45,13 +45,23 @@ public class PlayerController {
         return ResponseEntity.ok(players);
     }
 
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Optional<Player>> getPlayerById(@PathVariable Long id) {
+//        Optional<Player> player = playerService.getPlayerById(id);
+//        if (player.isEmpty()){
+//            return ResponseEntity.noContent().build();
+//        }
+//        return ResponseEntity.ok(player);
+//    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Player>> getPlayerById(@PathVariable Long id) {
+    public ResponseEntity<Optional<PlayerDTO>> getPlayerById(@PathVariable Long id) {
         Optional<Player> player = playerService.getPlayerById(id);
         if (player.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(Optional.of(player.get()));
+        PlayerDTO playerDTO = playerMapper.toDTO(player.get());
+        return ResponseEntity.ok(Optional.of(playerDTO));
     }
 
     @PostMapping

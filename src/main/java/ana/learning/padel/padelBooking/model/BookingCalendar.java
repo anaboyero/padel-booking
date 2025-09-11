@@ -31,8 +31,6 @@ public class BookingCalendar {
         availableBookings  = new ArrayList<>();
     }
 
-
-    // ESTO DEBERIA SER DE SERVICE, PORQUE LLAMA A REPOSITORIO PARA SACAR LAS ID ?
     private List<Booking> generateAvailableBookings(){
         availableBookings  = new ArrayList<>();
         if (startDay == null) {

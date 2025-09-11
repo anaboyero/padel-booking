@@ -2,10 +2,10 @@ package ana.learning.padel.padelBooking.DTO;
 
 import java.time.LocalDate;
 
-public class CreateCalendarRequest {
+public class CreateCalendarRequestDTO {
     private LocalDate startDay;
 
-    public CreateCalendarRequest(LocalDate startDay) {
+    public CreateCalendarRequestDTO(LocalDate startDay) {
         this.startDay = startDay;
     }
 

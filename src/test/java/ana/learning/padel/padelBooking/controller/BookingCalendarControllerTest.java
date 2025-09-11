@@ -1,7 +1,7 @@
 package ana.learning.padel.padelBooking.controller;
 
 
-import ana.learning.padel.padelBooking.DTO.CreateCalendarRequest;
+import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -20,12 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
@@ -77,11 +75,11 @@ public class BookingCalendarControllerTest {
     @Test
     public void shouldCreateCalendarWithStartDay() throws Exception{
 
-        CreateCalendarRequest createCalendarRequest = new CreateCalendarRequest(TODAY);
+        CreateCalendarRequestDTO createCalendarRequestDTO = new CreateCalendarRequestDTO(TODAY);
 
         MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createCalendarRequest)))
+                .content(objectMapper.writeValueAsString(createCalendarRequestDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.startDay").value(TODAY.toString()))
