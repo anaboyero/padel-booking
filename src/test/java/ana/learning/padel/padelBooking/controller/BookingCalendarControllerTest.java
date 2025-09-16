@@ -69,7 +69,6 @@ public class BookingCalendarControllerTest {
     @BeforeEach
     public void cleanUp() {
         bookingCalendarRepository.deleteAll();
-        log.info("\n*** Limpiando repositorios de Booking Calendar en @BeforeEach");
     }
 
     @Test
