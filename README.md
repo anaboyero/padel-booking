@@ -5,10 +5,10 @@ PADEL BOOKING
 MVP: Aplicación de gestión de reservas de la pista de pádel de la urbanización.
 
 
---- Cualquiera con acceso a la página podrá consultar el calendario (reservas y tramos disponibles) de una PISTA---> Implementado en API.
---- Un jugador podrá registrarse y obtendrá un ID. ---> Implementado en API.
---- Un jugador podrá asociar su direccion a su ID.---> Implementado en API.
---- Cualquier jugador con direccion registrada podrá hacer una reserva en el calendario, si ese slot está disponible.---> Implementado en API.
+--- Cualquiera con acceso a la página podrá consultar el calendario (reservas y tramos disponibles) de una PISTA---> DONE
+--- Un jugador podrá registrarse y obtendrá un ID. ---> DONE
+--- Un jugador podrá asociar su direccion a su ID.---> DONE
+--- Cualquier jugador con direccion registrada podrá hacer una reserva en el calendario, si ese slot está disponible.---> DONE.
 --- Un usuario podrá editar o cancelar su reserva (no aplicable a reservas caducadas).
 
 TO DO:
