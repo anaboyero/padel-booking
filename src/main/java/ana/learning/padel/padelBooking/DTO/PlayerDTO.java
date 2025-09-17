@@ -1,8 +1,11 @@
 package ana.learning.padel.padelBooking.DTO;
 
+import java.util.List;
+
 public class PlayerDTO {
     private Long id;
     private String name;
+    private List<Long> bookingIds;
 
     public PlayerDTO() {
     }
@@ -25,6 +28,14 @@ public class PlayerDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Long> getBookingIds() {
+        return bookingIds;
+    }
+
+    public void setBookingIds(List<Long> bookingIds) {
+        this.bookingIds = bookingIds;
     }
 
     @Override

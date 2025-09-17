@@ -1,6 +1,7 @@
 package ana.learning.padel.padelBooking.service;
 
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
+import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.PlayerRepository;
@@ -22,6 +23,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
     private ResidenceService residenceService;
+
+    @Autowired
+    private BookingService bookingService;
 
     @Autowired
     PlayerMapper mapper;
@@ -67,4 +71,19 @@ public class PlayerServiceImpl implements PlayerService {
     public boolean isAProperPlayerToMakeAReservation(Player player) {
         return ((player !=null) && (player.getId()!=null) && (this.hasAProperResidence(player)));
     }
+
+    @Override
+    public Optional<Player> cancelBookingByPlayer(Booking bookingToCancel, Player player){
+        if(bookingService.getBookingById(bookingToCancel.getId()).isEmpty()){
+            log.info("The booking to cancel does not exist");
+            return Optional.empty();
+        }
+        if(playerRepository.findById(player.getId()).isEmpty()){
+            log.info("The player does not exist");
+            return Optional.empty();
+        }
+        return Optional.of(player.cancelBooking(bookingToCancel.getId()));
+
+    }
+
 }

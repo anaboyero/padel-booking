@@ -1,6 +1,7 @@
 package ana.learning.padel.padelBooking.service;
 
 import ana.learning.padel.padelBooking.DTO.PlayerDTO;
+import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import org.springframework.http.ResponseEntity;
@@ -22,4 +23,6 @@ public interface PlayerService {
     boolean hasAProperResidence(Player player);
 
     boolean isAProperPlayerToMakeAReservation(Player player);
+
+    Optional<Player> cancelBookingByPlayer(Booking bookingToCancel, Player player);
 }

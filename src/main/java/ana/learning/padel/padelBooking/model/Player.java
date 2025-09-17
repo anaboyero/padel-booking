@@ -19,7 +19,6 @@ public class Player {
     public Player() {
     }
 
-
     public Long getId() {
         return id;
     }
@@ -65,5 +64,16 @@ public class Player {
                 ", residence=" + residence +
                 ", bookings=" + bookings +
                 '}';
+    }
+
+    //Incluir validaciones aqui o deberian estar en el service?
+    public Player cancelBooking(Long bookingToCancelId) {
+        for (Booking booking: bookings) {
+            if (booking.getId().equals(bookingToCancelId)) {
+                bookings.remove(booking);
+                return this;
+            }
+        }
+        return this;
     }
 }
