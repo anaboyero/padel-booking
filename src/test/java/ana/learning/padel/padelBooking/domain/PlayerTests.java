@@ -83,7 +83,7 @@ public class PlayerTests {
         setPlayerWithTwoOwnedBookings();
         assertThat(player.getBookings().size()).isEqualTo(2);
         /// WHEN cancelling one of the owned bookings
-        player.cancelBooking(booking1.getId());
+        player.cancelBooking(booking1);
         /// THEN the player only owns one booking
         assertThat(player.getBookings().size()).isEqualTo(1);
     }
@@ -95,7 +95,7 @@ public class PlayerTests {
         booking1.setBookingDate(YESTERDAY);
 
         /// WHEN trying to cancel that booking
-        player.cancelBooking(booking1.getId());
+        player.cancelBooking(booking1);
 
         /// then the booking is not cancelled
         assertThat(player.getBookings().size()).isEqualTo(2);

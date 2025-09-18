@@ -67,9 +67,9 @@ public class Player {
     }
 
     //Incluir validaciones aqui o deberian estar en el service?
-    public Player cancelBooking(Long bookingToCancelId) {
+    public Player cancelBooking(Booking bookingToCancel) {
         for (Booking booking: bookings) {
-            if (booking.getId().equals(bookingToCancelId)) {
+            if (booking.getId().equals(bookingToCancel.getId())) { // Estoy comparando por ID.
                 if(booking.getBookingDate().isBefore(java.time.LocalDate.now())){
                     System.out.println("\n ***No se puede cancelar una reserva pasada");
                     return this;

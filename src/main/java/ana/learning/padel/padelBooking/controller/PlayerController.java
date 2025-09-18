@@ -1,7 +1,9 @@
 package ana.learning.padel.padelBooking.controller;
 
+import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.DTO.ResidenceDTO;
+import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.mappers.ResidenceMapper;
 import ana.learning.padel.padelBooking.model.Player;
@@ -23,13 +25,15 @@ public class PlayerController {
     private final PlayerService playerService;
     private final PlayerMapper playerMapper;
     private final ResidenceMapper residenceMapper;
+    private final BookingMapper bookingMapper;
     private static final Logger log = LoggerFactory.getLogger(PlayerController.class);
 
 
-    public PlayerController(PlayerService playerService, PlayerMapper playerMapper, ResidenceMapper residenceMapper){
+    public PlayerController(PlayerService playerService, PlayerMapper playerMapper, ResidenceMapper residenceMapper, BookingMapper bookingMapper){
         this.playerService = playerService;
         this.playerMapper = playerMapper;
         this.residenceMapper = residenceMapper;
+        this.bookingMapper = bookingMapper;
     }
 
     @GetMapping
@@ -44,15 +48,6 @@ public class PlayerController {
 
         return ResponseEntity.ok(players);
     }
-
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Optional<Player>> getPlayerById(@PathVariable Long id) {
-//        Optional<Player> player = playerService.getPlayerById(id);
-//        if (player.isEmpty()){
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.ok(player);
-//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<PlayerDTO>> getPlayerById(@PathVariable Long id) {
@@ -97,5 +92,15 @@ public class PlayerController {
         else {
             return Optional.empty();
         }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PlayerDTO> cancelBookingByPlayer(@PathVariable Long id, @RequestBody BookingDTO bookingDTO) {
+        Optional<Player> result = playerService.cancelBookingByPlayer(bookingMapper.toBooking(bookingDTO), playerService.getPlayerById(id).get());
+        if (result.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        PlayerDTO updatedPlayer = playerMapper.toDTO(result.get());
+        return ResponseEntity.ok().body(updatedPlayer);
     }
 }
