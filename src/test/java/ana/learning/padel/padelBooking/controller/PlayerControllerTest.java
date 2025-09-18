@@ -204,5 +204,4 @@ public class PlayerControllerTest {
                 .andExpect(jsonPath("$.name").value("Ana"));
     }
 
-
 }

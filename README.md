@@ -9,11 +9,12 @@ MVP: Aplicación de gestión de reservas de la pista de pádel de la urbanizaci�
 --- Un jugador podrá registrarse y obtendrá un ID. ---> DONE
 --- Un jugador podrá asociar su direccion a su ID.---> DONE
 --- Cualquier jugador con direccion registrada podrá hacer una reserva en el calendario, si ese slot está disponible.---> DONE.
---- Un usuario podrá cancelar su reserva (si no es reserva pasada) .---> DONE en modelo.  Dudas: las validaciones de si existen o no en la base de datos entiendo que se han hecho antes. 
-
+--- Un usuario podrá cancelar su reserva (si no es reserva pasada) .---> DONE.
 TO DO:
 
 - Manejo de excepciones.
+- Diferenciar entre DTOs de salida y entrada.
+- En la API no estoy pudiendo hacer las operaciones. Comprobar
 - Refactorización de código.
 - Uso de SQL para persistencia de datos.
 - Llevar a cloud.

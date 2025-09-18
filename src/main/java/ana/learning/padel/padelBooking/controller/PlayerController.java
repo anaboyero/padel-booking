@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
+
 @RestController
 @RequestMapping("/api/v1/players")
 public class PlayerController {
@@ -37,16 +40,27 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Player>> getAllPlayers(){
-        // Nota: no parece prudente devolver la direccion de cualquier persona,
-        // pero de momento me es util para saber que funciona
+    public ResponseEntity<List<PlayerDTO>> getAllPlayers(){
 
         List<Player> players = playerService.getAllPlayers();
+
         if (players.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(players);
+        List<PlayerDTO> playersDTO = players.stream()
+                .map(playerMapper::toDTO)
+                .toList();
+
+        return ResponseEntity.ok(playersDTO);
+
+//
+//        List<Player> players = playerService.getAllPlayers();
+//        if (players.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//
+//        return ResponseEntity.ok(players);
     }
 
     @GetMapping("/{id}")
