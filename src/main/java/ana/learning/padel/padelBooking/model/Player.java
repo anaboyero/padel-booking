@@ -70,6 +70,10 @@ public class Player {
     public Player cancelBooking(Long bookingToCancelId) {
         for (Booking booking: bookings) {
             if (booking.getId().equals(bookingToCancelId)) {
+                if(booking.getBookingDate().isBefore(java.time.LocalDate.now())){
+                    System.out.println("\n ***No se puede cancelar una reserva pasada");
+                    return this;
+                }
                 bookings.remove(booking);
                 return this;
             }

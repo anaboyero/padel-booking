@@ -27,7 +27,7 @@ public class PlayerTests {
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
     private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
-    private static final LocalDate AFTER_TOMORROW = LocalDate.now().plusDays(2);
+    private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
     private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 13*7;
     Residence residence;
     Player player;
@@ -47,7 +47,7 @@ public class PlayerTests {
         residence.setId(1L); // esto lo estoy falseando yo, como si se hubiera persistido
     }
 
-    private void setPlayerWith2OwnedBookings(){
+    private void setPlayerWithTwoOwnedBookings(){
 
         booking1 = new Booking();
         booking1.setBookingDate(TODAY);
@@ -80,11 +80,28 @@ public class PlayerTests {
     @Test
     public void shouldCancelOwnedBooking() {
         /// GIVEN a player with 2 owned bookings
-        setPlayerWith2OwnedBookings();
+        setPlayerWithTwoOwnedBookings();
         assertThat(player.getBookings().size()).isEqualTo(2);
         /// WHEN cancelling one of the owned bookings
         player.cancelBooking(booking1.getId());
-        /// THEN the player should have only one owned booking
+        /// THEN the player only owns one booking
         assertThat(player.getBookings().size()).isEqualTo(1);
     }
+
+    @Test
+    public void shouldNotCancelPastBookingFromPlayer() {
+        /// GIVEN a player with an owned booking in the past
+        setPlayerWithTwoOwnedBookings();
+        booking1.setBookingDate(YESTERDAY);
+
+        /// WHEN trying to cancel that booking
+        player.cancelBooking(booking1.getId());
+
+        /// then the booking is not cancelled
+        assertThat(player.getBookings().size()).isEqualTo(2);
+
+    }
+
+
+
 }

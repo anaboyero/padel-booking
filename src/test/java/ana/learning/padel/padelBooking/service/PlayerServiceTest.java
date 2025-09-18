@@ -42,15 +42,13 @@ public class PlayerServiceTest {
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
     private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
+    private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
 
     private Player player0;
     private Player player1;
 
     @BeforeEach
     public void setUp() {
-        player0 = new Player();
-        player0.setName("Ana");
-        player0.setId(null);
         player1 = new Player();
         player1.setName("Javier");
         player1.setId(1L);
@@ -58,6 +56,11 @@ public class PlayerServiceTest {
 
     @Test
     public void shouldSaveANewPlayer() {
+
+        player0 = new Player();
+        player0.setName("Ana");
+        player0.setId(null);
+
         when(playerRepository.save(any(Player.class))).thenReturn(player1);
         Player testPlayer = playerService.savePlayer(player0);
         assertThat(testPlayer.getId()).isEqualTo(1L);

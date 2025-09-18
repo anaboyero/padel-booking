@@ -9,7 +9,7 @@ MVP: Aplicación de gestión de reservas de la pista de pádel de la urbanizaci�
 --- Un jugador podrá registrarse y obtendrá un ID. ---> DONE
 --- Un jugador podrá asociar su direccion a su ID.---> DONE
 --- Cualquier jugador con direccion registrada podrá hacer una reserva en el calendario, si ese slot está disponible.---> DONE.
---- Un usuario podrá editar o cancelar su reserva (no aplicable a reservas caducadas).
+--- Un usuario podrá cancelar su reserva (en esta semana).
 
 TO DO:
 

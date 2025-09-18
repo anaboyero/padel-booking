@@ -111,6 +111,29 @@ public class PlayerControllerTest {
 
     }
 
+    @Test
+    public void shouldReturnOkAndUpdatedPlayer_WhenCancellingAnOwnedBooking() throws Exception {
+        /// GIVEN A PLAYER WITH A BOOKING
+
+        /// WHEN CANCELLING THE BOOKING
+
+        /// THEN RETURNS OK AND THE DELETED BOOKING
+
+    }
+
+//        Player player = new Player();
+//        player.setName("Ana");
+//        Player savedPlayer = playerRepository.save(player);
+//
+//        mockMvc.perform(delete("/api/v1/players/{id}", savedPlayer.getId()))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.name").value("Ana"))
+//        ;
+//
+//        assertThat(playerRepository.findById(savedPlayer.getId())).isEmpty();
+//    }
+
 
 
 
