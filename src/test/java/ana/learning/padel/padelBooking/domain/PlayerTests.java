@@ -16,8 +16,10 @@ import static org.springframework.test.web.servlet.result.StatusResultMatchersEx
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PlayerTests {
 
     private static final String NAME_OF_PLAYER1 = "Ana";

@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +31,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
@@ -133,7 +135,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    public void shouldReturnOkAndDeletedPlayerWhenDeletingExistingPlayer() throws Exception {
+    public void shouldReturnOkAndDeletedPlayerWhenDeletingAPlayer() throws Exception {
         Player player = new Player();
         player.setName("Ana");
         Player savedPlayer = playerRepository.save(player);
@@ -141,8 +143,7 @@ public class PlayerControllerTest {
         mockMvc.perform(delete("/api/v1/players/{id}", savedPlayer.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Ana"))
-        ;
+                .andExpect(jsonPath("$.name").value("Ana"));
 
     }
 

@@ -19,8 +19,10 @@ import static org.springframework.test.web.servlet.result.StatusResultMatchersEx
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PadelBookingApplicationTests {
 
 	@Test

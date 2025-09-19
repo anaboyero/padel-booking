@@ -16,6 +16,8 @@ public interface PlayerService {
 
     void deleteAllPlayers();
 
+    void deletePlayerById(Long id);
+
     Optional<Player> getPlayerById(Long id);
 
     Optional<Player> addResidenceToPlayer(Player player, Residence residence);

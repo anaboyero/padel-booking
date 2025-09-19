@@ -86,13 +86,16 @@ public class PlayerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Player> deletePlayerById (@PathVariable Long id) {
+    public ResponseEntity<PlayerDTO> deletePlayerById (@PathVariable Long id) {
         Optional<Player> result = playerService.getPlayerById(id);
-        if (result.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (!result.isEmpty()) {
+            playerService.deletePlayerById(id);
+            PlayerDTO playerDTO = playerMapper.toDTO(result.get());
+            return ResponseEntity.ok(playerDTO);
         }
-        return ResponseEntity.ok(result.get());
+        return ResponseEntity.notFound().build();
     }
+
 
     @PostMapping("/{id}")
     public Optional<PlayerDTO> addResidenceToPlayer(@PathVariable Long id, @RequestBody ResidenceDTO residenceDTO) {
