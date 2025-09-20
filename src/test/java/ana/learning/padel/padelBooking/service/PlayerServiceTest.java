@@ -103,6 +103,70 @@ public class PlayerServiceTest {
 
     }
 
+    @Test
+    public void shouldNotAddBookingToPlayer_WhenBookingIsNotPersisted(){
+
+        ///  GIVEN a player with no bookings and a non persisted booking
+        player1 = new Player();
+        player1.setName("Ana");
+        player1.setId(10L);
+        Booking booking = new Booking();
+        booking.setBookingDate(TOMORROW);
+        booking.setTimeSlot(SLOT);
+        when(playerRepository.findById(10L)).thenReturn(Optional.of(player1));
+        assertThat(playerService.getPlayerById(10L).get().getBookings().size()).isEqualTo(0);
+        assertThat(bookingService.getAllBookings().size()).isEqualTo(0);
+
+        ///  WHEN adding a non persisted booking to that player
+        playerService.addBookingToPlayer(player1, booking);
+
+        ///  THEN the player has no bookings and the booking has no owner
+        assertThat(playerService.getPlayerById(10L).get().getBookings().size()).isEqualTo(0);
+        assertThat(bookingService.getAllBookings().size()).isEqualTo(0);
+    }
+
+    private Player createPersistedPlayer(String name, Long id) {
+        Player player1 = new Player();
+        player1.setName(name);
+        player1.setId(id);
+        return player1;
+    }
+
+
+    @Test
+    public void shouldNotAddBookingToPlayer_WhenBookingIsOwned(){
+
+        ///  GIVEN a player with no bookings and a non persisted booking
+
+        Player player1 = createPersistedPlayer("Ana", 10L);
+        Player player2 = createPersistedPlayer("Pepe", 11L);
+        Booking booking = createPersistedBooking(20L);
+        playerService.addBookingToPlayer(player2, booking);
+
+        when(playerRepository.findById(10L)).thenReturn(Optional.of(player1));
+        when(playerRepository.findById(11L)).thenReturn(Optional.of(player2));
+        when(bookingService.getBookingById(20L)).thenReturn(Optional.of(booking));
+
+        assertThat(player1.getBookings().size()).isEqualTo(0);
+        assertThat(player2.getBookings().size()).isEqualTo(1);
+        assertThat(booking.getBookingOwner().getName()).isEqualTo("Pepe");
+
+        ///  WHEN trying to add an owned booking to a player
+        playerService.addBookingToPlayer(player1, booking);
+
+        ///  THEN the player does not own the booking and the booking has the same owner as before
+        assertThat(playerService.getPlayerById(10L).get().getBookings().size()).isEqualTo(0);
+        assertThat(playerService.getPlayerById(11L).get().getBookings().size()).isEqualTo(1);
+        assertThat(bookingService.getBookingById(20L).get().getBookingOwner().getName()).isEqualTo("Pepe");
+    }
+
+    private Booking createPersistedBooking(Long id) {
+        Booking booking = new Booking();
+        booking.setBookingDate(TOMORROW);
+        booking.setTimeSlot(SLOT);
+        booking.setId(id);
+        return booking;
+    }
 }
 
 

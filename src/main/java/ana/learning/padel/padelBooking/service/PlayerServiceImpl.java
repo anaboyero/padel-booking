@@ -101,6 +101,16 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player addBookingToPlayer(Player player, Booking booking) {
+        if (booking.getId()==null) {
+            log.info("The booking is not valid because it is not persisted");
+            return player;
+        }
+
+        if (booking.getBookingOwner()!=null){
+            log.info("The booking is not valid because it already has an owner");
+            return player;
+        }
+
         player.addBooking(booking);
         return playerRepository.save(player);
 

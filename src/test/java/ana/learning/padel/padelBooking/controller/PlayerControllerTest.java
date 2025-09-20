@@ -219,11 +219,7 @@ public class PlayerControllerTest {
         player = new Player();
         player.setName("Ana");
         player.setResidence(savedResidence);
-
-        player.setBookings(new ArrayList<>());
-        player.getBookings().add(booking);
-        booking.setBookingOwner(player);
-
+        player.addBooking(booking);
 
         savedPlayer = playerService.savePlayer(player);
         savedBookingToCancel = bookingService.saveBooking(booking);
