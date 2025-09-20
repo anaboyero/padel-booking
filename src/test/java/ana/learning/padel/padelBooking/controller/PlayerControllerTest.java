@@ -2,6 +2,7 @@ package ana.learning.padel.padelBooking.controller;
 
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
+import ana.learning.padel.padelBooking.mappers.ResidenceMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -25,7 +25,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -50,6 +49,7 @@ public class PlayerControllerTest {
     private final PlayerMapper playerMapper;
     private final BookingMapper bookingMapper;
     private final ObjectMapper objectMapper;
+    private final ResidenceMapper residenceMapper;
     private final PlayerRepository playerRepository;
     private final BookingRepository bookingRepository;
     private final ResidenceRepository residenceRepository;
@@ -68,11 +68,12 @@ public class PlayerControllerTest {
     private static final Logger log = LoggerFactory.getLogger(PlayerControllerTest.class);
 
 
-    public PlayerControllerTest(MockMvc mockMvc, PlayerMapper playerMapper, BookingMapper bookingMapper, ObjectMapper objectMapper, PlayerRepository playerRepository, BookingRepository bookingRepository, ResidenceRepository residenceRepository, ResidenceService residenceService, BookingService bookingService, PlayerService playerService) {
+    public PlayerControllerTest(MockMvc mockMvc, PlayerMapper playerMapper, BookingMapper bookingMapper, ObjectMapper objectMapper, ResidenceMapper residenceMapper, PlayerRepository playerRepository, BookingRepository bookingRepository, ResidenceRepository residenceRepository, ResidenceService residenceService, BookingService bookingService, PlayerService playerService) {
         this.mockMvc = mockMvc;
         this.playerMapper = playerMapper;
         this.bookingMapper = bookingMapper;
         this.objectMapper = objectMapper;
+        this.residenceMapper = residenceMapper;
         this.playerRepository = playerRepository;
         this.bookingRepository = bookingRepository;
         this.residenceRepository = residenceRepository;
@@ -106,7 +107,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    public void shouldReturnNoContentWhenDeletingAllPlayers() throws Exception {
+    public void shouldReturnNoContent_WhenDeletingAllPlayers() throws Exception {
         setUpTwoPlayers();
 
         mockMvc.perform(delete("/api/v1/players"))
@@ -116,7 +117,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    public void shouldReturnListOfPlayersWhenPlayersExist() throws Exception {
+    public void shouldReturnListOfPlayers_WhenPlayersExist() throws Exception {
         setUpTwoPlayers();
 
         mockMvc.perform(get("/api/v1/players"))
@@ -127,7 +128,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    public void shouldReturnNotFoundWhenDeletingNonExistentPlayer() throws Exception {
+    public void shouldReturnNotFound_WhenDeletingNonExistentPlayer() throws Exception {
         setUpTwoPlayers();
         Long playerId = 31L;
         mockMvc.perform(delete("/api/v1/players/{id}", playerId))
@@ -137,7 +138,7 @@ public class PlayerControllerTest {
     }
 
     @Test
-    public void shouldReturnOkAndDeletedPlayerWhenDeletingAPlayer() throws Exception {
+    public void shouldReturnOkAndDeletedPlayer_WhenDeletingAPlayer() throws Exception {
         setUpTwoPlayers();
         List<Player> players = playerRepository.findAll();
         Long existingId = players.get(0).getId();
@@ -199,6 +200,53 @@ public class PlayerControllerTest {
 
     }
 
+    @Test
+    public void shouldSaveResidenceToPlayer() throws Exception {
+      Player player = new Player();
+      player.setName("Ana");
+      Player savedPlayer = playerService.savePlayer(player);
+
+      residence = new Residence();
+      residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+      residence.setFloor(RESIDENCE_5FLOOR);
+      residence.setLetter(RESIDENCE_LETTER_A);
+      savedResidence = residenceService.saveResidence(residence);
+
+      assertThat(savedPlayer.getResidence()).isNull();
+
+      mockMvc.perform(post("/api/v1/players/{id}", savedPlayer.getId())
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
+              .andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(jsonPath("$.name").value("Ana"))
+              .andExpect(jsonPath("$.residence.building").value(RESIDENCE_BUILDING_EMPECINADO21.toString()))
+              .andExpect(jsonPath("$.residence.floor").value(RESIDENCE_5FLOOR.toString()))
+              .andExpect(jsonPath("$.residence.letter").value(RESIDENCE_LETTER_A.toString()));
+
+      assertThat(playerService.getPlayerById(savedPlayer.getId()).get().getResidence()).isNotNull();
+    }
+
+    @Test
+    public void shouldNotSaveResidenceToPlayer() throws Exception {
+        Player notPersistedPlayer = new Player();
+        notPersistedPlayer.setName("Ana");
+        notPersistedPlayer.setId(100L);
+
+        residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        savedResidence = residenceService.saveResidence(residence);
+
+        assertThat(notPersistedPlayer.getResidence()).isNull();
+
+        mockMvc.perform(post("/api/v1/players/{id}", notPersistedPlayer.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
+                .andExpect(status().isBadRequest());
+    }
+
     private void setUpTwoPlayers() {
         Player player1 = new Player();
         player1.setName("Ana");
@@ -207,7 +255,6 @@ public class PlayerControllerTest {
         player2.setName("Pepe");
         playerRepository.save(player2);
     }
-
 
     private void setPlayerWithResidenceAndBooking(Booking booking) {
         residence = new Residence();

@@ -63,11 +63,12 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Optional<Player> addResidenceToPlayer(Player player, Residence residence) {
-        if (playerRepository.findById(player.getId()).isPresent()) {
-            Residence saveResidence = residenceService.saveResidence(residence);
-            player.setResidence(saveResidence);
-            player = savePlayer(player);
-            return Optional.of(player);
+        Optional<Player> playerOptional = playerRepository.findById(player.getId());
+        if (playerOptional.isPresent()) {
+            Residence savedResidence = residenceService.saveResidence(residence);
+            player.setResidence(savedResidence);
+            Player savedPlayer = savePlayer(player);
+            return Optional.of(savedPlayer);
         }
         return Optional.empty();
     }

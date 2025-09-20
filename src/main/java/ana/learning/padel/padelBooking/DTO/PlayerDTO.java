@@ -30,13 +30,13 @@ public class PlayerDTO {
         this.name = name;
     }
 
-    public List<Long> getBookingIds() {
-        return bookingIds;
-    }
-
-    public void setBookingIds(List<Long> bookingIds) {
-        this.bookingIds = bookingIds;
-    }
+//    public List<Long> getBookingIds() {
+//        return bookingIds;
+//    }
+//
+//    public void setBookingIds(List<Long> bookingIds) {
+//        this.bookingIds = bookingIds;
+//    }
 
     @Override
     public String toString() {

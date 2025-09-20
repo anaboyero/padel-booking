@@ -98,17 +98,14 @@ public class PlayerController {
 
 
     @PostMapping("/{id}")
-    public Optional<PlayerDTO> addResidenceToPlayer(@PathVariable Long id, @RequestBody ResidenceDTO residenceDTO) {
-        Optional<PlayerDTO> resultDTO;
-        if (playerService.getPlayerById(id).isPresent()){
-            Residence residence = residenceMapper.toResidence(residenceDTO);
-            Optional<Player> result = playerService.addResidenceToPlayer(playerService.getPlayerById(id).get(), residence);
-            resultDTO = Optional.of(playerMapper.toDTO(result.get()));
-            return resultDTO;
+    public ResponseEntity<Optional<Player>> addResidenceToPlayer(@PathVariable Long id, @RequestBody ResidenceDTO residenceDTO) {
+        Optional<Player> optionalPlayer = playerService.getPlayerById(id);
+        if (optionalPlayer.isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
-        else {
-            return Optional.empty();
-        }
+        Residence residence = residenceMapper.toResidence(residenceDTO);
+        Optional<Player> result = playerService.addResidenceToPlayer(playerService.getPlayerById(id).get(), residence);
+        return ResponseEntity.ok().body(result);
     }
 
     @PatchMapping("/{id}")

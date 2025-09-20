@@ -24,6 +24,13 @@ NOTAS:
 - En MVP, un usuario puede hacer reservas sin limite.
 - Semanalmente, aparece un nuevo calendario de reservas.
 
+FALLOS:
+
+- Cuando se intenta asignar una residencia a un jugador que no existe devuelve null y 200. 
+- Falta delete calendars y calendars by id
+- player tries to book a booking.
+- probar cancel booking
+
 A futuro:
 
 - Escalable a un sistema con más pistas.

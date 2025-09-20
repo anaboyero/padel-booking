@@ -9,6 +9,6 @@ import org.mapstruct.factory.Mappers;
 public interface ResidenceMapper {
 
     ResidenceMapper INSTANCE = Mappers.getMapper(ResidenceMapper.class);
-    ResidenceDTO toResidenceDTO(Residence residence);
+    ResidenceDTO toDTO(Residence residence);
     Residence toResidence(ResidenceDTO dto);
 }
