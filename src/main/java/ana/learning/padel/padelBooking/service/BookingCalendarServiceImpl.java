@@ -64,6 +64,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
     public Optional<BookingCalendar> getBookingCalendarById(Long id){
         return bookingCalendarRepository.findById(id);
     }
+
     @Override
     public Optional<Booking> reserveBooking(Booking temptativeBooking, Player temptativePlayer, BookingCalendar bookingCalendar) {
         if (!playerService.isAProperPlayerToMakeAReservation(temptativePlayer)) {
@@ -77,5 +78,10 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         log.info("La reserva se puede llevar a cabo");
         Booking assignedBooking = bookingService.assignBookingToPlayer(temptativeBooking, temptativePlayer);
         return this.confirmBooking(assignedBooking, bookingCalendar);
+    }
+
+    @Override
+    public void deleteAllBookingCalendars() {
+        bookingCalendarRepository.deleteAll();
     }
 }

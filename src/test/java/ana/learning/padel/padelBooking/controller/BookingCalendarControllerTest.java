@@ -28,9 +28,9 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
@@ -212,6 +212,28 @@ public class BookingCalendarControllerTest {
 
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** RESPONSE: " + jsonResponse);
+    }
+
+    @Test
+    public void shouldDeleteAllCalendars() throws Exception{
+        /// GIVEN 2 calendars in the repository
+        BookingCalendar bookingCalendarToday = new BookingCalendar();
+        bookingCalendarToday.setStartDay(TODAY);
+        bookingCalendarService.saveBookingCalendar(bookingCalendarToday);
+
+        BookingCalendar bookingCalendarNextWeek = new BookingCalendar();
+        bookingCalendarNextWeek.setStartDay(TODAY.plusDays(7));
+        bookingCalendarService.saveBookingCalendar(bookingCalendarNextWeek);
+
+        /// WHEN deleting all calendars
+
+        mockMvc.perform(delete("/api/v1/booking-calendars"))
+                .andExpect(status().isNoContent());
+
+        /// THEN the repository is empty
+
+        assertThat(bookingCalendarService.getAllBookingCalendars().size()).isEqualTo(0);
+
     }
 
 //    @Test

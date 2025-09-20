@@ -15,4 +15,5 @@ public interface BookingCalendarService {
     Optional<Booking> confirmBooking(Booking booking, BookingCalendar bookingCalendar);
     Optional<BookingCalendar> getBookingCalendarById(Long id);
     Optional<Booking> reserveBooking(Booking temptativeBooking, Player temptativePlayer, BookingCalendar bookingCalendar);
+    void deleteAllBookingCalendars();
 }

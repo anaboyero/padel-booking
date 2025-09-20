@@ -26,10 +26,12 @@ NOTAS:
 
 FALLOS:
 
-- Cuando se intenta asignar una residencia a un jugador que no existe devuelve null y 200. 
-- Falta delete calendars y calendars by id
-- player tries to book a booking.
+- Cuando se intenta asignar una residencia a un jugador que no existe devuelve null y 200--> DONE
+- Falta delete all calendars --> DONE
+- player tries to book an already owned booking.
+- player tries to book a not available booking.
 - probar cancel booking
+- get all calendars falla
 
 A futuro:
 

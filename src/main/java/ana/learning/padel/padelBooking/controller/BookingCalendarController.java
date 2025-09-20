@@ -78,5 +78,10 @@ public class BookingCalendarController {
         return ResponseEntity.ok().body(bookingMapper.toDTO(reservation.get()));
     }
 
+    @DeleteMapping
+    public ResponseEntity<BookingCalendar> deleteAllBookingCalendars() {
+        bookingCalendarService.deleteAllBookingCalendars();
+        return ResponseEntity.noContent().build();
+    }
 
 }
