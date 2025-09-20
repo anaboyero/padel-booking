@@ -40,8 +40,6 @@ public class PlayerTests {
 
     @BeforeEach
     public void setUp(){
-
-
         residence = new Residence();
         residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
         residence.setFloor(RESIDENCE_5FLOOR);
@@ -50,7 +48,6 @@ public class PlayerTests {
     }
 
     private void setPlayerWithTwoOwnedBookings(){
-
         booking1 = new Booking();
         booking1.setBookingDate(TODAY);
         booking1.setTimeSlot(SLOT);
@@ -104,6 +101,23 @@ public class PlayerTests {
 
     }
 
+    @Test
+    public void shouldAddBooking(){
+        /// GIVEN a player with no bookings
+        player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(residence);
+        assertThat(player.getBookings().size()).isEqualTo(0);
+
+        /// WHEN adding a booking
+        booking1 = new Booking();
+        booking1.setBookingDate(TODAY);
+        booking1.setTimeSlot(SLOT);
+        player.addBooking(booking1);
+
+        /// THEN the player has one booking
+        assertThat(player.getBookings().size()).isEqualTo(1);
+    }
 
 
 }

@@ -17,6 +17,7 @@ public class Player {
     List<Booking> bookings;
 
     public Player() {
+        bookings = new java.util.ArrayList<>();
     }
 
     public Long getId() {
@@ -54,6 +55,11 @@ public class Player {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    public void addBooking(Booking booking) {
+        this.bookings.add(booking);
+        booking.setBookingOwner(this);
     }
 
     @Override

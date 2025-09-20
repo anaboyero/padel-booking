@@ -99,4 +99,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     }
 
+    @Override
+    public Player addBookingToPlayer(Player player, Booking booking) {
+        player.addBooking(booking);
+        return playerRepository.save(player);
+
+    }
+
 }

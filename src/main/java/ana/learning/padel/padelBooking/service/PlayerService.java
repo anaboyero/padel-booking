@@ -27,4 +27,6 @@ public interface PlayerService {
     boolean isAProperPlayerToMakeAReservation(Player player);
 
     Optional<Player> cancelBookingByPlayer(Booking bookingToCancel, Player player);
+
+    Player addBookingToPlayer(Player player0, Booking booking);
 }

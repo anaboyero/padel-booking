@@ -149,30 +149,29 @@ public class PlayerControllerTest {
 
         assertThat(playerRepository.findById(existingId)).isEmpty();
     }
-//
-//    @Test
-//    public void shouldReturnOkAndUpdatedPlayer_WhenCancellingAnOwnedBooking() throws Exception {
-//        /// GIVEN A PLAYER WITH A BOOKING
-//        Booking testBooking = new Booking();
-//        testBooking.setBookingDate(TOMORROW);
-//        testBooking.setTimeSlot(SLOT);
-//        setPlayerWithResidenceAndBooking(testBooking);
-//
-//        assertThat(testBooking.getBookingOwner()).isNotNull();
-//
-//
-//        /// WHEN CANCELLING THE BOOKING
-//        /// THEN RETURNS OK AND THE DELETED BOOKING. This could have more assertions. Rethink a booking parameter in playerDTO
-//
-//        mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.name").value("Ana"));
-//
-//        assertThat(testBooking.getBookingOwner()).isEqualTo(null);
-//    }
+
+    @Test
+    public void shouldReturnOkAndUpdatedPlayer_WhenCancellingAnOwnedBooking() throws Exception {
+        /// GIVEN A PLAYER WITH A BOOKING
+        Booking testBooking = new Booking();
+        testBooking.setBookingDate(TOMORROW);
+        testBooking.setTimeSlot(SLOT);
+        setPlayerWithResidenceAndBooking(testBooking);
+
+        assertThat(testBooking.getBookingOwner()).isNotNull();
+
+        /// WHEN CANCELLING THE BOOKING
+        /// THEN RETURNS OK AND THE DELETED BOOKING. This could have more assertions. Rethink a booking parameter in playerDTO
+
+        mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Ana"));
+
+//        assertThat(testBooking.getBookingOwner()).isNull();
+    }
 
     @Test
     public void shouldReturnBadRequest_WhenPastBooking() throws Exception {
@@ -191,6 +190,13 @@ public class PlayerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Ana"));
+
+//        Booking updatedBooking = bookingService.getBookingById(savedBookingToCancel.getId()).get();
+//        assertThat(updatedBooking.getBookingOwner()).isNull();
+
+//        Player updatedPlayer = playerService.getPlayerById(savedPlayer.getId()).get();
+//        assertThat(updatedPlayer.getBookings()).doesNotContain(savedBookingToCancel);
+
     }
 
     private void setUpTwoPlayers() {
@@ -221,11 +227,6 @@ public class PlayerControllerTest {
 
         savedPlayer = playerService.savePlayer(player);
         savedBookingToCancel = bookingService.saveBooking(booking);
-
-//        System.out.println("\n *** IMPRIMIMOS DATOS CREADOS EN EL TEST");
-//        System.out.println("\n *** Player with residence and booking: " + savedPlayer.toString());
-//        System.out.println("\n *** Residence : " + savedResidence.toString());
-//        System.out.println("\n *** Booking : " + savedBookingToCancel.toString());
     }
 
 }
