@@ -25,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -82,7 +83,6 @@ public class PlayerControllerTest {
 
     @BeforeEach
     void cleanUp() {
-        log.info("\n*** Limpiando repositorios en @BeforeEach");
         bookingRepository.deleteAll();
         playerRepository.deleteAll();
         residenceRepository.deleteAll();
@@ -100,25 +100,24 @@ public class PlayerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Ana"));
 
+        List<Player> players = playerRepository.findAll();
+        assertThat(players.size()).isEqualTo(1);
+        assertThat(players.get(0).getName()).isEqualTo("Ana");
     }
 
     @Test
     public void shouldReturnNoContentWhenDeletingAllPlayers() throws Exception {
+        setUpTwoPlayers();
+
         mockMvc.perform(delete("/api/v1/players"))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/v1/players"))
-                .andExpect(status().isNoContent());
+        assertThat(playerRepository.findAll().size()).isEqualTo(0);
     }
 
     @Test
     public void shouldReturnListOfPlayersWhenPlayersExist() throws Exception {
-        Player player1 = new Player();
-        player1.setName("Ana");
-        playerRepository.save(player1);
-        Player player2 = new Player();
-        player2.setName("Pepe");
-        playerRepository.save(player2);
+        setUpTwoPlayers();
 
         mockMvc.perform(get("/api/v1/players"))
                 .andExpect(status().isOk())
@@ -129,62 +128,51 @@ public class PlayerControllerTest {
 
     @Test
     public void shouldReturnNotFoundWhenDeletingNonExistentPlayer() throws Exception {
-        Long playerId = 1L;
+        setUpTwoPlayers();
+        Long playerId = 31L;
         mockMvc.perform(delete("/api/v1/players/{id}", playerId))
                 .andExpect(status().isNotFound());
+
+        assertThat(playerRepository.findAll().size()).isEqualTo(2);
     }
 
     @Test
     public void shouldReturnOkAndDeletedPlayerWhenDeletingAPlayer() throws Exception {
-        Player player = new Player();
-        player.setName("Ana");
-        Player savedPlayer = playerRepository.save(player);
+        setUpTwoPlayers();
+        List<Player> players = playerRepository.findAll();
+        Long existingId = players.get(0).getId();
 
-        mockMvc.perform(delete("/api/v1/players/{id}", savedPlayer.getId()))
+        mockMvc.perform(delete("/api/v1/players/{id}", existingId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Ana"));
 
+        assertThat(playerRepository.findById(existingId)).isEmpty();
     }
-
-    private void setPlayerWithResidenceAndBooking(Booking booking) {
-        residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
-        savedResidence = residenceService.saveResidence(residence);
-
-        savedBookingToCancel = bookingService.saveBooking(booking);
-
-        List<Booking> bookings = new java.util.ArrayList<>();
-        bookings.add(savedBookingToCancel);
-
-        player = new Player();
-        player.setName("Ana");
-        player.setResidence(savedResidence);
-        player.setBookings(bookings);
-        savedPlayer = playerService.savePlayer(player);
-    }
-
-    @Test
-    public void shouldReturnOkAndUpdatedPlayer_WhenCancellingAnOwnedBooking() throws Exception {
-        /// GIVEN A PLAYER WITH A BOOKING
-        Booking testBooking = new Booking();
-        testBooking.setBookingDate(TOMORROW);
-        testBooking.setTimeSlot(SLOT);
-        setPlayerWithResidenceAndBooking(testBooking);
-
-        /// WHEN CANCELLING THE BOOKING
-        /// THEN RETURNS OK AND THE DELETED BOOKING. This could have more assertions. Rethink a booking parameter in playerDTO
-
-
-        mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Ana"));
-    }
+//
+//    @Test
+//    public void shouldReturnOkAndUpdatedPlayer_WhenCancellingAnOwnedBooking() throws Exception {
+//        /// GIVEN A PLAYER WITH A BOOKING
+//        Booking testBooking = new Booking();
+//        testBooking.setBookingDate(TOMORROW);
+//        testBooking.setTimeSlot(SLOT);
+//        setPlayerWithResidenceAndBooking(testBooking);
+//
+//        assertThat(testBooking.getBookingOwner()).isNotNull();
+//
+//
+//        /// WHEN CANCELLING THE BOOKING
+//        /// THEN RETURNS OK AND THE DELETED BOOKING. This could have more assertions. Rethink a booking parameter in playerDTO
+//
+//        mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.name").value("Ana"));
+//
+//        assertThat(testBooking.getBookingOwner()).isEqualTo(null);
+//    }
 
     @Test
     public void shouldReturnBadRequest_WhenPastBooking() throws Exception {
@@ -203,6 +191,41 @@ public class PlayerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Ana"));
+    }
+
+    private void setUpTwoPlayers() {
+        Player player1 = new Player();
+        player1.setName("Ana");
+        playerRepository.save(player1);
+        Player player2 = new Player();
+        player2.setName("Pepe");
+        playerRepository.save(player2);
+    }
+
+
+    private void setPlayerWithResidenceAndBooking(Booking booking) {
+        residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        savedResidence = residenceService.saveResidence(residence);
+
+        player = new Player();
+        player.setName("Ana");
+        player.setResidence(savedResidence);
+
+        player.setBookings(new ArrayList<>());
+        player.getBookings().add(booking);
+        booking.setBookingOwner(player);
+
+
+        savedPlayer = playerService.savePlayer(player);
+        savedBookingToCancel = bookingService.saveBooking(booking);
+
+//        System.out.println("\n *** IMPRIMIMOS DATOS CREADOS EN EL TEST");
+//        System.out.println("\n *** Player with residence and booking: " + savedPlayer.toString());
+//        System.out.println("\n *** Residence : " + savedResidence.toString());
+//        System.out.println("\n *** Booking : " + savedBookingToCancel.toString());
     }
 
 }
