@@ -5,7 +5,7 @@ import java.util.List;
 public class PlayerDTO {
     private Long id;
     private String name;
-    private List<Long> bookingIds;
+    private List<BookingDTO> bookings;
 
     public PlayerDTO() {
     }
@@ -30,19 +30,20 @@ public class PlayerDTO {
         this.name = name;
     }
 
-//    public List<Long> getBookingIds() {
-//        return bookingIds;
-//    }
-//
-//    public void setBookingIds(List<Long> bookingIds) {
-//        this.bookingIds = bookingIds;
-//    }
+    public List<BookingDTO> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<BookingDTO> bookings) {
+        this.bookings = bookings;
+    }
 
     @Override
     public String toString() {
         return "PlayerDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", bookings'" + bookings + '\'' +
                 '}';
     }
 }

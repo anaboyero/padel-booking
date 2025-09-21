@@ -22,7 +22,7 @@ public class BookingController {
 
     BookingService bookingService;
     private static final Logger log = LoggerFactory.getLogger(BookingController.class);
-    private BookingMapper bookingMapper;
+    private final BookingMapper bookingMapper;
 
     public BookingController(BookingService bookingService, BookingMapper bookingMapper){
         this.bookingService = bookingService;
@@ -30,8 +30,12 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<Booking> getAllBookings() {
-        return bookingService.getAllBookings();
+    public ResponseEntity<List<BookingDTO>> getAllBookings() {
+        List<Booking> bookings = bookingService.getAllBookings();
+        List<BookingDTO> bookingDTOS = bookings.stream()
+                .map(bookingMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(bookingDTOS);
     }
 
     @GetMapping("/{id}")

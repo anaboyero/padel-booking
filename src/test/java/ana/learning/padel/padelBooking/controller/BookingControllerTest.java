@@ -43,7 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public class BookingControllerTest {
 
-
     private final LocalDate TODAY = LocalDate.now();
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final String NAME_OF_PLAYER1 = "Ana";
@@ -55,78 +54,38 @@ public class BookingControllerTest {
     private final MockMvc mockMvc;
     private final BookingService bookingService;
     private final BookingRepository bookingRepository;
-    private final ResidenceService residenceService;
-    private final PlayerService playerService;
-    Player player;
-    Residence residence;
-    Booking savedBooking;
 
 
-    public BookingControllerTest(MockMvc mockMvc, BookingService bookingService, ResidenceService residenceService, PlayerService playerService, BookingRepository bookingRepository) {
+
+    public BookingControllerTest(MockMvc mockMvc, BookingService bookingService, BookingRepository bookingRepository) {
         this.mockMvc = mockMvc;
         this.bookingService = bookingService;
-        this.residenceService = residenceService;
-        this.playerService = playerService;
         this.bookingRepository = bookingRepository;
     }
 
-
     @BeforeEach
-    public void setUp() {
-
-        log.info("\n ***Entrando en setUp()");
+    public void cleanUp() {
         bookingRepository.deleteAll();
-
-        residence = new Residence();
-        residence.setLetter(RESIDENCE_LETTER_A);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        Residence savedResidence = residenceService.saveResidence(residence);
-
-        log.info("\n *** savedResidence = " + savedResidence);
-
-        player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        player.setResidence(savedResidence);
-        Player savedPlayer = playerService.savePlayer(player);
-
-        log.info("\n *** savedPlayer = " + savedPlayer);
-
-
-        Booking booking = new Booking();
-        booking.setBookingDate(TODAY);
-        booking.setTimeSlot(SLOT);
-//        booking.setBookingOwner(savedPlayer);
-        // Cuando guardo un booking con un playerOwner, debería ir despues a Player para persistir esa booking.
-
-        savedBooking = bookingService.saveBooking(booking);
-
-        log.info("\n *** savedBooking = " + savedBooking);
-
-
-
     }
 
     @Test
     public void shouldReturnEmptyListWhenThereIsNoBookings() throws Exception {
-
         bookingRepository.deleteAll();
-
         mockMvc.perform(get("/api/v1/bookings")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
-
     }
 
     @Test
     public void shouldReturnABookingListWhenThereAreBookings() throws Exception {
 
+        createConsecutiveBookings(3); // crea 3 bookings en días consecutivos a partir de hoy
         MvcResult result = mockMvc.perform(get("/api/v1/bookings"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].bookingDate").value(TODAY.toString()))
                 .andReturn();
 
@@ -137,8 +96,9 @@ public class BookingControllerTest {
 
     @Test
     public void shouldReturnBookingWhenConsultingAnExistingBooking() throws Exception {
-        Long id = savedBooking.getId();
-        MvcResult result = mockMvc.perform(get("/api/v1/bookings/" + id))
+        createConsecutiveBookings(3); // crea y persiste 3 bookings en días consecutivos a partir de hoy
+
+        MvcResult result = mockMvc.perform(get("/api/v1/bookings/" + bookingService.getAllBookings().get(0).getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.bookingDate").value(TODAY.toString()))
@@ -148,64 +108,23 @@ public class BookingControllerTest {
         log.info("\n*** Response de get by existing Id: " + jsonResponse);
     }
 
-    // sería útil saber si está available? Tengo un metodo en calendar y otro en booking.
-
-
-    // PENSE PONER ESTO EN BOOKING PERO CREO QUE MEJOR EN BOOKING CALENDAR
-//    @Test
-//    public void shouldReserveAnAvailableBookingAsAPlayerWithResidence() throws Exception {
-//        BookingCalendar calendar = new BookingCalendar();
-//        calendar.setStartDay(TODAY);
-//        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
-//
-//        Residence residence = new Residence();
-//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-//        residence.setFloor(RESIDENCE_5FLOOR);
-//        residence.setLetter(RESIDENCE_LETTER_A);
-//
-//        Player player = new Player();
-//        player.setName(NAME_OF_PLAYER1);
-//        player.setResidence(residence);
-//        Player savedPlayer = playerService.savePlayer(player);
-//
-//        Long playerId = savedPlayer.getId();
-//        Long calendarId = savedCalendar.getId();
-//        Long bookingId = savedCalendar.getAvailableBookings().getFirst().getId();
-//
-//        MvcResult result = mockMvc.perform(post("/api/v1/bookings/{bookingId}", bookingId)
-//                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(player))))
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andReturn();
-//
-//        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Response (GET): " + jsonResponse);
-//
-//
-//        log.info("Test in progress");
-//
-//
-//
-//    }
-
-
-
-
-
     @Test
     public void shouldReturn404NotFoundWhenConsultingANonExistingBooking() throws Exception {
-        Long nonExistingId = 1L;
+        Long nonExistingId = 101L;
         MvcResult result = mockMvc.perform(get("/api/v1/bookings/" + nonExistingId))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response de get by Non existing Id: " + jsonResponse);
+    }
+
+    private void createConsecutiveBookings(int num){
+        for (int i=0; i<num; i++) {
+            Booking booking = new Booking();
+            booking.setBookingDate(TODAY.plusDays(i));
+            booking.setTimeSlot(SLOT);
+            bookingService.saveBooking(booking);
+        }
     }
 }

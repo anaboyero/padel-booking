@@ -31,7 +31,9 @@ FALLOS:
 - player tries to book an already owned booking.
 - player tries to book a not available booking.
 - probar cancel booking
-- get all calendars falla
+- get all calendars falla--> DONE
+- get all bookings falla--> 
+- poner booking dto dentro de dto players para ver las reservas de un jugador
 
 A futuro:
 
