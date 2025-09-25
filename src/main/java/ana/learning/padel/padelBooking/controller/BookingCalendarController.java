@@ -72,6 +72,7 @@ public class BookingCalendarController {
         }
 
         Optional<Booking> reservation = bookingCalendarService.reserveBooking(temptativeBooking.get(), temptativePlayer.get(), temptativeCalendar.get());
+
         if (reservation.isEmpty()) {
             return ResponseEntity.badRequest().body(null);
         }

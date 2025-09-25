@@ -10,6 +10,6 @@ public interface BookingService {
     Booking saveBooking(Booking booking);
     List<Booking> getAllBookings();
     Optional<Booking> getBookingById(Long id);
-    Booking assignBookingToPlayer(Booking booking, Player player);
+//    Booking assignBookingToPlayer(Booking booking, Player player);
 //    Boolean isAvailable();
 }

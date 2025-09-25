@@ -76,8 +76,18 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
             return Optional.empty();
         }
         log.info("La reserva se puede llevar a cabo");
-        Booking assignedBooking = bookingService.assignBookingToPlayer(temptativeBooking, temptativePlayer);
-        return this.confirmBooking(assignedBooking, bookingCalendar);
+
+        temptativeBooking.setBookingOwner(temptativePlayer);
+        temptativePlayer.addBooking(temptativeBooking);
+        Booking savedBooking = bookingService.saveBooking(temptativeBooking);
+        playerService.savePlayer(temptativePlayer);
+        return bookingCalendar.reserveBooking(savedBooking);
+
+
+//        Booking assignedBooking = bookingService.assignBookingToPlayer(temptativeBooking, temptativePlayer);
+//        Booking assignedPlayer = playerService.assignPlayerToBooking(assignedBooking, temptativePlayer);
+
+//        return this.confirmBooking(assignedBooking, bookingCalendar);
     }
 
     @Override

@@ -28,6 +28,7 @@ FALLOS:
 
 - Cuando se intenta asignar una residencia a un jugador que no existe devuelve null y 200--> DONE
 - Falta delete all calendars --> DONE
+- PRIORIDAD: ESTOY CON EL CONTROLADOR DE BOOKING CALENDAR, QUE PARECE QUE NO ME ESTÁ FUNCIONANDO BIEN.
 - player tries to book an already owned booking.
 - player tries to book a not available booking.
 - probar cancel booking
@@ -45,7 +46,6 @@ A futuro:
 
 Hay que distinguir entre las cosas que tiene que poder hacer el USUARIO a través del controlador 
 y las cosas que necesitamos hacer de manera INTERNA para proporcionar ese servicio.
-
 
 https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&dark=auto#G1F7YAcZhY5pEYzXbr9k_0oZaryzbQqKlm
 

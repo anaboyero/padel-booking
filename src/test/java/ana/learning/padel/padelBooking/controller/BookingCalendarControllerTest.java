@@ -9,6 +9,7 @@ import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import ana.learning.padel.padelBooking.service.BookingCalendarService;
+import ana.learning.padel.padelBooking.service.BookingService;
 import ana.learning.padel.padelBooking.service.PlayerService;
 import ana.learning.padel.padelBooking.service.ResidenceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -51,16 +54,21 @@ public class BookingCalendarControllerTest {
     final BookingCalendarService bookingCalendarService;
     final BookingCalendarRepository bookingCalendarRepository;
     final PlayerService playerService;
+    final BookingService bookingService;
     private final ResidenceService residenceService;
     final MockMvc mockMvc;
     final ObjectMapper objectMapper;
     private final PlayerMapper playerMapper;
 
+    Residence savedResidence;
+    Player savedPlayer;
+
     private final Logger log = LoggerFactory.getLogger(BookingCalendarControllerTest.class);
 
-    public BookingCalendarControllerTest(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository, ResidenceService residenceService, MockMvc mockMvc, ObjectMapper objectMapper, PlayerService playerService, PlayerMapper playerMapper){
+    public BookingCalendarControllerTest(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository, BookingService bookingService, ResidenceService residenceService, MockMvc mockMvc, ObjectMapper objectMapper, PlayerService playerService, PlayerMapper playerMapper){
         this.bookingCalendarService = bookingCalendarService;
         this.bookingCalendarRepository = bookingCalendarRepository;
+        this.bookingService = bookingService;
         this.residenceService = residenceService;
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
@@ -105,8 +113,7 @@ public class BookingCalendarControllerTest {
     @Test
     public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
 
-        BookingCalendar calendar = new BookingCalendar();
-        bookingCalendarService.saveBookingCalendar(calendar);
+        createConsecutiveBookingCalendars(1); // crea y persiste 1 calendario para esta semana
 
         MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
                 .andExpect(status().isOk())
@@ -121,24 +128,14 @@ public class BookingCalendarControllerTest {
     @Test
     public void shouldReturnListOf3BookingCalendars() throws Exception {
 
-        BookingCalendar bookingCalendarToday = new BookingCalendar();
-        bookingCalendarToday.setStartDay(TODAY);
-        bookingCalendarService.saveBookingCalendar(bookingCalendarToday);
-
-        BookingCalendar bookingCalendarTomorrow = new BookingCalendar();
-        bookingCalendarTomorrow.setStartDay(TOMORROW);
-        bookingCalendarService.saveBookingCalendar(bookingCalendarTomorrow);
-
-        BookingCalendar bookingCalendarAfterTomorrow = new BookingCalendar();
-        bookingCalendarAfterTomorrow.setStartDay(AFTER_TOMORROW);
-        bookingCalendarService.saveBookingCalendar(bookingCalendarAfterTomorrow);
+        createConsecutiveBookingCalendars(3); // crea y persiste 3 calendarios en tres semanas consecutivas a partir de hoy
 
         MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].startDay").value(TODAY.toString()))
-                .andExpect(jsonPath("$[1].startDay").value(TOMORROW.toString()))
-                .andExpect(jsonPath("$[2].startDay").value(AFTER_TOMORROW.toString()))
+                .andExpect(jsonPath("$[1].startDay").value(TODAY.plusDays(7).toString()))
+                .andExpect(jsonPath("$[2].startDay").value(TODAY.plusDays(14).toString()))
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andReturn();
 
@@ -148,37 +145,23 @@ public class BookingCalendarControllerTest {
 
   @Test
     public void shouldReserveAnAvailableBookingByAPlayerWithResidence() throws Exception {
-        // Arrange
-        BookingCalendar calendar = new BookingCalendar();
-        calendar.setStartDay(TODAY);
-        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
-        Long calendarId = savedCalendar.getId();
+      BookingCalendar calendar = createConsecutiveBookingCalendars(1).get(0);
+      savedPlayer = createPlayerWithResidence();
 
-        Residence residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
-        Residence savedResidence = residenceService.saveResidence(residence);
+      Booking firstAvailableBooking = calendar.getAvailableBookings().get(0);
+      Long bookingId = firstAvailableBooking.getId();
+      Long playerId = savedPlayer.getId();
 
-        Player player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        player.setResidence(savedResidence);
-        Player savedPlayer = playerService.savePlayer(player);
+      MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars/{calendarId}/bookings/{bookingId}", calendar.getId(), firstAvailableBooking.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(savedPlayer))))
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.id").value(bookingId))
+                        .andExpect(jsonPath("$.bookingOwner.id").value(playerId))
+                        .andReturn();
 
-        Booking booking = savedCalendar.getAvailableBookings().get(0);
-        Long bookingId = booking.getId();
-
-      // Act & Assert
-
-        MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars/{calendarId}/bookings/{bookingId}", calendarId, bookingId)
-                        .content(objectMapper.writeValueAsString(playerMapper.toDTO(savedPlayer)))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(bookingId))
-                .andExpect(jsonPath("$.bookingOwner.id").value(savedPlayer.getId()))
-                .andReturn();
-
-        // Logging
+      Booking savedBooking = bookingService.getBookingById(bookingId).get();
+      assertThat(savedBooking.getBookingOwner().getId()).isEqualTo(playerId);
 
       String jsonResponse = result.getResponse().getContentAsString();
       log.info("\n*** RESPONSE: " + jsonResponse);
@@ -239,5 +222,31 @@ public class BookingCalendarControllerTest {
 //    @Test
 //    public void shouldNotReserveAnUnavailableBookingByAPlayerWithResidence() throws Exception {
 //    }
+
+    private List<BookingCalendar> createConsecutiveBookingCalendars(int num){
+        List<BookingCalendar>  createdCalendars = new ArrayList<>();
+        if (num<0) {return createdCalendars;}
+
+        for (int i=0; i<num; i++) {
+            BookingCalendar bookingCalendar = new BookingCalendar();
+            bookingCalendar.setStartDay(TODAY.plusDays(7L *i));
+            createdCalendars.add(bookingCalendarService.saveBookingCalendar(bookingCalendar));
+        }
+        return createdCalendars;
+    }
+
+    private Player createPlayerWithResidence() {
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        savedResidence = residenceService.saveResidence(residence);
+
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(savedResidence);
+        savedPlayer = playerService.savePlayer(player);
+        return savedPlayer;
+    }
 
 }

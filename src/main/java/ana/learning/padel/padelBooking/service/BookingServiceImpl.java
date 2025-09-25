@@ -34,10 +34,5 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findById(id);
     }
 
-    @Override
-    public Booking assignBookingToPlayer(Booking booking, Player player) {
-        booking.setBookingOwner(player);
-        return saveBooking(booking);
-    }
 
 }

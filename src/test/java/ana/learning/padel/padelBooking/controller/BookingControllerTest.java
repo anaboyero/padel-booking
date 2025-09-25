@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.slf4j.Logger;
@@ -68,37 +70,33 @@ public class BookingControllerTest {
         bookingRepository.deleteAll();
     }
 
-    @Test
-    public void shouldReturnEmptyListWhenThereIsNoBookings() throws Exception {
-        bookingRepository.deleteAll();
-        mockMvc.perform(get("/api/v1/bookings")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(0)));
-    }
+    @ParameterizedTest
+    @CsvSource({
+            "0,0",   // sin bookings → lista vacía
+            "3,3"    // 3 bookings creados → lista con 3
+    })
+    public void shouldReturnABookingListWhenThereAreBookings(int bookingsToCreate, int expectedSize) throws Exception {
 
-    @Test
-    public void shouldReturnABookingListWhenThereAreBookings() throws Exception {
+        if (bookingsToCreate>0) {
+            createConsecutiveBookings(bookingsToCreate); // crea bookings en días consecutivos a partir de hoy
+        }
 
-        createConsecutiveBookings(3); // crea 3 bookings en días consecutivos a partir de hoy
         MvcResult result = mockMvc.perform(get("/api/v1/bookings"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].bookingDate").value(TODAY.toString()))
+                .andExpect(jsonPath("$", hasSize(expectedSize)))
                 .andReturn();
 
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response (GET): " + jsonResponse);
-
     }
+
 
     @Test
     public void shouldReturnBookingWhenConsultingAnExistingBooking() throws Exception {
         createConsecutiveBookings(3); // crea y persiste 3 bookings en días consecutivos a partir de hoy
 
-        MvcResult result = mockMvc.perform(get("/api/v1/bookings/" + bookingService.getAllBookings().get(0).getId()))
+        MvcResult result = mockMvc.perform(get("/api/v1/bookings/{id}", bookingService.getAllBookings().get(0).getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.bookingDate").value(TODAY.toString()))
@@ -107,6 +105,7 @@ public class BookingControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response de get by existing Id: " + jsonResponse);
     }
+
 
     @Test
     public void shouldReturn404NotFoundWhenConsultingANonExistingBooking() throws Exception {

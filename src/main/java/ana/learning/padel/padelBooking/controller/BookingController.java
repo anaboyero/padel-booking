@@ -45,7 +45,6 @@ public class BookingController {
             return ResponseEntity.notFound().build();
         }
         BookingDTO bookingDTO = bookingMapper.toDTO(result.get());
-                //(result.get().getId(), result.get().getDate(), result.get().getTimeSlot(), result.get().getPlayer().getId());
         return ResponseEntity.ok(bookingDTO);
     }
 
