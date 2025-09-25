@@ -66,29 +66,36 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
     }
 
     @Override
-    public Optional<Booking> reserveBooking(Booking temptativeBooking, Player temptativePlayer, BookingCalendar bookingCalendar) {
-        if (!playerService.isAProperPlayerToMakeAReservation(temptativePlayer)) {
-            log.info("No se puede reservar porque el player no existe o no tiene una residencia completa");
-            return Optional.empty();
-        }
-        if (!isBookingAvailable(temptativeBooking, bookingCalendar)) {
-            log.info("No se puede reservar porque el booking no está disponible");
-            return Optional.empty();
-        }
-        log.info("La reserva se puede llevar a cabo");
-
-        temptativeBooking.setBookingOwner(temptativePlayer);
-        temptativePlayer.addBooking(temptativeBooking);
-        Booking savedBooking = bookingService.saveBooking(temptativeBooking);
-        playerService.savePlayer(temptativePlayer);
-        return bookingCalendar.reserveBooking(savedBooking);
-
-
-//        Booking assignedBooking = bookingService.assignBookingToPlayer(temptativeBooking, temptativePlayer);
-//        Booking assignedPlayer = playerService.assignPlayerToBooking(assignedBooking, temptativePlayer);
-
-//        return this.confirmBooking(assignedBooking, bookingCalendar);
+    public Optional<Booking> reserveBooking(Booking booking, Player player, BookingCalendar calendar) {
+        return Optional.empty();
     }
+
+
+//    @Override
+//    public Optional<Booking> reserveBooking( Booking booking, Player player, BookingCalendar calendar) {
+//
+//        if (!playerService.isAProperPlayerToMakeAReservation(player)) {
+//            log.info("No se puede reservar porque el player no existe o no tiene una residencia completa");
+//            return Optional.empty();
+//        }
+//        if (!isBookingAvailable(booking, calendar)) {
+//            log.info("No se puede reservar porque el booking no está disponible");
+//            return Optional.empty();
+//        }
+//        log.info("La reserva se puede llevar a cabo");
+//
+////        booking.setBookingOwner(player);
+//        player.addBooking(booking);
+//        Booking savedBooking = bookingService.saveBooking(booking);
+//        playerService.savePlayer(player);
+//        return calendar.reserveBooking(savedBooking);
+//
+//
+////        Booking assignedBooking = bookingService.assignBookingToPlayer(temptativeBooking, temptativePlayer);
+////        Booking assignedPlayer = playerService.assignPlayerToBooking(assignedBooking, temptativePlayer);
+//
+////        return this.confirmBooking(assignedBooking, bookingCalendar);
+//    }
 
     @Override
     public void deleteAllBookingCalendars() {

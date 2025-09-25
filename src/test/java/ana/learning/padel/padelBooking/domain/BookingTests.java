@@ -29,6 +29,7 @@ public class BookingTests {
     private static final LocalDate TODAY = LocalDate.now();
     Player player;
     Booking booking;
+    Residence residence;
 
     private static final Logger log = LoggerFactory.getLogger(BookingTests.class);
 
@@ -39,7 +40,6 @@ public class BookingTests {
     }
 
     @Test
-    @DisplayName("Should create a new Booking")
     public void shouldCreateANewBooking() {
         booking = new Booking();
         booking.setBookingDate(TODAY);
@@ -50,4 +50,102 @@ public class BookingTests {
         assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
         assertThat(booking.getBookingOwner()).isEqualTo(player);
     }
+
+
+
+    @Test
+    public void givenValidPlayer_shouldReserveAvailableBooking() {
+        /// GIVEN a player with residence and no bookings
+
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        residence.setId(1L);
+
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(residence);
+        player.setId(2L);
+
+        Booking booking = new Booking();
+        booking.setBookingDate(TODAY);
+        booking.setTimeSlot(SLOT);
+        player.setId(3L);
+
+        assertThat(player.getBookings().size()).isEqualTo(0);
+        assertThat(booking.getBookingOwner()).isNull();
+
+        /// WHEN reserving a booking with that player
+
+        booking.reserveBooking(player);
+
+        /// THEN the booking is assigned to the player, and the player has this booking
+
+        assertThat(player.getBookings().size()).isEqualTo(1);
+        assertThat(booking.getBookingOwner()).isNotNull();
+        assertThat(booking.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
+
+    }
+
+    @Test
+    public void givenValidPlayer_shouldNotReserveUnvailableBooking() {
+        /// GIVEN a player with residence and no bookings
+
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        residence.setId(1L);
+
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(residence);
+        player.setId(2L);
+
+        Booking booking = new Booking();
+        booking.setBookingDate(TODAY);
+        booking.setTimeSlot(SLOT);
+        booking.setBookingOwner(new Player());
+        player.setId(3L);
+
+        assertThat(player.getBookings().size()).isEqualTo(0);
+        assertThat(booking.getBookingOwner()).isNotNull();
+
+        /// WHEN trying to reserve an unavailable booking with a player
+
+        booking.reserveBooking(player);
+
+        /// THEN the booking is not assigned to the player, and the player has not this booking
+
+        assertThat(player.getBookings().size()).isEqualTo(0);
+        assertThat(booking.getBookingOwner().getName()).isNotEqualTo(NAME_OF_PLAYER1);
+    }
+
+    @Test
+    public void givenNotValidPlayer_shouldNotReserveAvailableBooking() {
+        /// GIVEN a player with no residence
+
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setId(2L);
+
+        Booking booking = new Booking();
+        booking.setBookingDate(TODAY);
+        booking.setTimeSlot(SLOT);
+        player.setId(3L);
+
+        assertThat(player.getBookings().size()).isEqualTo(0);
+        assertThat(booking.getBookingOwner()).isNull();
+
+        /// WHEN trying to reserve an available booking with unvalid player
+
+        booking.reserveBooking(player);
+
+        /// THEN the booking is not assigned to the player, and the player has not this booking
+
+        assertThat(player.getBookings().size()).isEqualTo(0);
+        assertThat(booking.getBookingOwner()).isNull();
+    }
+
 }

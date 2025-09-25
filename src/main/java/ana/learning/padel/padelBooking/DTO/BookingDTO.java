@@ -8,7 +8,7 @@ public class BookingDTO {
     private Long id;
     private LocalDate bookingDate;
     private Booking.TimeSlot timeSlot;
-    private PlayerDTO bookingOwner;
+    private Long bookingOwnerId;
 
     public Long getId() {
         return id;
@@ -34,12 +34,12 @@ public class BookingDTO {
         this.timeSlot = timeSlot;
     }
 
-    public PlayerDTO getBookingOwner() {
-        return bookingOwner;
+    public Long getBookingOwnerId() {
+        return bookingOwnerId;
     }
 
-    public void setBookingOwner(PlayerDTO bookingOwner) {
-        this.bookingOwner = bookingOwner;
+    public void setBookingOwnerId(Long bookingOwnerId) {
+        this.bookingOwnerId = bookingOwnerId;
     }
 
     @Override
@@ -48,6 +48,7 @@ public class BookingDTO {
                 "id=" + id +
                 ", bookingDate=" + bookingDate +
                 ", timeSlot=" + timeSlot +
+                ", bookingOwnerId=" + bookingOwnerId +
                 '}';
     }
 }

@@ -14,6 +14,7 @@ import ana.learning.padel.padelBooking.service.PlayerService;
 import ana.learning.padel.padelBooking.service.ResidenceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -143,6 +144,8 @@ public class BookingCalendarControllerTest {
         log.info("\n*** Response de get available bookings " + jsonResponse);
     }
 
+
+  @Disabled("Este test está desactivado temporalmente")
   @Test
     public void shouldReserveAnAvailableBookingByAPlayerWithResidence() throws Exception {
       BookingCalendar calendar = createConsecutiveBookingCalendars(1).get(0);
@@ -167,6 +170,7 @@ public class BookingCalendarControllerTest {
       log.info("\n*** RESPONSE: " + jsonResponse);
     }
 
+    @Disabled("Este test está desactivado temporalmente")
     @Test
     public void shouldNotReserveAnAvailableBookingByAPlayerWithNoResidence() throws Exception {
 

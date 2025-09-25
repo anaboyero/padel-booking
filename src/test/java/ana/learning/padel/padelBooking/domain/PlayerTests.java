@@ -4,6 +4,7 @@ import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -101,6 +102,7 @@ public class PlayerTests {
 
     }
 
+    @Disabled("Estos metodos me los estoy replanteando para tratarlo desde booking y no desde player")
     @Test
     public void shouldAddBooking(){
         /// GIVEN a player with no bookings

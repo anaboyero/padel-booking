@@ -14,7 +14,7 @@ public class Player {
     @JoinColumn (name = "residence_id")
     private Residence residence;
     @OneToMany(mappedBy = "bookingOwner")
-    List<Booking> bookings;
+    private List<Booking> bookings;
 
     public Player() {
         bookings = new java.util.ArrayList<>();
@@ -58,8 +58,7 @@ public class Player {
     }
 
     public void addBooking(Booking booking) {
-        this.bookings.add(booking);
-        booking.setBookingOwner(this);
+//        this.bookings.add(booking);
     }
 
     @Override
@@ -85,5 +84,9 @@ public class Player {
             }
         }
         return this;
+    }
+
+    public boolean isValidPlayer() {
+        return (getName()!=null && getId()!= null && getResidence()!=null && getResidence().getId()!=null);
     }
 }

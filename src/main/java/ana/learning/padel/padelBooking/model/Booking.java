@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 public class Booking {
@@ -15,6 +16,9 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "bookingOwner_id")
     private Player bookingOwner;
+    @ManyToOne
+    @JoinColumn(name = "calendar_id")
+    private BookingCalendar calendar;
 
 
     public enum TimeSlot {
@@ -93,5 +97,20 @@ public class Booking {
     @Override
     public int hashCode() {
         return Objects.hash(bookingDate, timeSlot);
+    }
+
+    public Optional<Booking> reserveBooking(Player player) {
+        if (getBookingOwner()!=null) {
+            System.out.println("ERROR: No se ha podido reservar porque la reserva está ocupada por otro jugador");
+            return Optional.empty();
+        }
+
+        if (!player.isValidPlayer()) {
+            System.out.println("ERROR: No se ha podido reservar porque el jugador no tiene residencia");
+            return Optional.empty();
+        }
+        setBookingOwner(player);
+        player.getBookings().add(this);
+        return Optional.of(this);
     }
 }

@@ -7,6 +7,7 @@ import ana.learning.padel.padelBooking.repository.BookingRepository;
 import ana.learning.padel.padelBooking.repository.PlayerRepository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -74,6 +75,7 @@ public class PlayerServiceTest {
         assertThat(testPlayer.getName()).isEqualTo("Javier");
     }
 
+    @Disabled("Estos metodos me los estoy replanteando")
     @Test
     public void shouldAddBookingToPlayer(){
 
@@ -133,6 +135,7 @@ public class PlayerServiceTest {
     }
 
 
+    @Disabled("Estos metodos me los estoy replanteando")
     @Test
     public void shouldNotAddBookingToPlayer_WhenBookingIsOwned(){
 

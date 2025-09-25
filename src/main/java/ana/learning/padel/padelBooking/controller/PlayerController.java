@@ -80,7 +80,7 @@ public class PlayerController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Player> DeleteAllPlayers() {
+    public ResponseEntity<PlayerDTO> DeleteAllPlayers() {
         playerService.deleteAllPlayers();
         return ResponseEntity.noContent().build();
     }

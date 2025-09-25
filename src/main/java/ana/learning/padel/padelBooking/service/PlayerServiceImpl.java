@@ -114,7 +114,8 @@ public class PlayerServiceImpl implements PlayerService {
 
         player.addBooking(booking);
         return playerRepository.save(player);
-
     }
+
+
 
 }
