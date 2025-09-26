@@ -84,24 +84,24 @@ public class PlayerTests {
 
     }
 
-    @Disabled("Estos metodos me los estoy replanteando para tratarlo desde booking y no desde player")
-    @Test
-    public void shouldAddBooking(){
-        /// GIVEN a player with no bookings
-        player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        player.setResidence(residence);
-        assertThat(player.getBookings().size()).isEqualTo(0);
-
-        /// WHEN adding a booking
-        booking1 = new Booking();
-        booking1.setBookingDate(TODAY);
-        booking1.setTimeSlot(SLOT);
-        player.addBooking(booking1);
-
-        /// THEN the player has one booking
-        assertThat(player.getBookings().size()).isEqualTo(1);
-    }
+//    @Disabled("Estos metodos me los estoy replanteando para tratarlo desde booking y no desde player")
+//    @Test
+//    public void shouldAddBooking(){
+//        /// GIVEN a player with no bookings
+//        player = new Player();
+//        player.setName(NAME_OF_PLAYER1);
+//        player.setResidence(residence);
+//        assertThat(player.getBookings().size()).isEqualTo(0);
+//
+//        /// WHEN adding a booking
+//        booking1 = new Booking();
+//        booking1.setBookingDate(TODAY);
+//        booking1.setTimeSlot(SLOT);
+//        player.addBooking(booking1);
+//
+//        /// THEN the player has one booking
+//        assertThat(player.getBookings().size()).isEqualTo(1);
+//    }
 
     private List<Booking> createConsecutiveBookings (int numBookings, LocalDate start) {
         LocalDate startDate;
@@ -141,7 +141,5 @@ public class PlayerTests {
         player.setBookings(bookings);
         return player;
     }
-
-
 
 }

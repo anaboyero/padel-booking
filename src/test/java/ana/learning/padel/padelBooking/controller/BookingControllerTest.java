@@ -75,7 +75,7 @@ public class BookingControllerTest {
             "0,0",   // sin bookings → lista vacía
             "3,3"    // 3 bookings creados → lista con 3
     })
-    public void shouldReturnABookingListWhenThereAreBookings(int bookingsToCreate, int expectedSize) throws Exception {
+    public void shouldReturnABookingList_WhenThereAreBookings(int bookingsToCreate, int expectedSize) throws Exception {
 
         if (bookingsToCreate>0) {
             createConsecutiveBookings(bookingsToCreate); // crea bookings en días consecutivos a partir de hoy
@@ -93,7 +93,7 @@ public class BookingControllerTest {
 
 
     @Test
-    public void shouldReturnBookingWhenConsultingAnExistingBooking() throws Exception {
+    public void shouldReturnBooking_WhenConsultingAnExistingBooking() throws Exception {
         createConsecutiveBookings(3); // crea y persiste 3 bookings en días consecutivos a partir de hoy
 
         MvcResult result = mockMvc.perform(get("/api/v1/bookings/{id}", bookingService.getAllBookings().get(0).getId()))

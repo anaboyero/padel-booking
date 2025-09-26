@@ -34,7 +34,7 @@ public class BookingTests {
     private static final Logger log = LoggerFactory.getLogger(BookingTests.class);
 
     @BeforeEach
-    public void setUp(){
+    public void setUpPlayer(){
         player = new Player();
         player.setName(NAME_OF_PLAYER1);
     }
