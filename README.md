@@ -16,6 +16,7 @@ TO DO:
 - Diferenciar entre DTOs de salida y entrada.
 - En la API no estoy pudiendo hacer las operaciones. Comprobar
 - Refactorización de código.
+
 - Uso de SQL para persistencia de datos.
 - Llevar a cloud.
 

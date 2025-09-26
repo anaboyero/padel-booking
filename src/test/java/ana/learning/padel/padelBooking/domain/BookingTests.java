@@ -45,38 +45,25 @@ public class BookingTests {
         booking.setBookingDate(TODAY);
         booking.setTimeSlot(SLOT);
         booking.setBookingOwner(player);
+        booking.setId(1L);
 
         assertThat(booking.getBookingDate()).isEqualTo(TODAY);
         assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
         assertThat(booking.getBookingOwner()).isEqualTo(player);
+        assertThat(booking.getId()).isEqualTo(1L);
     }
-
-
 
     @Test
     public void givenValidPlayer_shouldReserveAvailableBooking() {
-        /// GIVEN a player with residence and no bookings
+        /// GIVEN an available booking and a player with residence and no bookings
 
-        Residence residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
-        residence.setId(1L);
-
-        Player player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        player.setResidence(residence);
-        player.setId(2L);
-
-        Booking booking = new Booking();
-        booking.setBookingDate(TODAY);
-        booking.setTimeSlot(SLOT);
-        player.setId(3L);
-
+        residence = createAndPersistResidence();
+        booking = createAndPersistBooking();
+        player = createAndPersistPlayer(residence);
         assertThat(player.getBookings().size()).isEqualTo(0);
         assertThat(booking.getBookingOwner()).isNull();
 
-        /// WHEN reserving a booking with that player
+        /// WHEN the player tries to reserve the booking
 
         booking.reserveBooking(player);
 
@@ -89,30 +76,18 @@ public class BookingTests {
     }
 
     @Test
-    public void givenValidPlayer_shouldNotReserveUnvailableBooking() {
-        /// GIVEN a player with residence and no bookings
+    public void givenValidPlayer_shouldNotReserveUnavailableBooking() {
+        /// GIVEN a reserved booking, given a valid player
 
-        Residence residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
-        residence.setId(1L);
-
-        Player player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        player.setResidence(residence);
-        player.setId(2L);
-
-        Booking booking = new Booking();
-        booking.setBookingDate(TODAY);
-        booking.setTimeSlot(SLOT);
+        booking = createAndPersistBooking();
         booking.setBookingOwner(new Player());
-        player.setId(3L);
+        residence = createAndPersistResidence();
+        player = createAndPersistPlayer(residence);
 
         assertThat(player.getBookings().size()).isEqualTo(0);
         assertThat(booking.getBookingOwner()).isNotNull();
 
-        /// WHEN trying to reserve an unavailable booking with a player
+        /// WHEN the player tries to reserve the unavailable booking
 
         booking.reserveBooking(player);
 
@@ -124,16 +99,10 @@ public class BookingTests {
 
     @Test
     public void givenNotValidPlayer_shouldNotReserveAvailableBooking() {
-        /// GIVEN a player with no residence
+        /// GIVEN an available booking, given a player with no residence
 
-        Player player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        player.setId(2L);
-
-        Booking booking = new Booking();
-        booking.setBookingDate(TODAY);
-        booking.setTimeSlot(SLOT);
-        player.setId(3L);
+        booking = createAndPersistBooking();
+        player = createAndPersistPlayer(null);
 
         assertThat(player.getBookings().size()).isEqualTo(0);
         assertThat(booking.getBookingOwner()).isNull();
@@ -146,6 +115,33 @@ public class BookingTests {
 
         assertThat(player.getBookings().size()).isEqualTo(0);
         assertThat(booking.getBookingOwner()).isNull();
+    }
+
+    private Residence createAndPersistResidence() {
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        residence.setId(1L);
+        return residence;
+    }
+
+    private Player createAndPersistPlayer(Residence residence) {
+        player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setId(2L);
+        if (residence!=null) {
+            player.setResidence(residence);
+        }
+        return player;
+    }
+
+    private Booking createAndPersistBooking(){
+        booking = new Booking();
+        booking.setBookingDate(TODAY);
+        booking.setTimeSlot(SLOT);
+        player.setId(3L);
+        return booking;
     }
 
 }
