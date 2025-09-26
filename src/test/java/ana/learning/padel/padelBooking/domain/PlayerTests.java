@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,30 +41,12 @@ public class PlayerTests {
     private static final Logger log = LoggerFactory.getLogger(PlayerTests.class);
 
     @BeforeEach
-    public void setUp(){
+    public void createAndPersistResidence(){
         residence = new Residence();
         residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
         residence.setFloor(RESIDENCE_5FLOOR);
         residence.setLetter(RESIDENCE_LETTER_A);
-        residence.setId(1L); // esto lo estoy falseando yo, como si se hubiera persistido
-    }
-
-    private void setPlayerWithTwoOwnedBookings(){
-        booking1 = new Booking();
-        booking1.setBookingDate(TODAY);
-        booking1.setTimeSlot(SLOT);
-        booking1.setId(1L);;
-        booking2 = new Booking();
-        booking2.setBookingDate(TOMORROW);
-        booking2.setTimeSlot(SLOT);
-        booking2.setId(2L);;
-        List<Booking> bookings = new java.util.ArrayList<>();
-        player = new Player();
-        player.setId(10L);
-        player.setResidence(residence);
-        bookings.add(booking1);
-        bookings.add(booking2);
-        player.setBookings(bookings);
+        residence.setId(1L);
     }
 
     @Test
@@ -80,10 +63,10 @@ public class PlayerTests {
     @Test
     public void shouldCancelOwnedBooking() {
         /// GIVEN a player with 2 owned bookings
-        setPlayerWithTwoOwnedBookings();
+        player = setPlayerWithTwoOwnedBookings(TODAY);
         assertThat(player.getBookings().size()).isEqualTo(2);
         /// WHEN cancelling one of the owned bookings
-        player.cancelBooking(booking1);
+        player.cancelBooking(player.getBookings().get(0));
         /// THEN the player only owns one booking
         assertThat(player.getBookings().size()).isEqualTo(1);
     }
@@ -91,11 +74,10 @@ public class PlayerTests {
     @Test
     public void shouldNotCancelPastBookingFromPlayer() {
         /// GIVEN a player with an owned booking in the past
-        setPlayerWithTwoOwnedBookings();
-        booking1.setBookingDate(YESTERDAY);
+        player = setPlayerWithTwoOwnedBookings(YESTERDAY);
 
         /// WHEN trying to cancel that booking
-        player.cancelBooking(booking1);
+        player.cancelBooking(player.getBookings().get(0));
 
         /// then the booking is not cancelled
         assertThat(player.getBookings().size()).isEqualTo(2);
@@ -120,6 +102,46 @@ public class PlayerTests {
         /// THEN the player has one booking
         assertThat(player.getBookings().size()).isEqualTo(1);
     }
+
+    private List<Booking> createConsecutiveBookings (int numBookings, LocalDate start) {
+        LocalDate startDate;
+        if (start==null) {
+            startDate = TODAY;
+        }
+        else {
+            startDate = start;
+        }
+        List<Booking> bookings = new ArrayList<>();
+        if (numBookings < 1) {
+            return bookings;
+        }
+        for (int i = 0; i<numBookings; i++) {
+            Booking booking = new Booking();
+            booking.setBookingDate(startDate.plusDays(i));
+            booking.setTimeSlot(SLOT);
+            booking.setId((long)(1 + i));
+            bookings.add(booking);
+        }
+        return bookings;
+    }
+
+    private Player createAndPersist (Residence residence) {
+        player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setId(1L);
+        if (residence!=null) {
+            player.setResidence(residence);
+        }
+        return player;
+    }
+
+    private Player setPlayerWithTwoOwnedBookings(LocalDate start){
+        List<Booking> bookings = createConsecutiveBookings(2, start);
+        player = createAndPersist(residence);
+        player.setBookings(bookings);
+        return player;
+    }
+
 
 
 }
