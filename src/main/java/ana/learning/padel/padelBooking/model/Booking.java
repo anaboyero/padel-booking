@@ -3,6 +3,7 @@ package ana.learning.padel.padelBooking.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -20,6 +21,13 @@ public class Booking {
     @JoinColumn(name = "calendar_id")
     private BookingCalendar calendar;
 
+    public BookingCalendar getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(BookingCalendar calendar) {
+        this.calendar = calendar;
+    }
 
     public enum TimeSlot {
 //        NINE_AM,
@@ -109,8 +117,13 @@ public class Booking {
             System.out.println("ERROR: No se ha podido reservar porque el jugador no tiene residencia");
             return Optional.empty();
         }
+        System.out.println("ERROR: No se ha podido reservar porque el jugador no tiene residencia");
         setBookingOwner(player);
-        player.getBookings().add(this);
+        List<Booking> bookingsUpdated= player.getBookings();
+        bookingsUpdated.add(this);
+        player.setBookings(bookingsUpdated);
+        calendar.updateBookingStatus(this);
         return Optional.of(this);
+
     }
 }

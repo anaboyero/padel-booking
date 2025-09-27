@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,12 @@ public class BookingCalendar {
         availableBookings  = new ArrayList<>();
     }
 
+//    @Transactional
+    public void updateBookingStatus(Booking booking) {
+        reservedBookings.add(booking);
+        availableBookings.remove(booking);
+    }
+
     private List<Booking> generateAvailableBookings(){
         availableBookings  = new ArrayList<>();
         if (startDay == null) {
@@ -43,6 +50,7 @@ public class BookingCalendar {
                 booking.setBookingDate(day);
                 booking.setTimeSlot(timeSlot);
                 booking.setBookingOwner(null);
+                booking.setCalendar(this);
                 availableBookings.add(booking);
             }
         }

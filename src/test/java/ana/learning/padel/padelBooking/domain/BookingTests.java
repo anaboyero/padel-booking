@@ -1,6 +1,7 @@
 package ana.learning.padel.padelBooking.domain;
 
 import ana.learning.padel.padelBooking.model.Booking;
+import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,22 +57,24 @@ public class BookingTests {
     @Test
     public void givenValidPlayer_shouldReserveAvailableBooking() {
         /// GIVEN an available booking and a player with residence and no bookings
-
+        BookingCalendar calendar = new BookingCalendar();
+        calendar.setStartDay(TODAY);
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
         residence = createAndPersistResidence();
-        booking = createAndPersistBooking();
         player = createAndPersistPlayer(residence);
+
         assertThat(player.getBookings().size()).isEqualTo(0);
-        assertThat(booking.getBookingOwner()).isNull();
+        assertThat(availableBooking.getBookingOwner()).isNull();
 
         /// WHEN the player tries to reserve the booking
 
-        booking.reserveBooking(player);
+        availableBooking.reserveBooking(player);
 
         /// THEN the booking is assigned to the player, and the player has this booking
 
         assertThat(player.getBookings().size()).isEqualTo(1);
-        assertThat(booking.getBookingOwner()).isNotNull();
-        assertThat(booking.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
+        assertThat(availableBooking.getBookingOwner()).isNotNull();
+        assertThat(availableBooking.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
 
     }
 

@@ -70,6 +70,7 @@ public class BookingControllerTest {
         bookingRepository.deleteAll();
     }
 
+
     @ParameterizedTest
     @CsvSource({
             "0,0",   // sin bookings → lista vacía

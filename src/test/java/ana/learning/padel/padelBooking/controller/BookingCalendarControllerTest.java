@@ -114,7 +114,7 @@ public class BookingCalendarControllerTest {
     @Test
     public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
 
-        createConsecutiveBookingCalendars(1); // crea y persiste 1 calendario para esta semana
+        List<BookingCalendar> calendars = createConsecutiveBookingCalendars(1); // crea y persiste 1 calendario para esta semana
 
         MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
                 .andExpect(status().isOk())
@@ -234,7 +234,8 @@ public class BookingCalendarControllerTest {
         for (int i=0; i<num; i++) {
             BookingCalendar bookingCalendar = new BookingCalendar();
             bookingCalendar.setStartDay(TODAY.plusDays(7L *i));
-            createdCalendars.add(bookingCalendarService.saveBookingCalendar(bookingCalendar));
+            BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
+            createdCalendars.add(savedCalendar);
         }
         return createdCalendars;
     }

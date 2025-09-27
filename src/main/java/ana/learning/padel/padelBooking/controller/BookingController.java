@@ -20,9 +20,9 @@ import java.util.Optional;
 @RequestMapping("api/v1/bookings")
 public class BookingController {
 
-    BookingService bookingService;
     private static final Logger log = LoggerFactory.getLogger(BookingController.class);
     private final BookingMapper bookingMapper;
+    BookingService bookingService;
 
     public BookingController(BookingService bookingService, BookingMapper bookingMapper){
         this.bookingService = bookingService;
