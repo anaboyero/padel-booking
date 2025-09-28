@@ -34,7 +34,7 @@ public class Booking {
 //        TEN_AM,
 //        ELEVEN_AM,
 //        TWELVE_PM,
-//        ONE_PM,
+        ONE_PM,
         TWO_PM,
         THREE_PM,
         FOUR_PM,

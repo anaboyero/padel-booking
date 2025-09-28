@@ -32,6 +32,14 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player savePlayer(Player player) {
+        // Guardar y persistir residencia
+        Residence residence = player.getResidence();
+        Residence savedResidence = residenceService.saveResidence(residence);
+
+        // Actualizar el player con la residencia persistida
+        player.setResidence(savedResidence);
+
+        // Persistir y devolver el nuevo player
         return playerRepository.save(player);
     }
 

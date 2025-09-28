@@ -54,29 +54,29 @@ public class BookingTests {
         assertThat(booking.getId()).isEqualTo(1L);
     }
 
-    @Test
-    public void givenValidPlayer_shouldReserveAvailableBooking() {
-        /// GIVEN an available booking and a player with residence and no bookings
-        BookingCalendar calendar = new BookingCalendar();
-        calendar.setStartDay(TODAY);
-        Booking availableBooking = calendar.getAvailableBookings().get(0);
-        residence = createAndPersistResidence();
-        player = createAndPersistPlayer(residence);
-
-        assertThat(player.getBookings().size()).isEqualTo(0);
-        assertThat(availableBooking.getBookingOwner()).isNull();
-
-        /// WHEN the player tries to reserve the booking
-
-        availableBooking.reserveBooking(player);
-
-        /// THEN the booking is assigned to the player, and the player has this booking
-
-        assertThat(player.getBookings().size()).isEqualTo(1);
-        assertThat(availableBooking.getBookingOwner()).isNotNull();
-        assertThat(availableBooking.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
-
-    }
+//    @Test
+//    public void givenValidPlayer_shouldReserveAvailableBooking() {
+//        /// GIVEN an available booking and a player with residence and no bookings
+//        BookingCalendar calendar = new BookingCalendar();
+//        calendar.setStartDay(TODAY);
+//        Booking availableBooking = calendar.getAvailableBookings().get(0);
+//        residence = createAndPersistResidence();
+//        player = createAndPersistPlayer(residence);
+//
+//        assertThat(player.getBookings().size()).isEqualTo(0);
+//        assertThat(availableBooking.getBookingOwner()).isNull();
+//
+//        /// WHEN the player tries to reserve the booking
+//
+//        availableBooking.reserveBooking(player);
+//
+//        /// THEN the booking is assigned to the player, and the player has this booking
+//
+//        assertThat(player.getBookings().size()).isEqualTo(1);
+//        assertThat(availableBooking.getBookingOwner()).isNotNull();
+//        assertThat(availableBooking.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
+//
+//    }
 
     @Test
     public void givenValidPlayer_shouldNotReserveUnavailableBooking() {

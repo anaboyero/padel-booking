@@ -36,178 +36,160 @@ public class BookingCalendarTests {
 
     private static final Logger log = LoggerFactory.getLogger(BookingCalendarTests.class);
 
-    @BeforeEach
-    public void setUp(){
-        bookingCalendar = new BookingCalendar();
-        bookingCalendar.setStartDay(TODAY);
-        residence = createAndPersistResidence();
-        player = createAndPersistPlayer(residence);
-        tentativeBooking = createAndPersistBooking();
-    }
+//    @BeforeEach
+//    public void setUp(){
+//        bookingCalendar = new BookingCalendar();
+//        bookingCalendar.setStartDay(TODAY);
+//        residence = createAndPersistResidence();
+//        player = createAndPersistPlayer(residence);
+//        tentativeBooking = createAndPersistBooking();
+//    }
 
-
-    @Test
-    @DisplayName("****** Given a date, should create a new Calendar")
-    public void shouldCreateANewBookingCalendar_GivenADate() {
-
-        /// GIVEN A non-initialized calendar
-        BookingCalendar calendar = new BookingCalendar();
-        assertThat((calendar.getReservedBookings()).size()).isEqualTo(0);
-        assertThat((calendar.getAvailableBookings()).size()).isEqualTo(0);
-
-        ///  WHEN asigning the start date
-        calendar.setStartDay(TODAY);
-
-        ///  THEN IT CREATES THE BOOKINGS
-        assertThat((calendar.getReservedBookings()).size()).isEqualTo(0);
-        assertThat((calendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-    }
-
-    @Test
-    public void shouldConfirmAnAvailableBooking(){
-
-        /// GIVEN an initialized calendar
-        assertThat(bookingCalendar.getStartDay()).isEqualTo(TODAY);
-        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-        Booking availableBooking = bookingCalendar.getAvailableBookings().get(0);
-
-        /// WHEN asking for an existing and available booking
-        Boolean result = bookingCalendar.isBookingAvailable(availableBooking);
-
-        /// THEN it should answer yes
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void shouldNotConfirmNotAvailableBooking(){
-
-        /// GIVEN an initialized calendar with a reserved booking
-        assertThat(bookingCalendar.getStartDay()).isEqualTo(TODAY);
-        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-        Booking availableBooking = bookingCalendar.getAvailableBookings().get(0);
-        availableBooking.reserveBooking(player).get();
-
-        /// WHEN asking availability of a reserved booking
-        Boolean result = bookingCalendar.isBookingAvailable(availableBooking);
-
-        /// THEN it should answer no
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    public void shouldNotConfirmAPastBooking(){
-
-        /// GIVEN an available booking
-        assertThat(bookingCalendar.isBookingAvailable(tentativeBooking)).isTrue();
-
-        /// WHEN the booking is past
-        tentativeBooking.setBookingDate(TODAY.minusDays(1));
-        tentativeBooking.setTimeSlot(SLOT);
-
-        ///  THEN it shouldn't appear as available
-        assertThat(bookingCalendar.isBookingAvailable(tentativeBooking)).isFalse();
-    }
-
-
-    @Test
-    public void shouldReserveAnAvailableBooking(){
-
-        /// GIVEN a valid player and an available booking in a calendar
-        BookingCalendar calendar = new BookingCalendar();
-        calendar.setStartDay(TODAY);
-        Booking availableBooking = calendar.getAvailableBookings().get(0);
-
-        residence = createAndPersistResidence();
-        player = createAndPersistPlayer(residence);
-
-        assertThat(availableBooking.getBookingOwner()).isNull();
-        assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
-        assertThat(player.getBookings().size()).isEqualTo(0);
-
-       /// WHEN the player tries to reserve the booking
-        Optional<Booking> result= availableBooking.reserveBooking(player);
-
-       /// THEN the booking is assigned to the player, the booking has the player as a owner and the calendar has the booking in reserved.
-        assertThat(result.get().getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
-        assertThat(player.getBookings().get(0).getBookingOwner().getId()). isEqualTo(player.getId());
-        assertThat(calendar.getReservedBookings().size()).isEqualTo(1);
-    }
-
-    @Test
-    public void shouldNotReserveAnUnavailableBooking(){
-
-         /// GIVEN a valid player that owns a booking in a calendar
-        BookingCalendar calendar = new BookingCalendar();
-        calendar.setStartDay(TODAY);
-        Booking availableBooking = calendar.getAvailableBookings().get(0);
-        residence = createAndPersistResidence();
-        player = createAndPersistPlayer(residence);
-        List<Booking> playerBookings = player.getBookings();
-
-        Booking reservation= availableBooking.reserveBooking(player).get();
-
-        assertThat(reservation.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
-        assertThat(playerBookings.size()).isEqualTo(1);
-        assertThat(playerBookings.get(0).getBookingOwner().getId()). isEqualTo(player.getId());
-        assertThat(calendar.getReservedBookings().size()).isEqualTo(1);
-
-        /// WHEN another valid player tries to reserve the unavailable booking
-
-        Player secondPlayer = createAndPersistPlayer(residence);
-        secondPlayer.setId(10L);
-
-        Optional<Booking> result = availableBooking.reserveBooking(secondPlayer);
-
-        /// THEN the booking is not assigned to the player,
-        /// the booking mantains its owner and the calendar has the booking in reserved.
-
-        assertThat(result).isEmpty();
-        assertThat(reservation.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
-        assertThat(playerBookings.size()).isEqualTo(1);
-        assertThat(secondPlayer.getBookings().size()).isEqualTo(0);
-        assertThat(calendar.getReservedBookings().size()).isEqualTo(1);
-    }
+//    @Test
+//    public void shouldConfirmAnAvailableBooking(){
+//
+//        /// GIVEN an initialized calendar
+//        assertThat(bookingCalendar.getStartDay()).isEqualTo(TODAY);
+//        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+//        Booking availableBooking = bookingCalendar.getAvailableBookings().get(0);
+//
+//        /// WHEN asking for an existing and available booking
+//        Boolean result = bookingCalendar.isBookingAvailable(availableBooking);
+//
+//        /// THEN it should answer yes
+//        assertThat(result).isTrue();
+//    }
+//
+//    @Test
+//    public void shouldNotConfirmNotAvailableBooking(){
+//
+//        /// GIVEN an initialized calendar with a reserved booking
+//        assertThat(bookingCalendar.getStartDay()).isEqualTo(TODAY);
+//        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+//        Booking availableBooking = bookingCalendar.getAvailableBookings().get(0);
+//        availableBooking.reserveBooking(player).get();
+//
+//        /// WHEN asking availability of a reserved booking
+//        Boolean result = bookingCalendar.isBookingAvailable(availableBooking);
+//
+//        /// THEN it should answer no
+//        assertThat(result).isFalse();
+//    }
+//
+//    @Test
+//    public void shouldNotConfirmAPastBooking(){
+//
+//        /// GIVEN an available booking
+//        assertThat(bookingCalendar.isBookingAvailable(tentativeBooking)).isTrue();
+//
+//        /// WHEN the booking is past
+//        tentativeBooking.setBookingDate(TODAY.minusDays(1));
+//        tentativeBooking.setTimeSlot(SLOT);
+//
+//        ///  THEN it shouldn't appear as available
+//        assertThat(bookingCalendar.isBookingAvailable(tentativeBooking)).isFalse();
+//    }
+//
+//
+//    @Test
+//    public void shouldReserveAnAvailableBooking(){
+//
+//        /// GIVEN a valid player and an available booking in a calendar
+//        BookingCalendar calendar = new BookingCalendar();
+//        calendar.setStartDay(TODAY);
+//        Booking availableBooking = calendar.getAvailableBookings().get(0);
+//
+//        residence = createAndPersistResidence();
+//        player = createAndPersistPlayer(residence);
+//
+//        assertThat(availableBooking.getBookingOwner()).isNull();
+//        assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
+//        assertThat(player.getBookings().size()).isEqualTo(0);
+//
+//       /// WHEN the player tries to reserve the booking
+//        Optional<Booking> result= availableBooking.reserveBooking(player);
+//
+//       /// THEN the booking is assigned to the player, the booking has the player as a owner and the calendar has the booking in reserved.
+//        assertThat(result.get().getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
+//        assertThat(player.getBookings().get(0).getBookingOwner().getId()). isEqualTo(player.getId());
+//        assertThat(calendar.getReservedBookings().size()).isEqualTo(1);
+//    }
+//
+//    @Test
+//    public void shouldNotReserveAnUnavailableBooking(){
+//
+//         /// GIVEN a valid player that owns a booking in a calendar
+//        BookingCalendar calendar = new BookingCalendar();
+//        calendar.setStartDay(TODAY);
+//        Booking availableBooking = calendar.getAvailableBookings().get(0);
+//        residence = createAndPersistResidence();
+//        player = createAndPersistPlayer(residence);
+//        List<Booking> playerBookings = player.getBookings();
+//
+//        Booking reservation= availableBooking.reserveBooking(player).get();
+//
+//        assertThat(reservation.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
+//        assertThat(playerBookings.size()).isEqualTo(1);
+//        assertThat(playerBookings.get(0).getBookingOwner().getId()). isEqualTo(player.getId());
+//        assertThat(calendar.getReservedBookings().size()).isEqualTo(1);
+//
+//        /// WHEN another valid player tries to reserve the unavailable booking
+//
+//        Player secondPlayer = createAndPersistPlayer(residence);
+//        secondPlayer.setId(10L);
+//
+//        Optional<Booking> result = availableBooking.reserveBooking(secondPlayer);
+//
+//        /// THEN the booking is not assigned to the player,
+//        /// the booking mantains its owner and the calendar has the booking in reserved.
+//
+//        assertThat(result).isEmpty();
+//        assertThat(reservation.getBookingOwner().getName()).isEqualTo(NAME_OF_PLAYER1);
+//        assertThat(playerBookings.size()).isEqualTo(1);
+//        assertThat(secondPlayer.getBookings().size()).isEqualTo(0);
+//        assertThat(calendar.getReservedBookings().size()).isEqualTo(1);
+//    }
 
     ///  ESTO NO DEBERIA SER MAS DE BOOKING QUE DE CALENDAR?
-    @Test
-    public void shouldNotRegisterABookingWithoutAPlayer(){
-        tentativeBooking.setBookingOwner(null);
-        assertThat(bookingCalendar.reserveBooking(tentativeBooking)).isEmpty();
-    }
+//    @Test
+//    public void shouldNotRegisterABookingWithoutAPlayer(){
+//        tentativeBooking.setBookingOwner(null);
+//        assertThat(bookingCalendar.reserveBooking(tentativeBooking)).isEmpty();
+//    }
 
-    @Test
-    public void shouldNotRegisterABookingWithAPlayerWithoutResidence(){
-        Player playerWithNoResidence = new Player();
-        tentativeBooking.setBookingOwner(playerWithNoResidence);
+//    @Test
+//    public void shouldNotRegisterABookingWithAPlayerWithoutResidence(){
+//        Player playerWithNoResidence = new Player();
+//        tentativeBooking.setBookingOwner(playerWithNoResidence);
+//
+//        assertThat(bookingCalendar.reserveBooking(tentativeBooking)).isEmpty();
+//    }
 
-        assertThat(bookingCalendar.reserveBooking(tentativeBooking)).isEmpty();
-    }
+//    private static Residence createAndPersistResidence() {
+//        Residence residence = new Residence();
+//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+//        residence.setFloor(RESIDENCE_5FLOOR);
+//        residence.setLetter(RESIDENCE_LETTER_A);
+//        residence.setId(1L);
+//        return residence;
+//    }
 
-    private static Residence createAndPersistResidence() {
-        Residence residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
-        residence.setId(1L);
-        return residence;
-    }
+//    private Player createAndPersistPlayer(Residence residence) {
+//        player = new Player();
+//        player.setName(NAME_OF_PLAYER1);
+//        player.setId(2L);
+//        if (residence!=null) {
+//            player.setResidence(residence);
+//        }
+//        return player;
+//    }
 
-    private Player createAndPersistPlayer(Residence residence) {
-        player = new Player();
-        player.setName(NAME_OF_PLAYER1);
-        player.setId(2L);
-        if (residence!=null) {
-            player.setResidence(residence);
-        }
-        return player;
-    }
-
-    private Booking createAndPersistBooking(){
-        Booking booking = new Booking();
-        booking.setBookingDate(TODAY);
-        booking.setTimeSlot(SLOT);
-        player.setId(300L);
-        return booking;
-    }
+//    private Booking createAndPersistBooking(){
+//        Booking booking = new Booking();
+//        booking.setBookingDate(TODAY);
+//        booking.setTimeSlot(SLOT);
+//        player.setId(300L);
+//        return booking;
+//    }
 
 }

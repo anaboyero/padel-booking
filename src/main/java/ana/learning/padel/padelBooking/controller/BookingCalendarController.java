@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.controller;
 
+import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
@@ -36,6 +37,7 @@ public class BookingCalendarController {
         this.bookingService = bookingService;
         this.playerService = playerService;
         this.bookingMapper = bookingMapper;
+//        this.bookingCalendarMapper = bookingCalendarMapper;
     }
 
     @GetMapping
@@ -46,10 +48,8 @@ public class BookingCalendarController {
 
     @PostMapping
     public ResponseEntity<BookingCalendar> createCalendar(@RequestBody CreateCalendarRequestDTO createCalendarRequestDTO) {
-        BookingCalendar bookingCalendar = new BookingCalendar();
-        bookingCalendar.setStartDay(createCalendarRequestDTO.getStartDay());
-
-        BookingCalendar savedBookingCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
+        LocalDate startDate = createCalendarRequestDTO.getStartDay();
+        BookingCalendar savedBookingCalendar = bookingCalendarService.createBookingCalendar(startDate);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

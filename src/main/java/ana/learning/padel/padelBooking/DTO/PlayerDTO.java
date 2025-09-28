@@ -5,6 +5,7 @@ import java.util.List;
 public class PlayerDTO {
     private Long id;
     private String name;
+    private ResidenceDTO residence;
     private List<BookingDTO> bookings;
 
     public PlayerDTO() {
@@ -38,12 +39,21 @@ public class PlayerDTO {
         this.bookings = bookings;
     }
 
+    public ResidenceDTO getResidence() {
+        return residence;
+    }
+
+    public void setResidence(ResidenceDTO residence) {
+        this.residence = residence;
+    }
+
     @Override
     public String toString() {
         return "PlayerDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", bookings'" + bookings + '\'' +
+                ", residence:" + residence + '\'' +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package ana.learning.padel.padelBooking.controller;
 
+import ana.learning.padel.padelBooking.DTO.PlayerDTO;
+import ana.learning.padel.padelBooking.DTO.ResidenceDTO;
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.mappers.ResidenceMapper;
@@ -12,7 +14,6 @@ import ana.learning.padel.padelBooking.repository.ResidenceRepository;
 import ana.learning.padel.padelBooking.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -24,9 +25,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -69,7 +70,6 @@ public class PlayerControllerTest {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerControllerTest.class);
 
-
     public PlayerControllerTest(MockMvc mockMvc, PlayerMapper playerMapper, BookingMapper bookingMapper, ObjectMapper objectMapper, ResidenceMapper residenceMapper, PlayerRepository playerRepository, BookingRepository bookingRepository, ResidenceRepository residenceRepository, ResidenceService residenceService, BookingService bookingService, PlayerService playerService) {
         this.mockMvc = mockMvc;
         this.playerMapper = playerMapper;
@@ -91,21 +91,120 @@ public class PlayerControllerTest {
         residenceRepository.deleteAll();
     }
 
-    @Test
-    public void shouldSaveAPlayer() throws Exception {
-        Player player = new Player();
-        player.setName("Ana");
+    ///  NOSOTROS DE MANERA INTERNA PODEMOS CREAR UN OBJETO RESIDENCIA CON LOS DATOS QUE NO DA EL USUARIO
+    /// PERO NO TENEMOS QUE ENMARRONAR AL USUARIO CON HACER DOS OBJETOS (PLAYER Y RESIDENCE) POR SEPARADO.
+    /// NO NECESITAMOS HACERLO VIA API
 
-        mockMvc.perform(post("/api/v1/players")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(playerMapper.toDTO(player))))
+
+
+    /// NO ESTA GUARDANDO LA RESIDENCIA. QUIZÅS ES PORQUE HE CAMBIADO EL MODELO?
+
+    @Test
+    public void shouldSaveAPlayerWITHRESIDENCE() throws Exception {
+
+        ///  GIVEN INFO OF A PLAYER DTO
+        ResidenceDTO residenceDTO = new ResidenceDTO();
+        residenceDTO.setBuilding(RESIDENCE_BUILDING_EMPECINADO21.toString());
+        residenceDTO.setFloor(RESIDENCE_5FLOOR.toString());
+        residenceDTO.setLetter(RESIDENCE_LETTER_A.toString());
+
+        PlayerDTO playerDTO = new PlayerDTO();
+        playerDTO.setName("Ana");
+        playerDTO.setResidence(residenceDTO);
+
+        ///  WHEN SAVING THE INFO
+        MvcResult result = mockMvc.perform(post("/api/v1/players")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(playerDTO)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Ana"));
+                .andExpect(jsonPath("$.name").value("Ana"))
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.residence.building").value("JUAN_MARTIN_EMPECINADO_21"))
+                .andExpect(jsonPath("$.residence.floor").value("FIFTH"))
+                .andExpect(jsonPath("$.residence.letter").value("A"))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response (GET): " + jsonResponse);
+
+        ///  THEN WE PERSIST THE RESIDENCE, PERSIST THE PLAYER AND RETURN THE PLAYERDTO
 
         List<Player> players = playerRepository.findAll();
+        Player savedPlayer = playerRepository.findAll().get(0);
         assertThat(players.size()).isEqualTo(1);
-        assertThat(players.get(0).getName()).isEqualTo("Ana");
+        assertThat(savedPlayer.getName()).isEqualTo("Ana");
+        assertThat(savedPlayer.getResidence().getLetter()).isEqualTo(RESIDENCE_LETTER_A);
+        assertThat(savedPlayer.getResidence().getBuilding()).isEqualTo(RESIDENCE_BUILDING_EMPECINADO21);
+        assertThat(savedPlayer.getResidence().getFloor()).isEqualTo(RESIDENCE_5FLOOR);
+    }
+
+    ///  SUSTITUIDO POR EL POST QUE SALVA UN JUGADOR CON RESIDENCIA EN UN SOLO PASO
+//    @Test
+//    public void shouldSaveAPlayer() throws Exception {
+//        Player player = new Player();
+//        player.setName("Ana");
+//
+//        mockMvc.perform(post("/api/v1/players")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(playerMapper.toDTO(player))))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.name").value("Ana"));
+//
+//        List<Player> players = playerRepository.findAll();
+//        assertThat(players.size()).isEqualTo(1);
+//        assertThat(players.get(0).getName()).isEqualTo("Ana");
+//    }
+
+    ///  SUSTITUIDO POR EL POST QUE SALVA UN JUGADOR CON RESIDENCIA EN UN SOLO PASO
+
+//
+//    @Test
+//    public void shouldSaveResidenceToPlayer() throws Exception {
+//        Player player = new Player();
+//        player.setName("Ana");
+//        Player savedPlayer = playerService.savePlayer(player);
+//
+//        residence = new Residence();
+//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+//        residence.setFloor(RESIDENCE_5FLOOR);
+//        residence.setLetter(RESIDENCE_LETTER_A);
+//        savedResidence = residenceService.saveResidence(residence);
+//
+//        assertThat(savedPlayer.getResidence()).isNull();
+//
+//        mockMvc.perform(post("/api/v1/players/{id}", savedPlayer.getId())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.name").value("Ana"))
+//                .andExpect(jsonPath("$.residence.building").value(RESIDENCE_BUILDING_EMPECINADO21.toString()))
+//                .andExpect(jsonPath("$.residence.floor").value(RESIDENCE_5FLOOR.toString()))
+//                .andExpect(jsonPath("$.residence.letter").value(RESIDENCE_LETTER_A.toString()));
+//
+//        assertThat(playerService.getPlayerById(savedPlayer.getId()).get().getResidence()).isNotNull();
+//    }
+
+    @Test
+    public void shouldNotSaveResidenceToPlayer() throws Exception {
+        Player notPersistedPlayer = new Player();
+        notPersistedPlayer.setName("Ana");
+        notPersistedPlayer.setId(100L);
+
+        residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        savedResidence = residenceService.saveResidence(residence);
+
+        assertThat(notPersistedPlayer.getResidence()).isNull();
+
+        mockMvc.perform(post("/api/v1/players/{id}", notPersistedPlayer.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -153,29 +252,29 @@ public class PlayerControllerTest {
 //        assertThat(playerRepository.findById(existingId)).isEmpty();
     }
 
-    @Disabled("Replanteando el funcionamiento de cancel ")
-    @Test
-    public void shouldReturnOkAndUpdatedPlayer_WhenCancellingAnOwnedBooking() throws Exception {
-        /// GIVEN A PLAYER WITH A BOOKING
-        Booking testBooking = new Booking();
-        testBooking.setBookingDate(TOMORROW);
-        testBooking.setTimeSlot(SLOT);
-        setPlayerWithResidenceAndBooking(testBooking);
-
-        assertThat(testBooking.getBookingOwner()).isNotNull();
-
-        /// WHEN CANCELLING THE BOOKING
-        /// THEN RETURNS OK AND THE DELETED BOOKING. This could have more assertions. Rethink a booking parameter in playerDTO
-
-        mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Ana"));
-
-//        assertThat(testBooking.getBookingOwner()).isNull();
-    }
+//    @Disabled("Replanteando el funcionamiento de cancel ")
+//    @Test
+//    public void shouldReturnOkAndUpdatedPlayer_WhenCancellingAnOwnedBooking() throws Exception {
+//        /// GIVEN A PLAYER WITH A BOOKING
+//        Booking testBooking = new Booking();
+//        testBooking.setBookingDate(TOMORROW);
+//        testBooking.setTimeSlot(SLOT);
+//        setPlayerWithResidenceAndBooking(testBooking);
+//
+//        assertThat(testBooking.getBookingOwner()).isNotNull();
+//
+//        /// WHEN CANCELLING THE BOOKING
+//        /// THEN RETURNS OK AND THE DELETED BOOKING. This could have more assertions. Rethink a booking parameter in playerDTO
+//
+//        mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.name").value("Ana"));
+//
+////        assertThat(testBooking.getBookingOwner()).isNull();
+//    }
 
     @Test
     public void shouldReturnBadRequest_WhenPastBooking() throws Exception {
@@ -203,52 +302,6 @@ public class PlayerControllerTest {
 
     }
 
-    @Test
-    public void shouldSaveResidenceToPlayer() throws Exception {
-      Player player = new Player();
-      player.setName("Ana");
-      Player savedPlayer = playerService.savePlayer(player);
-
-      residence = new Residence();
-      residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-      residence.setFloor(RESIDENCE_5FLOOR);
-      residence.setLetter(RESIDENCE_LETTER_A);
-      savedResidence = residenceService.saveResidence(residence);
-
-      assertThat(savedPlayer.getResidence()).isNull();
-
-      mockMvc.perform(post("/api/v1/players/{id}", savedPlayer.getId())
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
-              .andExpect(status().isOk())
-              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-              .andExpect(jsonPath("$.name").value("Ana"))
-              .andExpect(jsonPath("$.residence.building").value(RESIDENCE_BUILDING_EMPECINADO21.toString()))
-              .andExpect(jsonPath("$.residence.floor").value(RESIDENCE_5FLOOR.toString()))
-              .andExpect(jsonPath("$.residence.letter").value(RESIDENCE_LETTER_A.toString()));
-
-      assertThat(playerService.getPlayerById(savedPlayer.getId()).get().getResidence()).isNotNull();
-    }
-
-    @Test
-    public void shouldNotSaveResidenceToPlayer() throws Exception {
-        Player notPersistedPlayer = new Player();
-        notPersistedPlayer.setName("Ana");
-        notPersistedPlayer.setId(100L);
-
-        residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
-        savedResidence = residenceService.saveResidence(residence);
-
-        assertThat(notPersistedPlayer.getResidence()).isNull();
-
-        mockMvc.perform(post("/api/v1/players/{id}", notPersistedPlayer.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
-                .andExpect(status().isBadRequest());
-    }
 
     private List<Player> setUpTwoPlayers() {
         Player player1 = new Player();

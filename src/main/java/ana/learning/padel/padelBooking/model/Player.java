@@ -41,12 +41,13 @@ public class Player {
     }
 
     public void setResidence(Residence residence) {
-        if (residence.getId()!=null) {
-            this.residence = residence;
-        }
-        else {
-            System.out.println("\n ***No se puede añadir una residencia que no está persistida");
-        }
+        this.residence = residence;
+//        if (residence.getId()!=null) {
+//            this.residence = residence;
+//        }
+//        else {
+//            System.out.println("\n ***No se puede añadir una residencia que no está persistida");
+//        }
     }
 
     public List<Booking> getBookings() {

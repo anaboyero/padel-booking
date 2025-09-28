@@ -10,10 +10,11 @@ import java.util.Optional;
 
 public interface BookingCalendarService {
     BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar);
-    boolean isBookingAvailable(Booking booking, BookingCalendar bookingCalendar);
+//    boolean isBookingAvailable(Booking booking, BookingCalendar bookingCalendar);
     List<BookingCalendar> getAllBookingCalendars();
-    Optional<Booking> confirmBooking(Booking booking, BookingCalendar bookingCalendar);
+//    Optional<Booking> confirmBooking(Booking booking, BookingCalendar bookingCalendar);
     Optional<BookingCalendar> getBookingCalendarById(Long id);
-    Optional<Booking> reserveBooking(Booking temptativeBooking, Player temptativePlayer, BookingCalendar bookingCalendar);
+//    Optional<Booking> reserveBooking(Booking temptativeBooking, Player temptativePlayer, BookingCalendar bookingCalendar);
     void deleteAllBookingCalendars();
+    BookingCalendar createBookingCalendar(LocalDate startDay);
 }

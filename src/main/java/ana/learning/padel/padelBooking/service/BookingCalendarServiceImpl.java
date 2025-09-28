@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,11 +29,30 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         this.bookingService = bookingService;
     }
 
-    private void persistAvailableBookings(BookingCalendar bookingCalendar){
-        log.info("\n*** Entro en el bucle for para persistir los bookings");
-        for (Booking booking : bookingCalendar.getAvailableBookings()) {
-            bookingService.saveBooking(booking);
+    @Override
+    public BookingCalendar createBookingCalendar(LocalDate startDay) {
+        BookingCalendar calendar = new BookingCalendar();
+        calendar.setStartDay(startDay);
+        BookingCalendar savedCalendar = bookingCalendarRepository.save(calendar);
+        List<Booking> availableBookings  = new ArrayList<>();
+        for (int i = 0; i<7; i++) {
+            LocalDate day = startDay.plusDays(i);
+            for (Booking.TimeSlot timeSlot : Booking.TimeSlot.values()) {
+                Booking booking = new Booking();
+                booking.setBookingDate(day);
+                booking.setTimeSlot(timeSlot);
+                booking.setBookingOwner(null);
+//                booking.setCalendar(calendar);
+                Booking savedBooking = bookingService.saveBooking(booking);
+                log.info(savedBooking.toString());
+                availableBookings.add(savedBooking);
+            }
         }
+        savedCalendar.setAvailableBookings(availableBookings);
+        savedCalendar = bookingCalendarRepository.save(savedCalendar);
+        log.info("\n Available bookings creadas y persistidas: ");
+        log.info(availableBookings.toString());
+        return savedCalendar;
     }
 
     @Override
@@ -41,34 +62,34 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
     @Override
     public BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar){
-        if (bookingCalendar.getId() == null) {
-            //La primera vez que se persiste el calendario, se persisten antes los bookings disponibles (o sea, todos).
-            persistAvailableBookings(bookingCalendar);
-        }
+//        if (bookingCalendar.getId() == null) {
+//            //La primera vez que se persiste el calendario, se persisten antes los bookings disponibles (o sea, todos).
+//            persistAvailableBookings(bookingCalendar);
+//        }
         // Persisto el calendario.
         return bookingCalendarRepository.save(bookingCalendar);
     }
 
-    @Override
-    public boolean isBookingAvailable(Booking booking, BookingCalendar bookingCalendar){
-        return bookingCalendar.isBookingAvailable(booking);
-    }
-
-
-    @Override
-    public Optional<Booking> confirmBooking(Booking booking, BookingCalendar bookingCalendar){
-        return bookingCalendar.reserveBooking(booking);
-    }
+//    @Override
+//    public boolean isBookingAvailable(Booking booking, BookingCalendar bookingCalendar){
+//        return bookingCalendar.isBookingAvailable(booking);
+//    }
+//
+//
+//    @Override
+//    public Optional<Booking> confirmBooking(Booking booking, BookingCalendar bookingCalendar){
+//        return bookingCalendar.reserveBooking(booking);
+//    }
 
     @Override
     public Optional<BookingCalendar> getBookingCalendarById(Long id){
         return bookingCalendarRepository.findById(id);
     }
 
-    @Override
-    public Optional<Booking> reserveBooking(Booking booking, Player player, BookingCalendar calendar) {
-        return Optional.empty();
-    }
+//    @Override
+//    public Optional<Booking> reserveBooking(Booking booking, Player player, BookingCalendar calendar) {
+//        return Optional.empty();
+//    }
 
 
 //    @Override

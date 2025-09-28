@@ -36,6 +36,7 @@ public class PlayerServiceTest {
     private static final LocalDate TODAY = LocalDate.now();
     private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
     private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
+    private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
 
     private static final Logger log = LoggerFactory.getLogger(PlayerServiceTest.class);
 
@@ -62,17 +63,13 @@ public class PlayerServiceTest {
         player1.setId(1L);
     }
 
-    @Test
-    public void shouldSaveANewPlayer() {
-
-        player0 = new Player();
-        player0.setName("Ana");
-        player0.setId(null);
-
-        when(playerRepository.save(any(Player.class))).thenReturn(player1);
-        Player testPlayer = playerService.savePlayer(player0);
-        assertThat(testPlayer.getId()).isEqualTo(1L);
-        assertThat(testPlayer.getName()).isEqualTo("Javier");
+    private Residence CreateAndPersistResidence() {
+        Residence residence = new Residence();
+        residence.setLetter(RESIDENCE_LETTER_A);
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setId(10L);
+        return residence;
     }
 
     @Disabled("Estos metodos me los estoy replanteando")

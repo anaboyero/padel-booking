@@ -9,6 +9,7 @@ import ana.learning.padel.padelBooking.mappers.ResidenceMapper;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.service.PlayerService;
+import ana.learning.padel.padelBooking.service.ResidenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +27,16 @@ import static java.util.stream.Collectors.toList;
 public class PlayerController {
 
     private final PlayerService playerService;
+    private final ResidenceService residenceService;
     private final PlayerMapper playerMapper;
     private final ResidenceMapper residenceMapper;
     private final BookingMapper bookingMapper;
     private static final Logger log = LoggerFactory.getLogger(PlayerController.class);
 
 
-    public PlayerController(PlayerService playerService, PlayerMapper playerMapper, ResidenceMapper residenceMapper, BookingMapper bookingMapper){
+    public PlayerController(PlayerService playerService, ResidenceService residenceService, PlayerMapper playerMapper, ResidenceMapper residenceMapper, BookingMapper bookingMapper){
         this.playerService = playerService;
+        this.residenceService = residenceService;
         this.playerMapper = playerMapper;
         this.residenceMapper = residenceMapper;
         this.bookingMapper = bookingMapper;
@@ -53,14 +56,6 @@ public class PlayerController {
                 .toList();
 
         return ResponseEntity.ok(playersDTO);
-
-//
-//        List<Player> players = playerService.getAllPlayers();
-//        if (players.isEmpty()) {
-//            return ResponseEntity.noContent().build();
-//        }
-//
-//        return ResponseEntity.ok(players);
     }
 
     @GetMapping("/{id}")
@@ -75,8 +70,9 @@ public class PlayerController {
 
     @PostMapping
     public PlayerDTO savePlayer(@RequestBody PlayerDTO dto) {
-        Player player = playerService.savePlayer(playerMapper.toPlayer(dto));
-        return playerMapper.toDTO(player);
+        Player receivedPlayer = playerMapper.toPlayer(dto);
+        Player savedPlayer = playerService.savePlayer(receivedPlayer);
+        return playerMapper.toDTO(savedPlayer);
     }
 
     @DeleteMapping
@@ -95,7 +91,6 @@ public class PlayerController {
         }
         return ResponseEntity.notFound().build();
     }
-
 
     @PostMapping("/{id}")
     public ResponseEntity<Optional<Player>> addResidenceToPlayer(@PathVariable Long id, @RequestBody ResidenceDTO residenceDTO) {
