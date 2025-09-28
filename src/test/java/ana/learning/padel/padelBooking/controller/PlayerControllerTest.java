@@ -91,16 +91,9 @@ public class PlayerControllerTest {
         residenceRepository.deleteAll();
     }
 
-    ///  NOSOTROS DE MANERA INTERNA PODEMOS CREAR UN OBJETO RESIDENCIA CON LOS DATOS QUE NO DA EL USUARIO
-    /// PERO NO TENEMOS QUE ENMARRONAR AL USUARIO CON HACER DOS OBJETOS (PLAYER Y RESIDENCE) POR SEPARADO.
-    /// NO NECESITAMOS HACERLO VIA API
-
-
-
-    /// NO ESTA GUARDANDO LA RESIDENCIA. QUIZÅS ES PORQUE HE CAMBIADO EL MODELO?
 
     @Test
-    public void shouldSaveAPlayerWITHRESIDENCE() throws Exception {
+    public void shouldSaveAPlayer() throws Exception {
 
         ///  GIVEN INFO OF A PLAYER DTO
         ResidenceDTO residenceDTO = new ResidenceDTO();
@@ -139,53 +132,6 @@ public class PlayerControllerTest {
         assertThat(savedPlayer.getResidence().getFloor()).isEqualTo(RESIDENCE_5FLOOR);
     }
 
-    ///  SUSTITUIDO POR EL POST QUE SALVA UN JUGADOR CON RESIDENCIA EN UN SOLO PASO
-//    @Test
-//    public void shouldSaveAPlayer() throws Exception {
-//        Player player = new Player();
-//        player.setName("Ana");
-//
-//        mockMvc.perform(post("/api/v1/players")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(playerMapper.toDTO(player))))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.name").value("Ana"));
-//
-//        List<Player> players = playerRepository.findAll();
-//        assertThat(players.size()).isEqualTo(1);
-//        assertThat(players.get(0).getName()).isEqualTo("Ana");
-//    }
-
-    ///  SUSTITUIDO POR EL POST QUE SALVA UN JUGADOR CON RESIDENCIA EN UN SOLO PASO
-
-//
-//    @Test
-//    public void shouldSaveResidenceToPlayer() throws Exception {
-//        Player player = new Player();
-//        player.setName("Ana");
-//        Player savedPlayer = playerService.savePlayer(player);
-//
-//        residence = new Residence();
-//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-//        residence.setFloor(RESIDENCE_5FLOOR);
-//        residence.setLetter(RESIDENCE_LETTER_A);
-//        savedResidence = residenceService.saveResidence(residence);
-//
-//        assertThat(savedPlayer.getResidence()).isNull();
-//
-//        mockMvc.perform(post("/api/v1/players/{id}", savedPlayer.getId())
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.name").value("Ana"))
-//                .andExpect(jsonPath("$.residence.building").value(RESIDENCE_BUILDING_EMPECINADO21.toString()))
-//                .andExpect(jsonPath("$.residence.floor").value(RESIDENCE_5FLOOR.toString()))
-//                .andExpect(jsonPath("$.residence.letter").value(RESIDENCE_LETTER_A.toString()));
-//
-//        assertThat(playerService.getPlayerById(savedPlayer.getId()).get().getResidence()).isNotNull();
-//    }
 
     @Test
     public void shouldNotSaveResidenceToPlayer() throws Exception {
