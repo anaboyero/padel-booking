@@ -76,15 +76,21 @@ public class PlayerController {
     }
 
     @DeleteMapping
-    public ResponseEntity<PlayerDTO> DeleteAllPlayers() {
+    public ResponseEntity<List<Player>> deleteAllPlayers() {
+        List<Player> result = new ArrayList<>();
+        List<Player> players = playerService.getAllPlayers();
+        if (players.isEmpty()) {
+            return ResponseEntity.ok(players);
+        }
         playerService.deleteAllPlayers();
-        return ResponseEntity.noContent().build();
+        players = playerService.getAllPlayers();
+        return ResponseEntity.ok(players);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<PlayerDTO> deletePlayerById (@PathVariable Long id) {
         Optional<Player> result = playerService.getPlayerById(id);
-        if (!result.isEmpty()) {
+        if (result.isPresent()) {
             playerService.deletePlayerById(id);
             PlayerDTO playerDTO = playerMapper.toDTO(result.get());
             return ResponseEntity.ok(playerDTO);

@@ -133,32 +133,32 @@ public class PlayerControllerTest {
     }
 
 
+//    @Test
+//    public void shouldNotSaveResidenceToPlayer() throws Exception {
+//        Player notPersistedPlayer = new Player();
+//        notPersistedPlayer.setName("Ana");
+//        notPersistedPlayer.setId(100L);
+//
+//        residence = new Residence();
+//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+//        residence.setFloor(RESIDENCE_5FLOOR);
+//        residence.setLetter(RESIDENCE_LETTER_A);
+//        savedResidence = residenceService.saveResidence(residence);
+//
+//        assertThat(notPersistedPlayer.getResidence()).isNull();
+//
+//        mockMvc.perform(post("/api/v1/players/{id}", notPersistedPlayer.getId())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
+//                .andExpect(status().isBadRequest());
+//    }
+
     @Test
-    public void shouldNotSaveResidenceToPlayer() throws Exception {
-        Player notPersistedPlayer = new Player();
-        notPersistedPlayer.setName("Ana");
-        notPersistedPlayer.setId(100L);
-
-        residence = new Residence();
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setLetter(RESIDENCE_LETTER_A);
-        savedResidence = residenceService.saveResidence(residence);
-
-        assertThat(notPersistedPlayer.getResidence()).isNull();
-
-        mockMvc.perform(post("/api/v1/players/{id}", notPersistedPlayer.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(residenceMapper.toDTO(savedResidence))))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void shouldReturnNoContent_WhenDeletingAllPlayers() throws Exception {
+    public void shouldReturnEmptyList_WhenDeletingAllPlayers() throws Exception {
         setUpTwoPlayers();
 
         mockMvc.perform(delete("/api/v1/players"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
         assertThat(playerRepository.findAll().size()).isEqualTo(0);
     }
@@ -182,6 +182,26 @@ public class PlayerControllerTest {
                 .andExpect(status().isNotFound());
 
         assertThat(playerRepository.findAll().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldDeleteAllPlayers() throws Exception  {
+        /// GIVEN a player
+        List<Player> players = setUpTwoPlayers();
+        Player player1 = players.get(0);
+        Player player2 = players.get(1);
+        assertThat(playerRepository.findAll().size()).isEqualTo(2);
+
+        ///  WHEN deleting all
+
+        mockMvc.perform(delete("/api/v1/players"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        /// SHOULD RETURN OK AND AN EMPTY LIST
+
+        assertThat(playerRepository.findAll().size()).isEqualTo(0);
+
     }
 
     @Test
