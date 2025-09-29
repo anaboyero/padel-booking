@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("message", "No se puede eliminar el jugador porque tiene reservas activas.");
+        error.put("message", "No se puede eliminar el recurso porque existen reservas activas.");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409 Conflict
     }
 

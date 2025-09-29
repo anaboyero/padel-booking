@@ -108,16 +108,15 @@ public class Booking {
     }
 
     public Optional<Booking> reserveBooking(Player player) {
-        if (getBookingOwner()!=null) {
+        if (!isAvailable()) {
             System.out.println("ERROR: No se ha podido reservar porque la reserva está ocupada por otro jugador");
             return Optional.empty();
         }
 
-        if (!player.isValidPlayer()) {
-            System.out.println("ERROR: No se ha podido reservar porque el jugador no tiene residencia");
-            return Optional.empty();
-        }
-        System.out.println("ERROR: No se ha podido reservar porque el jugador no tiene residencia");
+//        if (!player.isValidPlayer()) {
+//            System.out.println("ERROR: No se ha podido reservar porque el jugador no tiene residencia");
+//            return Optional.empty();
+//        }
         setBookingOwner(player);
         List<Booking> bookingsUpdated= player.getBookings();
         bookingsUpdated.add(this);

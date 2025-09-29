@@ -6,12 +6,13 @@ MVP: Aplicación de gestión de reservas de la pista de pádel de la urbanizaci�
 
 
 --- Cualquiera con acceso a la página podrá consultar el calendario (reservas y tramos disponibles) de una PISTA---> DONE
---- Un jugador podrá registrarse y obtendrá un ID. ---> DONE
---- Un jugador podrá asociar su direccion a su ID.---> DONE
---- Cualquier jugador con direccion registrada podrá hacer una reserva en el calendario, si ese slot está disponible.---> DONE.
+--- Un jugador podrá registrarse con su direccion y obtendrá un ID. ---> DONE
+--- Cualquier jugador registrado podrá hacer una reserva en el calendario, si ese slot está disponible.---> DONE.
 --- Un usuario podrá cancelar su reserva (si no es reserva pasada) .---> DONE.
+
 TO DO:
 
+- PRIORIDAD----> Repasar todos los DTO, porque ahora mismo al intentar cargar calendarios o bookings se desborda la pila.
 - Manejo de excepciones.
 - Diferenciar entre DTOs de salida y entrada.
 - En la API no estoy pudiendo hacer las operaciones. Comprobar

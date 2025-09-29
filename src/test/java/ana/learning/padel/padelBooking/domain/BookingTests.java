@@ -100,25 +100,26 @@ public class BookingTests {
         assertThat(booking.getBookingOwner().getName()).isNotEqualTo(NAME_OF_PLAYER1);
     }
 
-    @Test
-    public void givenNotValidPlayer_shouldNotReserveAvailableBooking() {
-        /// GIVEN an available booking, given a player with no residence
-
-        booking = createAndPersistBooking();
-        player = createAndPersistPlayer(null);
-
-        assertThat(player.getBookings().size()).isEqualTo(0);
-        assertThat(booking.getBookingOwner()).isNull();
-
-        /// WHEN trying to reserve an available booking with unvalid player
-
-        booking.reserveBooking(player);
-
-        /// THEN the booking is not assigned to the player, and the player has not this booking
-
-        assertThat(player.getBookings().size()).isEqualTo(0);
-        assertThat(booking.getBookingOwner()).isNull();
-    }
+    ///  ESTO YA NO SUCEDE PORQUE LOS PLAYERS SE CREAN CON RESIDENCIA
+//    @Test
+//    public void givenNotValidPlayer_shouldNotReserveAvailableBooking() {
+//        /// GIVEN an available booking, given a player with no residence
+//
+//        booking = createAndPersistBooking();
+//        player = createAndPersistPlayer(null);
+//
+//        assertThat(player.getBookings().size()).isEqualTo(0);
+//        assertThat(booking.getBookingOwner()).isNull();
+//
+//        /// WHEN trying to reserve an available booking with unvalid player
+//
+//        booking.reserveBooking(player);
+//
+//        /// THEN the booking is not assigned to the player, and the player has not this booking
+//
+//        assertThat(player.getBookings().size()).isEqualTo(0);
+//        assertThat(booking.getBookingOwner()).isNull();
+//    }
 
     private Residence createAndPersistResidence() {
         Residence residence = new Residence();
