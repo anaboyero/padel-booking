@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.service;
 
+import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -126,6 +128,24 @@ public class BookingCalendarServiceTests {
         assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat(calendar.getAvailableBookings().get(0).getId()).isNotNull();
     }
+
+    @Test
+    public void shouldNotCreateANewCalendarWithAnUnvalidDate(){
+
+        ///  GIVEN A START DATE
+        LocalDate yesterday = TODAY.minusDays(1);
+
+        ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
+
+        // Ejecutamos el metodo problemático dentro de un lambda (la función anónima)
+        // El assertThrows ejecuta el código del lambda, espera que salte la excepción
+        // y la captura para verificar si es del tipo correcto.
+
+        assertThrows(PastDateException.class, () -> bookingCalendarService.createBookingCalendar(yesterday));
+    }
+
+
+
 
 //    @Test
 //    public void shouldPersistABookingCalendar(){

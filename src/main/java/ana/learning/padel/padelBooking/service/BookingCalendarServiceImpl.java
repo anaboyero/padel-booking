@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.service;
 
+import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
@@ -31,6 +32,9 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
     @Override
     public BookingCalendar createBookingCalendar(LocalDate startDay) {
+        if (startDay.isBefore(LocalDate.now())) {
+            throw new PastDateException("No se puede crear un calendario con fecha en el pasado");
+        }
         BookingCalendar calendar = new BookingCalendar();
         calendar.setStartDay(startDay);
         BookingCalendar savedCalendar = bookingCalendarRepository.save(calendar);
@@ -62,11 +66,6 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
     @Override
     public BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar){
-//        if (bookingCalendar.getId() == null) {
-//            //La primera vez que se persiste el calendario, se persisten antes los bookings disponibles (o sea, todos).
-//            persistAvailableBookings(bookingCalendar);
-//        }
-        // Persisto el calendario.
         return bookingCalendarRepository.save(bookingCalendar);
     }
 

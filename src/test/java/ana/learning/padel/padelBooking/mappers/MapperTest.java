@@ -129,7 +129,7 @@ public class MapperTest {
     }
 
     @Test
-    public void  shouldMapCalendarToDTO_WithReservations() {
+    public void  shouldMapCalendarToDTO_WithBookings() {
         BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
         List<Booking> availableBookings = calendar.getAvailableBookings();
         assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
@@ -144,6 +144,24 @@ public class MapperTest {
         assertThat(dto.getAvailableBookingsId().get(0)).isEqualTo(availableBookings.get(0).getId());
 
     }
+
+    @Test
+    public void  shouldMapCalendarToDTO_WithReservation() {
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        List<Booking> availableBookings = calendar.getAvailableBookings();
+        assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+        assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
+
+        BookingCalendarDTO dto = bookingCalendarMapper.customToDTO(calendar);
+
+        assertThat(dto.getAvailableBookingsId().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+        assertThat(dto.getReservedBookingsId().size()).isEqualTo(0);
+        assertThat(dto.getStartDay()).isEqualTo(TODAY);
+        assertThat(dto.getId()).isEqualTo(calendar.getId());
+        assertThat(dto.getAvailableBookingsId().get(0)).isEqualTo(availableBookings.get(0).getId());
+
+    }
+
 
 
 
