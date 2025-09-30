@@ -1,10 +1,6 @@
-package ana.learning.padel.padelBooking.domain;
+package ana.learning.padel.padelBooking.model;
 
-import ana.learning.padel.padelBooking.model.Booking;
-import ana.learning.padel.padelBooking.model.Player;
-import ana.learning.padel.padelBooking.model.Residence;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

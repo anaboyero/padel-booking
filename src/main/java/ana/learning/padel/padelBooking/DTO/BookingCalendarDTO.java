@@ -7,6 +7,7 @@ public class BookingCalendarDTO {
     private Long id;
     private LocalDate startDay;
     private List<Long> availableBookings;
+    private List<Long> reservedBookings;
 
     public List<Long> getReservedBookings() {
         return reservedBookings;
@@ -40,7 +41,6 @@ public class BookingCalendarDTO {
         this.id = id;
     }
 
-    private List<Long> reservedBookings;
 
 
 }

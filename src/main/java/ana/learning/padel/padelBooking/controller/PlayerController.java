@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api/v1/players")
@@ -70,7 +69,7 @@ public class PlayerController {
 
     @PostMapping
     public PlayerDTO savePlayer(@RequestBody PlayerDTO dto) {
-        Player receivedPlayer = playerMapper.toPlayer(dto);
+        Player receivedPlayer = playerMapper.toEntity(dto);
         Player savedPlayer = playerService.savePlayer(receivedPlayer);
         return playerMapper.toDTO(savedPlayer);
     }
@@ -104,7 +103,7 @@ public class PlayerController {
         if (optionalPlayer.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        Residence residence = residenceMapper.toResidence(residenceDTO);
+        Residence residence = residenceMapper.toEntity(residenceDTO);
         Optional<Player> result = playerService.addResidenceToPlayer(playerService.getPlayerById(id).get(), residence);
         return ResponseEntity.ok().body(result);
     }

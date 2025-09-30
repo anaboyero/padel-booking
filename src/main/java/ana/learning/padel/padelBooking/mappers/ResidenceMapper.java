@@ -10,5 +10,5 @@ public interface ResidenceMapper {
 
     ResidenceMapper INSTANCE = Mappers.getMapper(ResidenceMapper.class);
     ResidenceDTO toDTO(Residence residence);
-    Residence toResidence(ResidenceDTO dto);
+    Residence toEntity(ResidenceDTO dto);
 }

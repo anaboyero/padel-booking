@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.mappers;
 
+import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.DTO.ResidenceDTO;
@@ -9,27 +10,21 @@ import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-//@SpringBootTest
+@SpringBootTest
 public class MapperTest {
 
-    PlayerMapper playerMapper = new PlayerMapperImpl();
-    BookingMapper bookingMapper = new BookingMapperImpl();
-
-//    @Autowired
-//    PlayerMapper playerMapper;
-//    @Autowired
-//    ResidenceMapper residenceMapper;
-//    @Autowired
-//    BookingMapper bookingMapper;
+    @Autowired
+    PlayerMapper playerMapper;
+    @Autowired
+    BookingMapper bookingMapper;
+    @Autowired
+    BookingCalendarMapper bookingCalendarMapper;
 
     private Player player;
     private PlayerDTO playerDTO;
@@ -41,6 +36,8 @@ public class MapperTest {
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
+    private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 5*7;
+
 
 
 
@@ -55,13 +52,8 @@ public class MapperTest {
         playerDTO.setResidence(residenceDTO);
     }
 
-//    @ParameterizedTest
-//    @CsvSource({
-//            "0,0",   // sin bookings → lista vacía
-//            "3,3"    // 3 bookings creados → lista con 3
-//    })
     @Test
-    public void shouldMapToBookingDTO() {
+    public void shouldMapBookingToDTO() {
         ///  GIVEN AN AVAILABLE BOOKING
         Booking availableBooking = new Booking();
         availableBooking.setTimeSlot(SLOT);
@@ -74,7 +66,7 @@ public class MapperTest {
     }
 
     @Test
-    public void shouldMapToBookingDTO_reservation() {
+    public void shouldMapBookingToDTO_reservation() {
         ///  GIVEN A RESERVATION
 
         BookingCalendar calendar = new BookingCalendar();
@@ -115,17 +107,50 @@ public class MapperTest {
         System.out.println("\n ***** ");
     }
 
+    @Test
+    public void shouldMapCalendarToDTO() {
+        ///  given a calendar
+        BookingCalendar calendar = new BookingCalendar();
+        calendar.setStartDay(TODAY);
+        calendar.setId(100L);
+        assertThat(calendar.getAvailableBookings().size()).isEqualTo(0);
+        assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
+
+        BookingCalendarDTO dto = bookingCalendarMapper.customToDTO(calendar);
+
+        assertThat(dto.getAvailableBookings().size()).isEqualTo(0);
+        assertThat(dto.getReservedBookings().size()).isEqualTo(0);
+        assertThat(dto.getStartDay()).isEqualTo(TODAY);
+        assertThat(dto.getId()).isEqualTo(100L);
+    }
+
 
 
 //    @Test
-//    public void shouldMapToPlayer() {
-//        ///  GIVEN a playerDTO
-//        ///  WHEN mapping it to Player
-//        player = playerMapper.toPlayer(playerDTO);
+//    public void shouldMapPlayerToDTO_WithoutReservation() {
+//        ///  GIVEN a player
+//
+//        Player player = new Player();
+//        player.setName("Ana");
+//        player.setId(10L);
+//
+//        Residence residence = new Residence();
+//        residence.setFloor(RESIDENCE_5FLOOR);
+//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO_21);
+//        residence.setLetter(Residence.Letter.A);
+//        residence.setId(20L);
+//
+//        player.setResidence(residence);
+//
+//        ///  WHEN mapping it to Player DTO
+//        PlayerDTO playerDTO  = playerMapper.toDTO(player);
+//
 //        /// THEN all the fields are transmited
-//        assertThat(player.getName()).isEqualTo("Ana");
-//        assertThat(player.getId()).isEqualTo(1L);
-//        assertThat(player.getResidence().getFloor()).isEqualTo(RESIDENCE_5FLOOR);
+//        assertThat(playerDTO.getName()).isEqualTo("Ana");
+//        assertThat(playerDTO.getId()).isEqualTo(10L);
+//        assertThat(playerDTO.getResidence().getFloor()).isEqualTo(RESIDENCE_5FLOOR);
+//        assertThat(playerDTO.getResidence().getBuilding()).isEqualTo(RESIDENCE_BUILDING_EMPECINADO_21);
+//        assertThat(playerDTO.getResidence().getLetter()).isEqualTo(RESIDENCE_LETTER_A);
 //    }
 //
 //    @Test

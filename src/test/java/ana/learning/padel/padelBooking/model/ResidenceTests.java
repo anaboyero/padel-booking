@@ -1,6 +1,5 @@
-package ana.learning.padel.padelBooking.domain;
+package ana.learning.padel.padelBooking.model;
 
-import ana.learning.padel.padelBooking.model.Residence;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
