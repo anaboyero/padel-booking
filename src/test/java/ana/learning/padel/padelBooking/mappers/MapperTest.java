@@ -122,8 +122,8 @@ public class MapperTest {
 
         BookingCalendarDTO dto = bookingCalendarMapper.customToDTO(calendar);
 
-        assertThat(dto.getAvailableBookings().size()).isEqualTo(0);
-        assertThat(dto.getReservedBookings().size()).isEqualTo(0);
+        assertThat(dto.getAvailableBookingsId().size()).isEqualTo(0);
+        assertThat(dto.getReservedBookingsId().size()).isEqualTo(0);
         assertThat(dto.getStartDay()).isEqualTo(TODAY);
         assertThat(dto.getId()).isEqualTo(100L);
     }
@@ -137,11 +137,11 @@ public class MapperTest {
 
         BookingCalendarDTO dto = bookingCalendarMapper.customToDTO(calendar);
 
-        assertThat(dto.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-        assertThat(dto.getReservedBookings().size()).isEqualTo(0);
+        assertThat(dto.getAvailableBookingsId().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+        assertThat(dto.getReservedBookingsId().size()).isEqualTo(0);
         assertThat(dto.getStartDay()).isEqualTo(TODAY);
         assertThat(dto.getId()).isEqualTo(calendar.getId());
-        assertThat(dto.getAvailableBookings().get(0)).isEqualTo(availableBookings.get(0).getId());
+        assertThat(dto.getAvailableBookingsId().get(0)).isEqualTo(availableBookings.get(0).getId());
 
     }
 

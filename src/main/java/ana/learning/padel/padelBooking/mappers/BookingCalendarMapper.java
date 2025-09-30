@@ -22,12 +22,12 @@ public interface BookingCalendarMapper {
         List<Long> availableIds = new ArrayList<>();
         List<Booking> availableBookings = calendar.getAvailableBookings();
         availableIds = availableBookings.stream().map(Booking::getId).toList();
-        dto.setAvailableBookings(availableIds);
+        dto.setAvailableBookingsId(availableIds);
         // conseguir los ids de los booking reserved de calendar
         List<Long> reservedIds = new ArrayList<>();
         List<Booking> reservedBookings = calendar.getReservedBookings();
         reservedIds = reservedBookings.stream().map(Booking::getId).toList();
-        dto.setReservedBookings(reservedIds);
+        dto.setReservedBookingsId(reservedIds);
         System.out.println("\n RESULTADO DEL MAPEO DE CALENDAR A DTO:");
         System.out.println(dto.toString());
         return dto;
