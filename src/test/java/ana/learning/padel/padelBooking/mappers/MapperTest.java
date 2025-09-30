@@ -8,12 +8,14 @@ import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
+import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
@@ -25,6 +27,8 @@ public class MapperTest {
     BookingMapper bookingMapper;
     @Autowired
     BookingCalendarMapper bookingCalendarMapper;
+    @Autowired
+    BookingCalendarService bookingCalendarService;
 
     private Player player;
     private PlayerDTO playerDTO;
@@ -108,7 +112,7 @@ public class MapperTest {
     }
 
     @Test
-    public void shouldMapCalendarToDTO() {
+    public void shouldMapCalendarToDTO_noReservations() {
         ///  given a calendar
         BookingCalendar calendar = new BookingCalendar();
         calendar.setStartDay(TODAY);
@@ -122,6 +126,23 @@ public class MapperTest {
         assertThat(dto.getReservedBookings().size()).isEqualTo(0);
         assertThat(dto.getStartDay()).isEqualTo(TODAY);
         assertThat(dto.getId()).isEqualTo(100L);
+    }
+
+    @Test
+    public void  shouldMapCalendarToDTO_WithReservations() {
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        List<Booking> availableBookings = calendar.getAvailableBookings();
+        assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+        assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
+
+        BookingCalendarDTO dto = bookingCalendarMapper.customToDTO(calendar);
+
+        assertThat(dto.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+        assertThat(dto.getReservedBookings().size()).isEqualTo(0);
+        assertThat(dto.getStartDay()).isEqualTo(TODAY);
+        assertThat(dto.getId()).isEqualTo(calendar.getId());
+        assertThat(dto.getAvailableBookings().get(0)).isEqualTo(availableBookings.get(0).getId());
+
     }
 
 
