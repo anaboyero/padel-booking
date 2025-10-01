@@ -19,5 +19,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409 Conflict
     }
 
+    @ExceptionHandler(PastDateException.class)
+    public ResponseEntity<Map<String, String>> handlePastDate(PastDateException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "No se puede crear un calendario en una fecha pasada.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error); // 400 Bad Request
+    }
+
 
 }

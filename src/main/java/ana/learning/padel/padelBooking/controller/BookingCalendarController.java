@@ -3,6 +3,7 @@ package ana.learning.padel.padelBooking.controller;
 import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
+import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.mappers.BookingCalendarMapper;
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.model.Booking;
@@ -49,8 +50,9 @@ public class BookingCalendarController {
 
 
     @PostMapping
-    public ResponseEntity<BookingCalendarDTO> createCalendar(@RequestBody CreateCalendarRequestDTO createCalendarRequestDTO) {
+    public ResponseEntity<BookingCalendarDTO> createCalendar(@RequestBody CreateCalendarRequestDTO createCalendarRequestDTO) throws PastDateException {
         LocalDate startDate = createCalendarRequestDTO.getStartDay();
+
         BookingCalendar savedBookingCalendar = bookingCalendarService.createBookingCalendar(startDate);
         BookingCalendarDTO result = bookingCalendarMapper.customToDTO(savedBookingCalendar);
 

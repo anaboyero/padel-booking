@@ -2,6 +2,7 @@ package ana.learning.padel.padelBooking.controller;
 
 
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
+import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -45,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BookingCalendarControllerTest {
 
     private static final LocalDate TODAY = LocalDate.now();
+    private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
     private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
     private static final LocalDate AFTER_TOMORROW = LocalDate.now().plusDays(2);
     private static final String NAME_OF_PLAYER1 = "Ana";
@@ -102,6 +104,24 @@ public class BookingCalendarControllerTest {
 
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response (POST): " + jsonResponse);
+    }
+
+    @Test
+    public void shouldReturn400_whenCreatingCalendarWithPastStartDay() throws Exception{
+
+        CreateCalendarRequestDTO createCalendarRequestDTO = new CreateCalendarRequestDTO(YESTERDAY);
+
+        MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createCalendarRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response (POST): " + jsonResponse);
+
+        Exception exception = result.getResolvedException();
+        assertThat(exception).isInstanceOf(PastDateException.class);
     }
 
     @Test
