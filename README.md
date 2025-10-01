@@ -13,7 +13,7 @@ MVP: Aplicación de gestión de reservas de la pista de pádel de la urbanizaci�
 TO DO:
 
 - PRIORIDAD----> Repasar todos los DTO, porque ahora mismo al intentar cargar calendarios o bookings se desborda la pila.
-- Manejo de excepciones.
+- Manejo de excepciones: 
 - Diferenciar entre DTOs de salida y entrada.
 - En la API no estoy pudiendo hacer las operaciones. Comprobar
 - Refactorización de código.

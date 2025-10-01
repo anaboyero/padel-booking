@@ -130,14 +130,14 @@ public class BookingCalendarServiceTests {
     }
 
     @Test
-    public void shouldNotCreateANewCalendarWithAnUnvalidDate(){
+    public void shouldNotCreateANewCalendarWithUnvalidDate(){
 
         ///  GIVEN A START DATE
         LocalDate yesterday = TODAY.minusDays(1);
 
         ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
 
-        // Ejecutamos el metodo problemático dentro de un lambda (la función anónima)
+        // Ejecutamos el metodo problemático dentro de una lambda
         // El assertThrows ejecuta el código del lambda, espera que salte la excepción
         // y la captura para verificar si es del tipo correcto.
 

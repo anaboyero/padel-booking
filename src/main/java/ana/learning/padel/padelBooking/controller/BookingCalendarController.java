@@ -3,6 +3,7 @@ package ana.learning.padel.padelBooking.controller;
 import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
+import ana.learning.padel.padelBooking.mappers.BookingCalendarMapper;
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -30,14 +31,15 @@ public class BookingCalendarController {
     private final BookingService bookingService;
     private final PlayerService playerService;
     private final BookingMapper bookingMapper;
+    private final BookingCalendarMapper bookingCalendarMapper;
     private final Logger log = LoggerFactory.getLogger(BookingCalendarController.class);
 
-    public BookingCalendarController(BookingCalendarService bookingCalendarService, BookingService bookingService, PlayerService playerService, BookingMapper bookingMapper) {
+    public BookingCalendarController(BookingCalendarService bookingCalendarService, BookingService bookingService, PlayerService playerService, BookingMapper bookingMapper, BookingCalendarMapper bookingCalendarMapper) {
         this.bookingCalendarService = bookingCalendarService;
         this.bookingService = bookingService;
         this.playerService = playerService;
         this.bookingMapper = bookingMapper;
-//        this.bookingCalendarMapper = bookingCalendarMapper;
+        this.bookingCalendarMapper = bookingCalendarMapper;
     }
 
     @GetMapping
@@ -47,16 +49,18 @@ public class BookingCalendarController {
 
 
     @PostMapping
-    public ResponseEntity<BookingCalendar> createCalendar(@RequestBody CreateCalendarRequestDTO createCalendarRequestDTO) {
+    public ResponseEntity<BookingCalendarDTO> createCalendar(@RequestBody CreateCalendarRequestDTO createCalendarRequestDTO) {
         LocalDate startDate = createCalendarRequestDTO.getStartDay();
         BookingCalendar savedBookingCalendar = bookingCalendarService.createBookingCalendar(startDate);
+        BookingCalendarDTO result = bookingCalendarMapper.customToDTO(savedBookingCalendar);
+
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedBookingCalendar.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(savedBookingCalendar);
+        return ResponseEntity.created(location).body(result);
     }
 
 
