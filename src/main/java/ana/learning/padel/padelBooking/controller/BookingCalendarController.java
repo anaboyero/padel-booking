@@ -5,6 +5,7 @@ import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.mappers.BookingCalendarMapper;
+import ana.learning.padel.padelBooking.mappers.BookingCalendarMapperHelper;
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -32,15 +33,17 @@ public class BookingCalendarController {
     private final BookingService bookingService;
     private final PlayerService playerService;
     private final BookingMapper bookingMapper;
+    private BookingCalendarMapperHelper bookingCalendarMapperHelper;
     private final BookingCalendarMapper bookingCalendarMapper;
     private final Logger log = LoggerFactory.getLogger(BookingCalendarController.class);
 
-    public BookingCalendarController(BookingCalendarService bookingCalendarService, BookingService bookingService, PlayerService playerService, BookingMapper bookingMapper, BookingCalendarMapper bookingCalendarMapper) {
+    public BookingCalendarController(BookingCalendarService bookingCalendarService, BookingService bookingService, PlayerService playerService, BookingMapper bookingMapper, BookingCalendarMapper bookingCalendarMapper, BookingCalendarMapperHelper bookingCalendarMapperHelper) {
         this.bookingCalendarService = bookingCalendarService;
         this.bookingService = bookingService;
         this.playerService = playerService;
         this.bookingMapper = bookingMapper;
         this.bookingCalendarMapper = bookingCalendarMapper;
+        this.bookingCalendarMapperHelper = bookingCalendarMapperHelper;
     }
 
     @GetMapping
@@ -54,7 +57,7 @@ public class BookingCalendarController {
         LocalDate startDate = createCalendarRequestDTO.getStartDay();
 
         BookingCalendar savedBookingCalendar = bookingCalendarService.createBookingCalendar(startDate);
-        BookingCalendarDTO result = bookingCalendarMapper.customToDTO(savedBookingCalendar);
+        BookingCalendarDTO result = bookingCalendarMapperHelper.customToDTO(savedBookingCalendar);
 
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()

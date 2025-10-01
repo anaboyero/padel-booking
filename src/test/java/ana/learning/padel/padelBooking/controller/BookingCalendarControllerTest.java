@@ -97,8 +97,8 @@ public class BookingCalendarControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.startDay").isNotEmpty())
-                .andExpect(jsonPath("$.availableBookingsId").isNotEmpty())
-                .andExpect(jsonPath("$.reservedBookingsId").isEmpty())
+                .andExpect(jsonPath("$.availableBookings").isNotEmpty())
+                .andExpect(jsonPath("$.reservedBookings").isEmpty())
                 .andExpect(jsonPath("$.startDay").value(TODAY.toString()))
                 .andReturn();
 

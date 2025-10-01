@@ -6,23 +6,23 @@ import java.util.List;
 public class BookingCalendarDTO {
     private Long id;
     private LocalDate startDay;
-    private List<Long> availableBookingsId;
-    private List<Long> reservedBookingsId;
+    private List<BookingDTO> availableBookings;
+    private List<BookingDTO> reservedBookings;
 
-    public List<Long> getReservedBookingsId() {
-        return reservedBookingsId;
+    public List<BookingDTO> getReservedBookings() {
+        return reservedBookings;
     }
 
-    public void setReservedBookingsId(List<Long> reservedBookingsId) {
-        this.reservedBookingsId = reservedBookingsId;
+    public void setReservedBookings(List<BookingDTO> reservedBookingsId) {
+        this.reservedBookings = reservedBookingsId;
     }
 
-    public List<Long> getAvailableBookingsId() {
-        return availableBookingsId;
+    public List<BookingDTO> getAvailableBookings() {
+        return availableBookings;
     }
 
-    public void setAvailableBookingsId(List<Long> availableBookingsId) {
-        this.availableBookingsId = availableBookingsId;
+    public void setAvailableBookings(List<BookingDTO> availableBookings) {
+        this.availableBookings = availableBookings;
     }
 
     public LocalDate getStartDay() {

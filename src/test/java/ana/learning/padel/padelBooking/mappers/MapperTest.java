@@ -28,6 +28,8 @@ public class MapperTest {
     @Autowired
     BookingCalendarMapper bookingCalendarMapper;
     @Autowired
+    BookingCalendarMapperHelper bookingCalendarMapperHelper;
+    @Autowired
     BookingCalendarService bookingCalendarService;
 
     private Player player;
@@ -120,10 +122,12 @@ public class MapperTest {
         assertThat(calendar.getAvailableBookings().size()).isEqualTo(0);
         assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
 
-        BookingCalendarDTO dto = bookingCalendarMapper.customToDTO(calendar);
+        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
 
-        assertThat(dto.getAvailableBookingsId().size()).isEqualTo(0);
-        assertThat(dto.getReservedBookingsId().size()).isEqualTo(0);
+        // tengo una lista de bookingDTO, no de long.
+
+        assertThat(dto.getAvailableBookings().size()).isEqualTo(0);
+        assertThat(dto.getReservedBookings().size()).isEqualTo(0);
         assertThat(dto.getStartDay()).isEqualTo(TODAY);
         assertThat(dto.getId()).isEqualTo(100L);
     }
@@ -135,14 +139,15 @@ public class MapperTest {
         assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
 
-        BookingCalendarDTO dto = bookingCalendarMapper.customToDTO(calendar);
+        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
 
-        assertThat(dto.getAvailableBookingsId().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-        assertThat(dto.getReservedBookingsId().size()).isEqualTo(0);
+        assertThat(dto.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+        assertThat(dto.getReservedBookings().size()).isEqualTo(0);
         assertThat(dto.getStartDay()).isEqualTo(TODAY);
         assertThat(dto.getId()).isEqualTo(calendar.getId());
-        assertThat(dto.getAvailableBookingsId().get(0)).isEqualTo(availableBookings.get(0).getId());
-
+        assertThat(dto.getAvailableBookings().get(0).getId()).isEqualTo(availableBookings.get(0).getId());
+        assertThat(dto.getAvailableBookings().get(0).getTimeSlot()).isEqualTo(availableBookings.get(0).getTimeSlot());
+        assertThat(dto.getAvailableBookings().get(0).getBookingDate()).isEqualTo(availableBookings.get(0).getBookingDate());
     }
 
     @Test
@@ -152,13 +157,13 @@ public class MapperTest {
         assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
 
-        BookingCalendarDTO dto = bookingCalendarMapper.customToDTO(calendar);
+        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
 
-        assertThat(dto.getAvailableBookingsId().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-        assertThat(dto.getReservedBookingsId().size()).isEqualTo(0);
+        assertThat(dto.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+        assertThat(dto.getReservedBookings().size()).isEqualTo(0);
         assertThat(dto.getStartDay()).isEqualTo(TODAY);
         assertThat(dto.getId()).isEqualTo(calendar.getId());
-        assertThat(dto.getAvailableBookingsId().get(0)).isEqualTo(availableBookings.get(0).getId());
+        assertThat(dto.getAvailableBookings().get(0).getId()).isEqualTo(availableBookings.get(0).getId());
 
     }
 

@@ -113,10 +113,6 @@ public class Booking {
             return Optional.empty();
         }
 
-//        if (!player.isValidPlayer()) {
-//            System.out.println("ERROR: No se ha podido reservar porque el jugador no tiene residencia");
-//            return Optional.empty();
-//        }
         setBookingOwner(player);
         List<Booking> bookingsUpdated= player.getBookings();
         bookingsUpdated.add(this);
