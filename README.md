@@ -1,6 +1,6 @@
 PADEL BOOKING
 
-<img src="/src/main/resources/static/padel-booking-logo.png" alt="Logo de padel Booking" title="PADEL BOOKING" width="300">
+<img src="/src/main/resources/static/padel-booking-logo.png" alt="Logo de padel Booking" title="PADEL BOOKING" width="2048">
 
 MVP: Aplicación de gestión de reservas de la pista de pádel de la urbanización.
 
