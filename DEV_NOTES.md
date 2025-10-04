@@ -1,6 +1,11 @@
+He pausado las cancel booking porque todavia no esta implementada la reserva.
+
+
+
 
 TO DO:
-
+- PRIORIDAD----> Implementar la reserva de booking.
+- 
 - PRIORIDAD----> Repasar todos los DTO, porque ahora mismo al intentar cargar calendarios o bookings se desborda la pila.
 - Manejo de excepciones:
 - Diferenciar entre DTOs de salida y entrada.

@@ -8,7 +8,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface ResidenceMapper {
 
-    ResidenceMapper INSTANCE = Mappers.getMapper(ResidenceMapper.class);
     ResidenceDTO toDTO(Residence residence);
     Residence toEntity(ResidenceDTO dto);
 }

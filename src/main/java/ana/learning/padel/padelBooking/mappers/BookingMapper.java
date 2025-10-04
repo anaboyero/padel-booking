@@ -13,5 +13,4 @@ public interface BookingMapper {
     @Mapping(source = "bookingOwnerId", target = "bookingOwner.id")
     Booking toBooking(BookingDTO dto);
 }
-//  PlayerMapper INSTANCE = Mappers.getMapper(PlayerMapper.class);
 

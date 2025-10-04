@@ -90,8 +90,8 @@ public class PlayerController {
     public ResponseEntity<PlayerDTO> deletePlayerById (@PathVariable Long id) {
         Optional<Player> result = playerService.getPlayerById(id);
         if (result.isPresent()) {
-            playerService.deletePlayerById(id);
             PlayerDTO playerDTO = playerMapper.toDTO(result.get());
+            playerService.deletePlayerById(id);
             return ResponseEntity.ok(playerDTO);
         }
         return ResponseEntity.notFound().build();

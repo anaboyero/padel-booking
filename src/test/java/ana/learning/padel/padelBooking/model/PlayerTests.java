@@ -56,29 +56,29 @@ public class PlayerTests {
         assertThat(player.getResidence()).isEqualTo(residence);
     }
 
-    @Test
-    public void shouldCancelOwnedBooking() {
-        /// GIVEN a player with 2 owned bookings
-        player = setPlayerWithTwoOwnedBookings(TODAY);
-        assertThat(player.getBookings().size()).isEqualTo(2);
-        /// WHEN cancelling one of the owned bookings
-        player.cancelBooking(player.getBookings().get(0));
-        /// THEN the player only owns one booking
-        assertThat(player.getBookings().size()).isEqualTo(1);
-    }
-
-    @Test
-    public void shouldNotCancelPastBookingFromPlayer() {
-        /// GIVEN a player with an owned booking in the past
-        player = setPlayerWithTwoOwnedBookings(YESTERDAY);
-
-        /// WHEN trying to cancel that booking
-        player.cancelBooking(player.getBookings().get(0));
-
-        /// then the booking is not cancelled
-        assertThat(player.getBookings().size()).isEqualTo(2);
-
-    }
+//    @Test
+//    public void shouldCancelOwnedBooking() {
+//        /// GIVEN a player with 2 owned bookings
+//        player = setPlayerWithTwoOwnedBookings(TODAY);
+//        assertThat(player.getBookings().size()).isEqualTo(2);
+////        assertThat(player.getBookings().get(0).getBookingOwner()).isEqualTo(player);
+//        /// WHEN cancelling one of the owned bookings
+//        player.cancelBooking(player.getBookings().get(0));
+//        /// THEN the player only owns one booking
+//        assertThat(player.getBookings().size()).isEqualTo(1);
+//    }
+//
+//    @Test
+//    public void shouldNotCancelPastBookingFromPlayer() {
+//        /// GIVEN a player with an owned booking in the past
+//        player = setPlayerWithTwoOwnedBookings(YESTERDAY);
+//
+//        /// WHEN trying to cancel that booking
+//        player.cancelBooking(player.getBookings().get(0));
+//
+//        /// then the booking is not cancelled
+//        assertThat(player.getBookings().size()).isEqualTo(2);
+//    }
 
 //    @Disabled("Estos metodos me los estoy replanteando para tratarlo desde booking y no desde player")
 //    @Test

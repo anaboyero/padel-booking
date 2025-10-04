@@ -88,19 +88,21 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Optional<Player> cancelBookingByPlayer(Booking bookingToCancel, Player player){
-        return Optional.of(player.cancelBooking(bookingToCancel));
-
-//        if(bookingService.getBookingById(bookingToCancel.getId()).isEmpty()){
-//            log.info("The booking to cancel does not exist");
-//            return Optional.empty();
-//        }
-//        if(playerRepository.findById(player.getId()).isEmpty()){
-//            log.info("The player does not exist");
-//            return Optional.empty();
-//        }
-//        return Optional.of(player.cancelBooking(bookingToCancel));
-
+        return Optional.empty();
     }
+//        return Optional.of(player.cancelBooking(bookingToCancel));
+//
+////        if(bookingService.getBookingById(bookingToCancel.getId()).isEmpty()){
+////            log.info("The booking to cancel does not exist");
+////            return Optional.empty();
+////        }
+////        if(playerRepository.findById(player.getId()).isEmpty()){
+////            log.info("The player does not exist");
+////            return Optional.empty();
+////        }
+////        return Optional.of(player.cancelBooking(bookingToCancel));
+//
+//    }
 
     @Override
     public Player addBookingToPlayer(Player player, Booking booking) {

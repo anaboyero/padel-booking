@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -205,6 +206,32 @@ public class PlayerControllerTest {
     }
 
     @Test
+    public void shouldReturn200_WhenTryingToDeleteExistingPlayer() throws Exception {
+        ///  GIVEN a persisted player
+        Player player = createAndPersistPlayerWithResidence();
+        Long id = player.getId();
+
+        ///  WHEN deleting that player by id
+        ///  THEN returns OK and the deleted player
+
+        mockMvc.perform(delete("/api/v1/players/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Ana"));
+
+        assertThat(playerRepository.findById(id)).isEmpty();
+    }
+
+
+    @Test
+    public void shouldReturn404_WhenTryingToDeleteNonExistingPlayer() throws Exception {
+        ///  GIVEN a persisted player
+        ///  WHEN deleting that player by id
+        ///  THEN returns OK and the deleted player
+
+    }
+
+    @Test
     public void shouldReturnOkAndDeletedPlayer_WhenDeletingAPlayer() throws Exception {
 //        List<Player> players = setUpTwoPlayers();
 ////        List<Player> players = playerRepository.findAll();
@@ -243,28 +270,22 @@ public class PlayerControllerTest {
 //    }
 
     @Test
-    public void shouldReturnBadRequest_WhenPastBooking() throws Exception {
+    public void shouldReturnBadRequest_WhenTryingToCancelAPastBooking() throws Exception {
         /// GIVEN A PLAYER WITH A BOOKING
         Booking testBooking = new Booking();
         testBooking.setBookingDate(YESTERDAY);
         testBooking.setTimeSlot(SLOT);
         setPlayerWithResidenceAndBooking(testBooking);
 
-        /// WHEN CANCELLING THE BOOKING
-        /// THEN RETURNS OK AND THE DELETED BOOKING. This could have more assertions. Rethink a booking parameter in playerDTO
+        /// WHEN TRYING TO CANCEL THE BOOKING
+        /// THEN RETURNS BAD REQUEST
 
         mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Ana"));
+                .andExpect(status().isBadRequest());
 
-//        Booking updatedBooking = bookingService.getBookingById(savedBookingToCancel.getId()).get();
-//        assertThat(updatedBooking.getBookingOwner()).isNull();
-
-//        Player updatedPlayer = playerService.getPlayerById(savedPlayer.getId()).get();
-//        assertThat(updatedPlayer.getBookings()).doesNotContain(savedBookingToCancel);
+        assertThat(testBooking.isAvailable()).isTrue();
 
     }
 
@@ -293,6 +314,21 @@ public class PlayerControllerTest {
 
         savedPlayer = playerService.savePlayer(player);
         savedBookingToCancel = bookingService.saveBooking(booking);
+    }
+
+    private Player createAndPersistPlayerWithResidence() {
+        residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        savedResidence = residenceService.saveResidence(residence);
+
+        player = new Player();
+        player.setName("Ana");
+        player.setResidence(savedResidence);
+
+        savedPlayer = playerService.savePlayer(player);
+        return savedPlayer;
     }
 
 }
