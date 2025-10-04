@@ -26,6 +26,8 @@ public class MapperTest {
     @Autowired
     BookingMapper bookingMapper;
     @Autowired
+    ResidenceMapper residenceMapper;
+    @Autowired
     BookingCalendarMapper bookingCalendarMapper;
     @Autowired
     BookingCalendarMapperHelper bookingCalendarMapperHelper;
@@ -43,9 +45,6 @@ public class MapperTest {
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
     private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 5*7;
-
-
-
 
     @BeforeEach
     public void setUp() {
@@ -167,7 +166,21 @@ public class MapperTest {
 
     }
 
+    @Test
+    public void shouldMapToResidence() {
+        residence = residenceMapper.toEntity(residenceDTO);
+        assertThat(residence.getBuilding()).isEqualTo(RESIDENCE_BUILDING_EMPECINADO_21);
+        assertThat(residence.getFloor()).isEqualTo(RESIDENCE_5FLOOR);
+        assertThat(residence.getLetter()).isEqualTo(RESIDENCE_LETTER_A);
+    }
 
+    @Test
+    public void shouldMapToResidenceDTO() {
+        residence = residenceMapper.toEntity(residenceDTO);
+        assertThat(residence.getBuilding()).isEqualTo(RESIDENCE_BUILDING_EMPECINADO_21);
+        assertThat(residence.getFloor()).isEqualTo(RESIDENCE_5FLOOR);
+        assertThat(residence.getLetter()).isEqualTo(RESIDENCE_LETTER_A);
+    }
 
 
 //    @Test
@@ -197,12 +210,6 @@ public class MapperTest {
 //        assertThat(playerDTO.getResidence().getLetter()).isEqualTo(RESIDENCE_LETTER_A);
 //    }
 //
-//    @Test
-//    public void shouldMapToResidence() {
-//        residence = residenceMapper.toResidence(residenceDTO);
-//        assertThat(residence.getBuilding()).isEqualTo(RESIDENCE_BUILDING_EMPECINADO_21);
-//        assertThat(residence.getFloor()).isEqualTo(RESIDENCE_5FLOOR);
-//        assertThat(residence.getLetter()).isEqualTo(RESIDENCE_LETTER_A);
-//    }
+
 
 }
