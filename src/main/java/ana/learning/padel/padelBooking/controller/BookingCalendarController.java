@@ -89,9 +89,8 @@ public class BookingCalendarController {
 //    }
 
     @DeleteMapping
-    public ResponseEntity<BookingCalendar> deleteAllBookingCalendars() {
+    public ResponseEntity<BookingCalendarDTO> deleteAllBookingCalendars() {
         bookingCalendarService.deleteAllBookingCalendars();
         return ResponseEntity.noContent().build();
     }
-
 }
