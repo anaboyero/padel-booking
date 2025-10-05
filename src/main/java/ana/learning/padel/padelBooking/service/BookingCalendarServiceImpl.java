@@ -1,6 +1,8 @@
 package ana.learning.padel.padelBooking.service;
 
+import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
+import ana.learning.padel.padelBooking.mappers.BookingCalendarMapperHelper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
@@ -24,8 +26,10 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
     @Autowired
     PlayerService playerService;
     private static final Logger log = LoggerFactory.getLogger(BookingCalendarServiceImpl.class);
+    @Autowired
+    BookingCalendarMapperHelper bookingCalendarMapperHelper;
 
-    public BookingCalendarServiceImpl(BookingCalendarRepository bookingCalendarRepository, BookingService bookingService) {
+    public BookingCalendarServiceImpl(BookingCalendarRepository bookingCalendarRepository, BookingService bookingService,BookingCalendarMapperHelper bookingCalendarMapperHelper) {
         this.bookingCalendarRepository = bookingCalendarRepository;
         this.bookingService = bookingService;
     }
@@ -68,8 +72,14 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 //    }
 
     @Override
-    public Optional<BookingCalendar> getBookingCalendarById(Long id){
-        return bookingCalendarRepository.findById(id);
+    public Optional<BookingCalendarDTO> getBookingCalendarById(Long id){
+        Optional<BookingCalendar> calendar = bookingCalendarRepository.findById(id);
+        if (calendar.isEmpty()) {
+            return Optional.empty();
+        }
+        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar.get());
+        return Optional.of(dto);
+
     }
 
 //    @Override

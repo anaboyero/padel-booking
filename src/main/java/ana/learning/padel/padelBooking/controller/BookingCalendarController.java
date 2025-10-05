@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,8 +48,16 @@ public class BookingCalendarController {
     }
 
     @GetMapping
-    public List<BookingCalendar> getBookingCalendars() {
-        return bookingCalendarService.getAllBookingCalendars();
+    public List<BookingCalendarDTO> getBookingCalendars() {
+        List<BookingCalendar> calendars = bookingCalendarService.getAllBookingCalendars();
+        List<BookingCalendarDTO> dtos = new ArrayList<>();
+        if (calendars.isEmpty()) {
+            return dtos;
+        }
+        for (BookingCalendar calendar : calendars) {
+            dtos.add(bookingCalendarMapperHelper.customToDTO(calendar));
+        }
+        return dtos;
     }
 
 

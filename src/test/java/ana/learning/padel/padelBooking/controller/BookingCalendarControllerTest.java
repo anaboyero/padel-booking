@@ -1,8 +1,10 @@
 package ana.learning.padel.padelBooking.controller;
 
 
+import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
+import ana.learning.padel.padelBooking.mappers.BookingCalendarMapperHelper;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -62,13 +65,15 @@ public class BookingCalendarControllerTest {
     final MockMvc mockMvc;
     final ObjectMapper objectMapper;
     private final PlayerMapper playerMapper;
+    @Autowired
+    private final BookingCalendarMapperHelper bookingCalendarMapperHelper;
 
     Residence savedResidence;
     Player savedPlayer;
 
     private final Logger log = LoggerFactory.getLogger(BookingCalendarControllerTest.class);
 
-    public BookingCalendarControllerTest(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository, BookingService bookingService, ResidenceService residenceService, MockMvc mockMvc, ObjectMapper objectMapper, PlayerService playerService, PlayerMapper playerMapper){
+    public BookingCalendarControllerTest(BookingCalendarService bookingCalendarService, BookingCalendarRepository bookingCalendarRepository, BookingService bookingService, ResidenceService residenceService, MockMvc mockMvc, ObjectMapper objectMapper, PlayerService playerService, PlayerMapper playerMapper, BookingCalendarMapperHelper bookingCalendarMapperHelper){
         this.bookingCalendarService = bookingCalendarService;
         this.bookingCalendarRepository = bookingCalendarRepository;
         this.bookingService = bookingService;
@@ -77,6 +82,7 @@ public class BookingCalendarControllerTest {
         this.objectMapper = objectMapper;
         this.playerService = playerService;
         this.playerMapper = playerMapper;
+        this.bookingCalendarMapperHelper = bookingCalendarMapperHelper;
     }
 
     @BeforeEach
@@ -105,51 +111,54 @@ public class BookingCalendarControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response (POST): " + jsonResponse);
     }
-//
-//    @Test
-//    public void shouldReturn400_whenCreatingCalendarWithPastStartDay() throws Exception{
-//
-//        CreateCalendarRequestDTO createCalendarRequestDTO = new CreateCalendarRequestDTO(YESTERDAY);
-//
-//        MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(createCalendarRequestDTO)))
-//                .andExpect(status().isBadRequest())
-//                .andReturn();
-//
-//        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Response (POST): " + jsonResponse);
-//
-//        Exception exception = result.getResolvedException();
-//        assertThat(exception).isInstanceOf(PastDateException.class);
-//    }
-//
-//    @Test
-//    public void shouldReturnEmptyListWhenThereIsNoCalendar() throws Exception {
-//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$", hasSize(0)))
-//                .andReturn();
-//
-//        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Response (GET): " + jsonResponse);
-//    }
-//
-//    @Test
-//    public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
-//
-//        List<BookingCalendar> calendars = createConsecutiveBookingCalendars(1); // crea y persiste 1 calendario para esta semana
-//
-//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andReturn();
-//
-//        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Response (GET): " + jsonResponse);
-//    }
+
+    @Test
+    public void shouldReturn400_whenCreatingCalendarWithPastStartDay() throws Exception{
+
+        CreateCalendarRequestDTO createCalendarRequestDTO = new CreateCalendarRequestDTO(YESTERDAY);
+
+        MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createCalendarRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response (POST): " + jsonResponse);
+
+        Exception exception = result.getResolvedException();
+        assertThat(exception).isInstanceOf(PastDateException.class);
+    }
+
+    @Test
+    public void shouldReturnOKAndEmptyListWhenThereIsNoCalendar() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(0)))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response (GET): " + jsonResponse);
+    }
+
+    @Test
+    public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
+        ///  GIVEN 1 calendar in the repository
+
+        BookingCalendar calendar = createAndPersistConsecutiveBookingCalendars(1).get(0);
+//        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
+
+        /// When retrieving all calendars, return OK and a list of one BookingCalendarDTO
+        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response (GET): " + jsonResponse);
+    }
 //
 //    @Test
 //    public void shouldReturnListOf3BookingCalendars() throws Exception {
@@ -254,18 +263,17 @@ public class BookingCalendarControllerTest {
 //////    public void shouldNotReserveAnUnavailableBookingByAPlayerWithResidence() throws Exception {
 //////    }
 ////
-//    private List<BookingCalendar> createConsecutiveBookingCalendars(int num){
-//        List<BookingCalendar>  createdCalendars = new ArrayList<>();
-//        if (num<0) {return createdCalendars;}
-//
-//        for (int i=0; i<num; i++) {
-//            BookingCalendar bookingCalendar = new BookingCalendar();
-//            bookingCalendar.setStartDay(TODAY.plusDays(7L *i));
-//            BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
-//            createdCalendars.add(savedCalendar);
-//        }
-//        return createdCalendars;
-//    }
+    private List<BookingCalendar> createAndPersistConsecutiveBookingCalendars(int num){
+        List<BookingCalendar> createdCalendars = new ArrayList<>();
+        if (num<0) {return createdCalendars;}
+
+        for (int i=0; i<num; i++) {
+            BookingCalendar bookingCalendar = new BookingCalendar(TODAY.plusDays(7L *i));
+            BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
+            createdCalendars.add(savedCalendar);
+        }
+        return createdCalendars;
+    }
 //
 //    private Player createPlayerWithResidence() {
 //        Residence residence = new Residence();
