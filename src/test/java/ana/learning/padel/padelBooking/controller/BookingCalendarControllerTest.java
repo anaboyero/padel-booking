@@ -145,9 +145,7 @@ public class BookingCalendarControllerTest {
     @Test
     public void shouldReturnListOfOneWhenThereIsACalendar() throws Exception {
         ///  GIVEN 1 calendar in the repository
-
         BookingCalendar calendar = createAndPersistConsecutiveBookingCalendars(1).get(0);
-//        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
 
         /// When retrieving all calendars, return OK and a list of one BookingCalendarDTO
         MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
@@ -159,24 +157,26 @@ public class BookingCalendarControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response (GET): " + jsonResponse);
     }
-//
-//    @Test
-//    public void shouldReturnListOf3BookingCalendars() throws Exception {
-//
-//        createConsecutiveBookingCalendars(3); // crea y persiste 3 calendarios en tres semanas consecutivas a partir de hoy
-//
-//        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$[0].startDay").value(TODAY.toString()))
-//                .andExpect(jsonPath("$[1].startDay").value(TODAY.plusDays(7).toString()))
-//                .andExpect(jsonPath("$[2].startDay").value(TODAY.plusDays(14).toString()))
-//                .andExpect(jsonPath("$", hasSize(3)))
-//                .andReturn();
-//
-//        String jsonResponse = result.getResponse().getContentAsString();
-//        log.info("\n*** Response de get available bookings " + jsonResponse);
-//    }
+
+    @Test
+    public void shouldReturnListOf3BookingCalendars() throws Exception {
+
+        ///  GIVEN 3 calendars in the repository
+        List<BookingCalendar> calendars = createAndPersistConsecutiveBookingCalendars(3);
+
+        /// When retrieving all calendars, return OK and a list of 3 BookingCalendarDTO
+        MvcResult result = mockMvc.perform(get("/api/v1/booking-calendars"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].startDay").value(TODAY.toString()))
+                .andExpect(jsonPath("$[1].startDay").value(TODAY.plusDays(7).toString()))
+                .andExpect(jsonPath("$[2].startDay").value(TODAY.plusDays(14).toString()))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        log.info("\n*** Response de get available bookings " + jsonResponse);
+    }
 //
 //    @Test
 //    public void shouldDeleteAllCalendars() throws Exception{
