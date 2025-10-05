@@ -16,7 +16,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     BookingRepository bookingRepository;
-
     Logger log = LoggerFactory.getLogger(BookingServiceImpl.class);
 
     @Override

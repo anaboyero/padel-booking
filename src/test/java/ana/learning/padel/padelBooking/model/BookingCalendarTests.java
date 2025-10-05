@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +17,7 @@ import org.slf4j.LoggerFactory;
 public class BookingCalendarTests {
 
     private static final String NAME_OF_PLAYER1 = "Ana";
-    private static final String NAME_OF_PLAYER2 = "Javier";
-    private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
-    private static final LocalDate TODAY = LocalDate.now();
     private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
-    private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 4*7;
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
@@ -32,20 +29,14 @@ public class BookingCalendarTests {
 
     private static final Logger log = LoggerFactory.getLogger(BookingCalendarTests.class);
 
-//    @Test
-//    public void shouldNotCreateANewCalendarWithUnvalidDate(){
-//
-//        ///  GIVEN A START DATE
-//        LocalDate yesterday = YESTERDAY;
-//
-//        ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
-//
-//        // Ejecutamos el metodo problemático dentro de una lambda
-//        // El assertThrows ejecuta el código del lambda, espera que salte la excepción
-//        // y la captura para verificar si es del tipo correcto.
-//
-//        assertThrows(PastDateException.class, () -> new BookingCalendar(yesterday));
-//    }
+    @Test
+    public void shouldNotCreateANewCalendarWithUnvalidDate(){
+
+        ///  GIVEN A START DATE
+        ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
+
+        assertThrows(PastDateException.class, () -> new BookingCalendar(YESTERDAY));
+    }
 
 
 //    @BeforeEach
@@ -57,52 +48,8 @@ public class BookingCalendarTests {
 //        tentativeBooking = createAndPersistBooking();
 //    }
 
-//    @Test
-//    public void shouldConfirmAnAvailableBooking(){
-//
-//        /// GIVEN an initialized calendar
-//        assertThat(bookingCalendar.getStartDay()).isEqualTo(TODAY);
-//        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-//        Booking availableBooking = bookingCalendar.getAvailableBookings().get(0);
-//
-//        /// WHEN asking for an existing and available booking
-//        Boolean result = bookingCalendar.isBookingAvailable(availableBooking);
-//
-//        /// THEN it should answer yes
-//        assertThat(result).isTrue();
-//    }
-//
-//    @Test
-//    public void shouldNotConfirmNotAvailableBooking(){
-//
-//        /// GIVEN an initialized calendar with a reserved booking
-//        assertThat(bookingCalendar.getStartDay()).isEqualTo(TODAY);
-//        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-//        Booking availableBooking = bookingCalendar.getAvailableBookings().get(0);
-//        availableBooking.reserveBooking(player).get();
-//
-//        /// WHEN asking availability of a reserved booking
-//        Boolean result = bookingCalendar.isBookingAvailable(availableBooking);
-//
-//        /// THEN it should answer no
-//        assertThat(result).isFalse();
-//    }
-//
-//    @Test
-//    public void shouldNotConfirmAPastBooking(){
-//
-//        /// GIVEN an available booking
-//        assertThat(bookingCalendar.isBookingAvailable(tentativeBooking)).isTrue();
-//
-//        /// WHEN the booking is past
-//        tentativeBooking.setBookingDate(TODAY.minusDays(1));
-//        tentativeBooking.setTimeSlot(SLOT);
-//
-//        ///  THEN it shouldn't appear as available
-//        assertThat(bookingCalendar.isBookingAvailable(tentativeBooking)).isFalse();
-//    }
-//
-//
+
+
 //    @Test
 //    public void shouldReserveAnAvailableBooking(){
 //
@@ -164,20 +111,6 @@ public class BookingCalendarTests {
 //        assertThat(calendar.getReservedBookings().size()).isEqualTo(1);
 //    }
 
-    ///  ESTO NO DEBERIA SER MAS DE BOOKING QUE DE CALENDAR?
-//    @Test
-//    public void shouldNotRegisterABookingWithoutAPlayer(){
-//        tentativeBooking.setBookingOwner(null);
-//        assertThat(bookingCalendar.reserveBooking(tentativeBooking)).isEmpty();
-//    }
-
-//    @Test
-//    public void shouldNotRegisterABookingWithAPlayerWithoutResidence(){
-//        Player playerWithNoResidence = new Player();
-//        tentativeBooking.setBookingOwner(playerWithNoResidence);
-//
-//        assertThat(bookingCalendar.reserveBooking(tentativeBooking)).isEmpty();
-//    }
 
     private Residence createAndPersistResidence() {
         Residence residence = new Residence();

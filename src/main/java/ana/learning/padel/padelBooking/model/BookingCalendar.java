@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.model;
 
+import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -30,7 +31,11 @@ public class BookingCalendar {
         availableBookings  = new ArrayList<>();
     }
 
-    public BookingCalendar(LocalDate startDay) { // Crea calendario con available bookings. A falta de persistir.
+    public BookingCalendar(LocalDate startDay) {
+        if (startDay.isBefore(LocalDate.now())) {
+            log.error("The start date for the booking calendar cannot be in the past.");
+            throw new PastDateException("The start date for the booking calendar cannot be in the past.");
+        }
         this.startDay = startDay;
         reservedBookings  = new ArrayList<>();
         setAvailableBookings(fillAvailableBookings());
