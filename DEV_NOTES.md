@@ -8,11 +8,9 @@ TO DO:
 - PRIORIDAD----> Implementar la cancelacion de la reserva del booking.
 - PRIORIDAD----> Implementar la reserva de booking.
 - 
-- PRIORIDAD----> Repasar todos los DTO, porque ahora mismo al intentar cargar calendarios o bookings se desborda la pila.
+- PRIORIDAD----> Repasar todos los DTO, porque ahora mismo al intentar cargar bookings se desborda la pila.
 - Manejo de excepciones:
-- Diferenciar entre DTOs de salida y entrada.
-- En la API no estoy pudiendo hacer las operaciones. Comprobar
-- Refactorización de código.
+- En la API no estoy pudiendo hacer varias operaciones. Ejemplo: get all bookings.
 
 - Uso de SQL para persistencia de datos.
 - Llevar a cloud.
