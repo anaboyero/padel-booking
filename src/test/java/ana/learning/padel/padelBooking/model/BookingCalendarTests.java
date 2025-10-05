@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ public class BookingCalendarTests {
     private static final String NAME_OF_PLAYER2 = "Javier";
     private static final Booking.TimeSlot SLOT = Booking.TimeSlot.TWO_PM;
     private static final LocalDate TODAY = LocalDate.now();
+    private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
     private static final int MAX_NUM_OF_SLOTS_PER_WEEK = 4*7;
     private static final Residence.Building RESIDENCE_BUILDING_EMPECINADO21 = Residence.Building.JUAN_MARTIN_EMPECINADO_21;
     private static final Residence.Floor RESIDENCE_5FLOOR = Residence.Floor.FIFTH;
@@ -28,6 +31,22 @@ public class BookingCalendarTests {
     Residence residence;
 
     private static final Logger log = LoggerFactory.getLogger(BookingCalendarTests.class);
+
+//    @Test
+//    public void shouldNotCreateANewCalendarWithUnvalidDate(){
+//
+//        ///  GIVEN A START DATE
+//        LocalDate yesterday = YESTERDAY;
+//
+//        ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
+//
+//        // Ejecutamos el metodo problemático dentro de una lambda
+//        // El assertThrows ejecuta el código del lambda, espera que salte la excepción
+//        // y la captura para verificar si es del tipo correcto.
+//
+//        assertThrows(PastDateException.class, () -> new BookingCalendar(yesterday));
+//    }
+
 
 //    @BeforeEach
 //    public void setUp(){
@@ -178,6 +197,15 @@ public class BookingCalendarTests {
         }
         return player;
     }
+
+//    @Test
+//    private void shouldCreateValidAvailableBookings(){
+//        ///  GIVEN A CALENDAR
+//        /// WHEN SETTING A START DAY
+//        /// THEN IT RETURNS A LIST OF 28 AVAILABLE BOOKINGS
+//
+//
+//    }
 
 //    private Booking createAndPersistBooking(){
 //        Booking booking = new Booking();

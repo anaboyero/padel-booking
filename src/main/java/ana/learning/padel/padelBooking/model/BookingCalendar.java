@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -20,8 +19,7 @@ public class BookingCalendar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate startDay;
-    @OneToMany
-    @JoinColumn(name = "available_booking_id")
+    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> availableBookings;
     @OneToMany
     @JoinColumn(name = "reserved_booking_id")
@@ -30,6 +28,29 @@ public class BookingCalendar {
     public BookingCalendar() {
         reservedBookings  = new ArrayList<>();
         availableBookings  = new ArrayList<>();
+    }
+
+    public BookingCalendar(LocalDate startDay) { // Crea calendario con available bookings. A falta de persistir.
+        this.startDay = startDay;
+        reservedBookings  = new ArrayList<>();
+        setAvailableBookings(fillAvailableBookings());
+    }
+
+    private List<Booking> fillAvailableBookings(){
+        List<Booking> availableBookings  = new ArrayList<>();
+        for (int i = 0; i<7; i++) {
+            LocalDate day = startDay.plusDays(i);
+            for (Booking.TimeSlot timeSlot : Booking.TimeSlot.values()) {
+                Booking booking = new Booking();
+                booking.setBookingDate(day);
+                booking.setTimeSlot(timeSlot);
+                booking.setId(null);
+                booking.setBookingOwner(null);
+                booking.setCalendar(this);
+                availableBookings.add(booking);
+            }
+        }
+        return availableBookings;
     }
 
     @Transactional

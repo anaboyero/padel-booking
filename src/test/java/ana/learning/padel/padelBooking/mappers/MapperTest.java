@@ -133,12 +133,13 @@ public class MapperTest {
 
     @Test
     public void  shouldMapCalendarToDTO_WithBookings() {
-        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
-        List<Booking> availableBookings = calendar.getAvailableBookings();
+        BookingCalendar calendar = new BookingCalendar(TODAY);
+        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
+        List<Booking> availableBookings = savedCalendar.getAvailableBookings();
         assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
 
-        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
+        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(savedCalendar);
 
         assertThat(dto.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat(dto.getReservedBookings().size()).isEqualTo(0);
@@ -151,12 +152,13 @@ public class MapperTest {
 
     @Test
     public void  shouldMapCalendarToDTO_WithReservation() {
-        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
-        List<Booking> availableBookings = calendar.getAvailableBookings();
-        assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-        assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
+        BookingCalendar calendar = new BookingCalendar(TODAY);
+        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
+        List<Booking> availableBookings = savedCalendar.getAvailableBookings();
+        assertThat(savedCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+        assertThat(savedCalendar.getReservedBookings().size()).isEqualTo(0);
 
-        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
+        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(savedCalendar);
 
         assertThat(dto.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat(dto.getReservedBookings().size()).isEqualTo(0);

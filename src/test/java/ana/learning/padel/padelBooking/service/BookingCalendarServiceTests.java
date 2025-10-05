@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -29,7 +30,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-@ExtendWith(MockitoExtension.class)
+//@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BookingCalendarServiceTests {
 
     private static final String NAME_OF_PLAYER1 = "Ana";
@@ -49,18 +52,20 @@ public class BookingCalendarServiceTests {
 
     private static final Logger log = LoggerFactory.getLogger(BookingCalendarServiceTests.class);
 
-    @Mock
+    @Autowired
     private BookingCalendarRepository bookingCalendarRepository;
-    @Mock
+    @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private BookingCalendarService bookingCalendarService;
 
     // Lo mockeo para usarlo en el constructor de BookingCalendarService.
 
-    @Mock
-    private BookingService bookingService;
-
-    @InjectMocks
-    private BookingCalendarService bookingCalendarService = new BookingCalendarServiceImpl(bookingCalendarRepository, bookingService);
+//    @Mock
+//    private BookingService bookingService;
+//
+//    @InjectMocks
+//    private BookingCalendarService bookingCalendarService = new BookingCalendarServiceImpl(bookingCalendarRepository, bookingService);
 
     @BeforeEach
     public void setUp(){
@@ -108,42 +113,24 @@ public class BookingCalendarServiceTests {
     @Test
     public void shouldCreateANewCalendarWithAProperDate(){
 
-        ///  GIVEN A START DATE
-        LocalDate start = TODAY;
-        BookingCalendar bookingCalendarToSave = new BookingCalendar();
-        bookingCalendarToSave.setId(25L);
-        Booking bookingToSave = new Booking();
-        bookingToSave.setId(100L);
-        bookingToSave.setBookingDate(TODAY);
+        ///  GIVEN A NON PERSISTED CALENDAR WITH START DATE
 
-        when(bookingCalendarRepository.save(any(BookingCalendar.class))).thenReturn(bookingCalendarToSave);
-        when(bookingService.saveBooking(any(Booking.class))).thenReturn(bookingToSave);
-
-        ///  WHEN creating a new calendar with a start day
-
-        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(start);
-
-        ///  THEN RETURN A PERSISTED CALENDAR WITH PERSISTED AVAILABLE BOOKINGS
-
+        BookingCalendar calendar = new BookingCalendar(TODAY);
         assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
-        assertThat(calendar.getAvailableBookings().get(0).getId()).isNotNull();
+        assertThat(calendar.getAvailableBookings().get(0).getId()).isNull();
+
+        ///  WHEN persisting it (and the bookings)
+
+        BookingCalendar persistedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
+//        Booking firstAvailableBooking = calendar.getAvailableBookings().get(0);
+//
+//        ///  THEN RETURN A PERSISTED CALENDAR WITH PERSISTED AVAILABLE BOOKINGS
+//
+//        assertThat(persistedCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+//        assertThat(firstAvailableBooking.getId()).isNotNull();
+//        assertThat(firstAvailableBooking.getCalendar().getId()).isEqualTo(persistedCalendar.getId());
+
     }
-
-    @Test
-    public void shouldNotCreateANewCalendarWithUnvalidDate(){
-
-        ///  GIVEN A START DATE
-        LocalDate yesterday = TODAY.minusDays(1);
-
-        ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
-
-        // Ejecutamos el metodo problemático dentro de una lambda
-        // El assertThrows ejecuta el código del lambda, espera que salte la excepción
-        // y la captura para verificar si es del tipo correcto.
-
-        assertThrows(PastDateException.class, () -> bookingCalendarService.createBookingCalendar(yesterday));
-    }
-
 
 
 

@@ -1,9 +1,11 @@
 He pausado las cancel booking porque todavia no esta implementada la reserva.
 
 
-
+ Esta fallando este metodo public void shouldCreateANewCalendarWithAProperDate(){
+ 
 
 TO DO:
+- PRIORIDAD----> Implementar la cancelacion de la reserva del booking.
 - PRIORIDAD----> Implementar la reserva de booking.
 - 
 - PRIORIDAD----> Repasar todos los DTO, porque ahora mismo al intentar cargar calendarios o bookings se desborda la pila.
