@@ -5,9 +5,9 @@ He pausado las cancel booking porque todavia no esta implementada la reserva.
  
 
 TO DO:
-- PRIORIDAD----> Implementar la cancelacion de la reserva del booking.
 - PRIORIDAD----> Implementar la reserva de booking.
-- 
+- PRIORIDAD----> Implementar la cancelacion de la reserva del booking.
+
 - PRIORIDAD----> Repasar todos los DTO, porque ahora mismo al intentar cargar bookings se desborda la pila.
 - Manejo de excepciones:
 - En la API no estoy pudiendo hacer varias operaciones. Ejemplo: get all bookings.

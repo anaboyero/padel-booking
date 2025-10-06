@@ -10,6 +10,7 @@ import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -79,7 +80,15 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         }
         BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar.get());
         return Optional.of(dto);
+    }
 
+    @Override
+    public BookingCalendar createBookingCalendar (LocalDate startDate) throws PastDateException {
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new PastDateException("No se puede crear un calendario con fecha de inicio en el pasado");
+        }
+        BookingCalendar bookingCalendar = new BookingCalendar(startDate);
+        return saveBookingCalendar(bookingCalendar);
     }
 
 //    @Override

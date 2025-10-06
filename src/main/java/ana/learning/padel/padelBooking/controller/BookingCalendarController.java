@@ -60,15 +60,10 @@ public class BookingCalendarController {
         return dtos;
     }
 
-
     @PostMapping
     public ResponseEntity<BookingCalendarDTO> createCalendar(@RequestBody CreateCalendarRequestDTO createCalendarRequestDTO) throws PastDateException {
         LocalDate startDate = createCalendarRequestDTO.getStartDay();
-
-        // Paso de DTO a calendar y llamo a service.
-
-        BookingCalendar calendar = new BookingCalendar(startDate);
-        BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
+        BookingCalendar savedCalendar = bookingCalendarService.createBookingCalendar(startDate);
         BookingCalendarDTO result = bookingCalendarMapperHelper.customToDTO(savedCalendar);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
