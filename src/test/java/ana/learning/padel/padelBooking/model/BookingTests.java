@@ -37,15 +37,19 @@ public class BookingTests {
 
     @Test
     public void shouldCreateANewBooking() {
+
+        BookingCalendar calendar = new BookingCalendar();
         booking = new Booking();
         booking.setBookingDate(TODAY);
         booking.setTimeSlot(SLOT);
         booking.setBookingOwner(player);
+        booking.setCalendar(calendar);
         booking.setId(1L);
 
         assertThat(booking.getBookingDate()).isEqualTo(TODAY);
         assertThat(booking.getTimeSlot()).isEqualTo(SLOT);
         assertThat(booking.getBookingOwner()).isEqualTo(player);
+        assertThat(booking.getCalendar()).isEqualTo(calendar);
         assertThat(booking.getId()).isEqualTo(1L);
     }
 
@@ -77,9 +81,9 @@ public class BookingTests {
     public void givenValidPlayer_shouldNotReserveUnavailableBooking() {
         /// GIVEN a reserved booking, given a valid player
 
-        booking = createAndPersistBooking();
-        residence = createAndPersistResidence();
-        player = createAndPersistPlayer(residence);
+        booking = createBooking();
+        residence = createResidence();
+        player = createPlayer(residence);
         booking.setBookingOwner(new Player());
 
         assertThat(player.getBookings().size()).isEqualTo(0);
@@ -144,7 +148,7 @@ public class BookingTests {
 //        assertThat(booking.getBookingOwner()).isNull();
 //    }
 
-    private Residence createAndPersistResidence() {
+    private Residence createResidence() {
         Residence residence = new Residence();
         residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
         residence.setFloor(RESIDENCE_5FLOOR);
@@ -153,17 +157,20 @@ public class BookingTests {
         return residence;
     }
 
-    private Player createAndPersistPlayer(Residence residence) {
+    private Player createPlayer(Residence residence) {
         player = new Player();
         player.setName(NAME_OF_PLAYER1);
         player.setId(2L);
         if (residence!=null) {
             player.setResidence(residence);
         }
+        else {
+            player.setResidence(createResidence());
+        }
         return player;
     }
 
-    private Booking createAndPersistBooking(){
+    private Booking createBooking(){
         booking = new Booking();
         booking.setBookingDate(TODAY);
         booking.setTimeSlot(SLOT);

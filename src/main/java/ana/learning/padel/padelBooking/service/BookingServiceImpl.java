@@ -25,7 +25,6 @@ public class BookingServiceImpl implements BookingService {
 
     public List<Booking> getAllBookings(){
         System.out.println("\n*** Entrando en repositorio de Booking");
-        System.out.println((List<Booking>)bookingRepository.findAll());
         return (List<Booking>)bookingRepository.findAll();
     }
 

@@ -21,6 +21,9 @@ public class Booking {
     @JoinColumn(name = "calendar_id")
     private BookingCalendar calendar;
 
+    public Booking() {
+    }
+
     public BookingCalendar getCalendar() {
         return calendar;
     }
@@ -45,8 +48,6 @@ public class Booking {
 //        NINE_PM;
     }
 
-    public Booking() {
-    }
 
     public Long getId() {
         return id;
@@ -82,7 +83,6 @@ public class Booking {
 
     public Boolean isAvailable(){
         return (getBookingOwner()==null);
-        // Importante en el futuro cuando el calendario termine que BORRE las bookings.
     }
 
     @Override

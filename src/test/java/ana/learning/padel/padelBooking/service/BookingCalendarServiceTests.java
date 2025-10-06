@@ -88,7 +88,7 @@ public class BookingCalendarServiceTests {
 //    }
 
     @Test
-    public void shouldSaveANewBookingCalendar_GivenAProperDate() {
+    public void shouldSaveANewBookingCalendar() {
 
         /// GIVEN A non-persisted calendar
         BookingCalendar calendar = new BookingCalendar(TODAY);

@@ -5,6 +5,7 @@ He pausado las cancel booking porque todavia no esta implementada la reserva.
  
 
 TO DO:
+- PRIORIDAD ---> Estan dando error los bookings, no se pueden recuperar en el get.
 - PRIORIDAD----> Implementar la reserva de booking.
 - PRIORIDAD----> Implementar la cancelacion de la reserva del booking.
 

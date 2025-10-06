@@ -31,7 +31,9 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<List<BookingDTO>> getAllBookings() {
+        log.info("Entrando en el controlador de Booking para obtener todas las reservas");
         List<Booking> bookings = bookingService.getAllBookings();
+        log.info("Preparada para pasar todas las reservas a DTO y devolverlas");
         List<BookingDTO> bookingDTOS = bookings.stream()
                 .map(bookingMapper::toDTO)
                 .toList();
