@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -41,6 +42,11 @@ public class BookingCalendar {
         setAvailableBookings(fillAvailableBookings());
     }
 
+//    Optional<Booking> result = bookingCalendarService.reserveBooking(calendar, availableBooking, player);
+
+
+
+
     private List<Booking> fillAvailableBookings(){
         List<Booking> availableBookings  = new ArrayList<>();
         for (int i = 0; i<7; i++) {
@@ -58,11 +64,11 @@ public class BookingCalendar {
         return availableBookings;
     }
 
-    @Transactional
-    public void updateBookingStatus(Booking booking) {
-        reservedBookings.add(booking);
-        availableBookings.remove(booking);
-    }
+//    @Transactional
+//    public void updateBookingStatus(Booking booking) {
+//        reservedBookings.add(booking);
+//        availableBookings.remove(booking);
+//    }
 
 //    private List<Booking> generateAvailableBookings(){
 //        availableBookings  = new ArrayList<>();

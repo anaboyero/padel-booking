@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.StatusResultMatchersExtensionsKt.isEqualTo;
 
 
 //@ExtendWith(MockitoExtension.class)
@@ -60,6 +61,8 @@ public class BookingCalendarServiceTests {
     private BookingCalendarService bookingCalendarService;
     @Autowired
     private ResidenceService residenceService;
+    @Autowired
+    private PlayerService playerService;
 
 //    @BeforeEach
 //    public void setUp(){
@@ -105,6 +108,50 @@ public class BookingCalendarServiceTests {
         assertThat((calendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
     }
 
+    @Test
+    public void shouldReserveABooking() {
+        ///  GIVEN a valid player, a persisted calendar and a free booking
+        Residence residence = residenceService.saveResidence(createResidence());
+        Player player = playerService.savePlayer(createPlayer(residence));
+        BookingCalendar calendar = bookingCalendarService.saveBookingCalendar(new BookingCalendar(TODAY));
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+
+        ///  WHEN the player reserves the booking
+        Booking result = bookingCalendarService.reserveBooking(calendar, availableBooking, player).get();
+
+        ///  THEN  the booking is reserved for the player, and moved from available to reserved bookings in the calendar and the player has this booking.
+        assertThat(result.getBookingOwner().getId()).isEqualTo(player.getId());
+        assertThat(calendar.getReservedBookings()).size().isEqualTo(1);
+        assertThat(player.getBookings().get(0).getId()).isEqualTo(result.getId());
+    }
+
+
+    private Residence createResidence() {
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        return residence;
+    }
+
+    private Player createPlayer(Residence residence) {
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        if (residence!=null) {
+            player.setResidence(residence);
+        }
+        else {
+            player.setResidence(createResidence());
+        }
+        return player;
+    }
+
+    private Booking createBooking(){
+        Booking booking = new Booking();
+        booking.setBookingDate(TODAY);
+        booking.setTimeSlot(SLOT);
+        return booking;
+    }
 
 
 }

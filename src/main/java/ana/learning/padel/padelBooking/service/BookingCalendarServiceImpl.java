@@ -7,6 +7,7 @@ import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,25 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         BookingCalendar bookingCalendar = new BookingCalendar(startDate);
         return saveBookingCalendar(bookingCalendar);
     }
+
+    @Transactional
+    @Override
+    public Optional<Booking> reserveBooking(BookingCalendar calendar, Booking booking, Player player) {
+        // Caso basico: happy path .
+        // añado owner al booking.
+        // añado boking a reservedCalendar y lo quito de available.
+        // añado booking al player.
+        //  salvo booking en bbdd.
+        // actualizo calendar en bbdd.
+        // actualizo player
+        booking.setBookingOwner(player);
+        calendar.getReservedBookings().add(booking);
+        calendar.getAvailableBookings().remove(booking);
+        player.getBookings().add(booking);
+        Booking savedBooking = bookingService.saveBooking(booking);
+        return Optional.of(savedBooking);
+    }
+
 
 //    @Override
 //    public Optional<Booking> reserveBooking(Booking booking, Player player, BookingCalendar calendar) {

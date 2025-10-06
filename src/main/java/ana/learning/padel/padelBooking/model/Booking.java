@@ -1,6 +1,7 @@
 package ana.learning.padel.padelBooking.model;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -107,18 +108,5 @@ public class Booking {
         return Objects.hash(bookingDate, timeSlot);
     }
 
-    public Optional<Booking> reserveBooking(Player player) {
-        if (!isAvailable()) {
-            System.out.println("ERROR: No se ha podido reservar porque la reserva está ocupada por otro jugador");
-            return Optional.empty();
-        }
 
-        setBookingOwner(player);
-        List<Booking> bookingsUpdated= player.getBookings();
-        bookingsUpdated.add(this);
-        player.setBookings(bookingsUpdated);
-        calendar.updateBookingStatus(this);
-        return Optional.of(this);
-
-    }
 }

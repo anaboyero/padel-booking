@@ -70,47 +70,47 @@ public class MapperTest {
         assertThat(dto.getTimeSlot()).isEqualTo(SLOT);
     }
 
-    @Test
-    public void shouldMapBookingToDTO_reservation() {
-        ///  GIVEN A RESERVATION
-
-        BookingCalendar calendar = new BookingCalendar();
-        calendar.setId(100L);
-
-        Booking booking = new Booking();
-        booking.setTimeSlot(SLOT);
-        booking.setBookingDate(TODAY);
-        booking.setId(13L);
-        booking.setCalendar(calendar);
-
-        Player player = new Player();
-        player.setName("Ana");
-        player.setId(10L);
-
-
-        Residence residence = new Residence();
-        residence.setFloor(RESIDENCE_5FLOOR);
-        residence.setId(20L);
-        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO_21);
-        residence.setLetter(Residence.Letter.A);
-        player.setResidence(residence);
-
-        booking.reserveBooking(player);
-
-        assertThat(booking.getBookingOwner().getName()).isEqualTo("Ana");
-        assertThat(player.getBookings().size()).isEqualTo(1);
-
-        BookingDTO dto = bookingMapper.toDTO(booking);
-
-        assertThat(dto.getBookingDate()).isEqualTo(TODAY);
-        assertThat(dto.getTimeSlot()).isEqualTo(SLOT);
-        assertThat(dto.getId()).isEqualTo(13L);
-        assertThat(dto.getBookingOwnerId()).isEqualTo(10L);
-        assertThat(dto.getBookingOwnerId()).isEqualTo(10L);
-        System.out.println("\n ***** ");
-        System.out.println(dto.toString());
-        System.out.println("\n ***** ");
-    }
+//    @Test
+//    public void shouldMapBookingToDTO_reservation() {
+//        ///  GIVEN A RESERVATION
+//
+//        BookingCalendar calendar = new BookingCalendar();
+//        calendar.setId(100L);
+//
+//        Booking booking = new Booking();
+//        booking.setTimeSlot(SLOT);
+//        booking.setBookingDate(TODAY);
+//        booking.setId(13L);
+//        booking.setCalendar(calendar);
+//
+//        Player player = new Player();
+//        player.setName("Ana");
+//        player.setId(10L);
+//
+//
+//        Residence residence = new Residence();
+//        residence.setFloor(RESIDENCE_5FLOOR);
+//        residence.setId(20L);
+//        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO_21);
+//        residence.setLetter(Residence.Letter.A);
+//        player.setResidence(residence);
+//
+//        booking.reserveBooking(player);
+//
+//        assertThat(booking.getBookingOwner().getName()).isEqualTo("Ana");
+//        assertThat(player.getBookings().size()).isEqualTo(1);
+//
+//        BookingDTO dto = bookingMapper.toDTO(booking);
+//
+//        assertThat(dto.getBookingDate()).isEqualTo(TODAY);
+//        assertThat(dto.getTimeSlot()).isEqualTo(SLOT);
+//        assertThat(dto.getId()).isEqualTo(13L);
+//        assertThat(dto.getBookingOwnerId()).isEqualTo(10L);
+//        assertThat(dto.getBookingOwnerId()).isEqualTo(10L);
+//        System.out.println("\n ***** ");
+//        System.out.println(dto.toString());
+//        System.out.println("\n ***** ");
+//    }
 
     @Test
     public void shouldMapCalendarToDTO_noReservations() {

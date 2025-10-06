@@ -15,4 +15,5 @@ public interface BookingCalendarService {
     void deleteAllBookingCalendars();
     BookingCalendar createBookingCalendar (LocalDate startDate);
     Optional<BookingCalendarDTO> getBookingCalendarById(Long id);
+    Optional<Booking> reserveBooking(BookingCalendar calendar, ana.learning.padel.padelBooking.model.Booking booking, Player player);
 }
