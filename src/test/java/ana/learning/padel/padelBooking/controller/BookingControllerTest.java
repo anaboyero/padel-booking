@@ -1,11 +1,13 @@
 package ana.learning.padel.padelBooking.controller;
 
+import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingRepository;
+import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import ana.learning.padel.padelBooking.service.BookingService;
 import ana.learning.padel.padelBooking.service.PlayerService;
 import ana.learning.padel.padelBooking.service.ResidenceService;
@@ -53,16 +55,24 @@ public class BookingControllerTest {
     private static final Residence.Letter RESIDENCE_LETTER_A = Residence.Letter.A;
 
     private static final Logger log = LoggerFactory.getLogger(BookingControllerTest.class);
+    private final ObjectMapper objectMapper;
     private final MockMvc mockMvc;
     private final BookingService bookingService;
+    private final BookingCalendarService bookingCalendarService;
+    private final PlayerService playerService;
+    private final ResidenceService residenceService;
     private final BookingRepository bookingRepository;
+    private final PlayerMapper playerMapper;
 
-
-
-    public BookingControllerTest(MockMvc mockMvc, BookingService bookingService, BookingRepository bookingRepository) {
+    public BookingControllerTest(MockMvc mockMvc, BookingService bookingService, BookingRepository bookingRepository, BookingCalendarService bookingCalendarService, PlayerService playerService, ResidenceService residenceService, PlayerMapper playerMapper, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.bookingService = bookingService;
         this.bookingRepository = bookingRepository;
+        this.bookingCalendarService = bookingCalendarService;
+        this.playerService = playerService;
+        this.residenceService = residenceService;
+        this.playerMapper = playerMapper;
+        this.objectMapper = objectMapper;
     }
 
     @BeforeEach
@@ -126,5 +136,36 @@ public class BookingControllerTest {
             booking.setTimeSlot(SLOT);
             bookingService.saveBooking(booking);
         }
+    }
+
+    @Test
+    public void shouldReserveAvailableBookingByValidPlayer() throws Exception {
+
+        ///  GIVEN an available booking in a calendar and a valid player
+        BookingCalendar calendar = bookingCalendarService.saveBookingCalendar(new BookingCalendar(TODAY));
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        Long bookingId = availableBooking.getId();
+
+        Residence residence = new Residence();
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        Residence savedResidence = residenceService.saveResidence(residence);
+
+        Player player = new Player();
+        player.setResidence(savedResidence);
+        player.setName(NAME_OF_PLAYER1);
+        Player savedPlayer = playerService.savePlayer(player);
+
+        PlayerDTO playerDTO = playerMapper.toDTO(savedPlayer);
+
+        ///  WHEN making a patch call to reserve the booking for that player
+        ///  THEN we get a 200 OK and return the updated booking
+
+        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{id}", bookingId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(playerDTO)))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 }

@@ -1,13 +1,16 @@
 He pausado las cancel booking porque todavia no esta implementada la reserva.
 
-
+REFLEXION: La reserva al final se hace entre booking y player. El calendario se actualiza tambien, pero no es 
+el encargado de hacer la reserva. El recurso es la reserva (booking) y el que la hace es el player.
+Por lo tanto, tanto el metodo de reservar deberia estar en el servidor y el controlador de booking. 
 
 TO DO:
-- Voy por aqui public void shouldReserveABooking() {
-- PRIORIDAD----> Implementar la reserva de booking.
+
+- PRIORIDAD----> Implementar la reserva de booking. Falta el controlador.
 - PRIORIDAD----> Implementar la cancelacion de la reserva del booking.
 - Delete calendar by id
 - Delete booking by id
+- Aprender a usar builder con lombok
 
 - Manejo de excepciones:
 

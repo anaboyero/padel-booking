@@ -22,10 +22,10 @@ public class BookingCalendar {
     private Long id;
     private LocalDate startDay;
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Booking> availableBookings;
-    @OneToMany
-    @JoinColumn(name = "reserved_booking_id")
-    private List<Booking> reservedBookings;
+    private List<Booking> availableBookings = new ArrayList<>();
+    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booking> reservedBookings = new ArrayList<>();
+
 
     public BookingCalendar() {
         reservedBookings  = new ArrayList<>();

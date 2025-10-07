@@ -1,16 +1,19 @@
 package ana.learning.padel.padelBooking.controller;
 
+import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.BookingDTO;
+import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.model.Booking;
+import ana.learning.padel.padelBooking.model.BookingCalendar;
+import ana.learning.padel.padelBooking.model.Player;
+import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import ana.learning.padel.padelBooking.service.BookingService;
+import ana.learning.padel.padelBooking.service.PlayerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +26,14 @@ public class BookingController {
     private static final Logger log = LoggerFactory.getLogger(BookingController.class);
     private final BookingMapper bookingMapper;
     BookingService bookingService;
+    PlayerService playerService;
+    BookingCalendarService bookingCalendarService;
 
-    public BookingController(BookingService bookingService, BookingMapper bookingMapper){
+    public BookingController(BookingService bookingService, BookingMapper bookingMapper, PlayerService playerService, BookingCalendarService bookingCalendarService){
         this.bookingService = bookingService;
         this.bookingMapper = bookingMapper;
+        this.playerService = playerService;
+        this.bookingCalendarService = bookingCalendarService;
     }
 
     @GetMapping
@@ -49,6 +56,20 @@ public class BookingController {
         BookingDTO bookingDTO = bookingMapper.toDTO(result.get());
         return ResponseEntity.ok(bookingDTO);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<BookingDTO> reserveBooking(@PathVariable Long id, @RequestBody PlayerDTO playerDTO) {
+        Booking booking = bookingService.getBookingById(id).get();
+        BookingCalendar calendar = booking.getCalendar();
+        Long calendarId = calendar.getId();
+
+        Player player = playerService.getPlayerById(playerDTO.getId()).get();
+        Optional<Booking> result = bookingCalendarService.reserveBooking(calendar, booking, player);
+        BookingDTO dto = bookingMapper.toDTO(result.get());
+        return ResponseEntity.ok(dto);
+    }
+
+
 
 
 
