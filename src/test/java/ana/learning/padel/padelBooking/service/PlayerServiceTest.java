@@ -1,6 +1,9 @@
 package ana.learning.padel.padelBooking.service;
 
+import ana.learning.padel.padelBooking.exceptions.IncompletePlayerException;
+import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.model.Booking;
+import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingRepository;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -104,7 +108,6 @@ public class PlayerServiceTest {
 
     @Test
     public void shouldNotAddBookingToPlayer_WhenBookingIsNotPersisted(){
-
         ///  GIVEN a player with no bookings and a non persisted booking
         player1 = new Player();
         player1.setName("Ana");
@@ -166,6 +169,17 @@ public class PlayerServiceTest {
         booking.setTimeSlot(SLOT);
         booking.setId(id);
         return booking;
+    }
+
+    @Test
+    public void shouldNotSavePlayer_withNoPersistedResidence () {
+        ///  given a player with a non persisted residence
+        Player player = new Player();
+        player.setName("Ana");
+
+        ///  when saving the player
+        ///  then return an exception and do not save the player
+        assertThrows(IncompletePlayerException.class, () -> playerService.savePlayer(player));
     }
 }
 

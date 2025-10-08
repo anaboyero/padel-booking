@@ -1,6 +1,8 @@
 package ana.learning.padel.padelBooking.controller;
 
 import ana.learning.padel.padelBooking.DTO.PlayerDTO;
+import ana.learning.padel.padelBooking.exceptions.IncompletePlayerException;
+import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -11,6 +13,7 @@ import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import ana.learning.padel.padelBooking.service.BookingService;
 import ana.learning.padel.padelBooking.service.PlayerService;
 import ana.learning.padel.padelBooking.service.ResidenceService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +33,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
@@ -167,5 +172,42 @@ public class BookingControllerTest {
                 .content(objectMapper.writeValueAsString(playerDTO)))
                 .andExpect(status().isOk())
                 .andReturn();
+    }
+
+    @Test
+    public void shouldNotReserveUnavailableBookingByValidPlayer() throws Exception {
+
+        ///  GIVEN an available booking in a calendar and a player without residence
+        BookingCalendar calendar = bookingCalendarService.saveBookingCalendar(new BookingCalendar(TODAY));
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        Long bookingId = availableBooking.getId();
+
+        Residence residence = new Residence();
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        Residence savedResidence = residenceService.saveResidence(residence);
+
+        Player player = new Player();
+        player.setName(NAME_OF_PLAYER1);
+        player.setResidence(savedResidence);
+        Player savedPlayer = playerService.savePlayer(player);
+
+        savedPlayer.setResidence(null);
+
+        PlayerDTO playerDTO = playerMapper.toDTO(savedPlayer);
+
+        ///  WHEN making a patch call to reserve the booking for that player
+        ///  THEN we get a BAD REQUEST
+
+        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{id}", bookingId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(playerDTO)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThrows(IncompletePlayerException.class, () -> playerService.savePlayer(player));
+
+
     }
 }

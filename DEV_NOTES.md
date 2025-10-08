@@ -1,9 +1,5 @@
 He pausado las cancel booking porque todavia no esta implementada la reserva.
 
-REFLEXION: La reserva al final se hace entre booking y player. El calendario se actualiza tambien, pero no es 
-el encargado de hacer la reserva. El recurso es la reserva (booking) y el que la hace es el player.
-Por lo tanto, tanto el metodo de reservar deberia estar en el servidor y el controlador de booking. 
-
 TO DO:
 
 - PRIORIDAD----> Implementar la reserva de booking. Falta el controlador.

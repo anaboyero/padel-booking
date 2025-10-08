@@ -3,6 +3,7 @@ package ana.learning.padel.padelBooking.controller;
 import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.DTO.PlayerDTO;
+import ana.learning.padel.padelBooking.exceptions.IncompletePlayerException;
 import ana.learning.padel.padelBooking.mappers.BookingMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -64,14 +65,13 @@ public class BookingController {
         Long calendarId = calendar.getId();
 
         Player player = playerService.getPlayerById(playerDTO.getId()).get();
+        if (player.getResidence()==null) {
+            return ResponseEntity.badRequest().build();
+        }
         Optional<Booking> result = bookingCalendarService.reserveBooking(calendar, booking, player);
         BookingDTO dto = bookingMapper.toDTO(result.get());
         return ResponseEntity.ok(dto);
     }
-
-
-
-
 
 
 }

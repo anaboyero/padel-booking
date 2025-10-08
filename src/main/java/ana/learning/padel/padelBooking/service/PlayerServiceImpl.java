@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.service;
 
+import ana.learning.padel.padelBooking.exceptions.IncompletePlayerException;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.Player;
@@ -31,9 +32,12 @@ public class PlayerServiceImpl implements PlayerService {
     PlayerMapper mapper;
 
     @Override
-    public Player savePlayer(Player player) {
-        // Guardar y persistir residencia
+    public Player savePlayer(Player player) throws IncompletePlayerException {
         Residence residence = player.getResidence();
+        if (residence==null) {
+            throw new IncompletePlayerException("The player cannot be saved because it does not have a residence");
+        }
+        // Guardar y persistir residencia
         Residence savedResidence = residenceService.saveResidence(residence);
 
         // Actualizar el player con la residencia persistida

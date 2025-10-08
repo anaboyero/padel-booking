@@ -9,6 +9,7 @@ public class BookingDTO {
     private LocalDate bookingDate;
     private Booking.TimeSlot timeSlot;
     private Long bookingOwnerId;
+    private Long calendarId;
 
     public Long getId() {
         return id;
@@ -42,6 +43,14 @@ public class BookingDTO {
         this.bookingOwnerId = bookingOwnerId;
     }
 
+    public Long getCalendarId() {
+        return calendarId;
+    }
+
+    public void setCalendarId(Long calendarId) {
+        this.calendarId = calendarId;
+    }
+
     @Override
     public String toString() {
         return "BookingDTO{" +
@@ -49,6 +58,7 @@ public class BookingDTO {
                 ", bookingDate=" + bookingDate +
                 ", timeSlot=" + timeSlot +
                 ", bookingOwnerId=" + bookingOwnerId +
+                ", calendarId=" + calendarId +
                 '}';
     }
 }
