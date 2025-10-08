@@ -151,6 +151,21 @@ public class MapperTest {
     }
 
     @Test
+    public void shouldMapBookingToDTO_withCalendar() {
+        ///  GIVEN AN AVAILABLE BOOKING
+        BookingCalendar calendar = new BookingCalendar(TODAY);
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        /// WHEN mapping it to BookingDTO
+        BookingDTO dto = bookingMapper.toDTO(availableBooking);
+        ///  IR RETURNS A BOOKINGDTO WITH ALL THE FIELDS
+        assertThat(dto.getBookingOwnerId()).isEqualTo(availableBooking.getId());
+        assertThat(dto.getBookingDate()).isEqualTo(availableBooking.getBookingDate());
+        assertThat(dto.getTimeSlot()).isEqualTo(availableBooking.getTimeSlot());
+        assertThat(dto.getCalendarId()).isEqualTo(availableBooking.getCalendar().getId());
+
+    }
+
+    @Test
     public void  shouldMapCalendarToDTO_WithReservation() {
         BookingCalendar calendar = new BookingCalendar(TODAY);
         BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
