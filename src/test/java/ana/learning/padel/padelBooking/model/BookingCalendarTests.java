@@ -33,30 +33,30 @@ public class BookingCalendarTests {
 
     private static final Logger log = LoggerFactory.getLogger(BookingCalendarTests.class);
 
-    @Test
-    public void shouldNotCreateANewCalendarWithUnvalidDate(){
+//    @Test
+//    public void shouldNotCreateANewCalendarWithUnvalidDate(){
+//
+//        ///  GIVEN A START DATE
+//        ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
+//
+//        assertThrows(PastDateException.class, () -> new BookingCalendar(YESTERDAY));
+//    }
 
-        ///  GIVEN A START DATE
-        ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
-
-        assertThrows(PastDateException.class, () -> new BookingCalendar(YESTERDAY));
-    }
-
-    @Test
-    public void shouldCreateANewCalendarWithValidDate(){
-
-        ///  GIVEN A START DATE
-        ///  WHEN trying to create a new calendar with a start day today or in the future
-        ///  THEN it creates a new calendar with 28 available bookings
-
-        bookingCalendar = new BookingCalendar();
-        bookingCalendar.setStartDay(LocalDate.now());
-
-        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(35);
-        assertThat(bookingCalendar.getReservedBookings().size()).isEqualTo(0);
-        assertThat(bookingCalendar.getAvailableBookings().get(0).getCalendar().getId()).isNull();
-        assertThat(bookingCalendar.getStartDay()).isEqualTo(LocalDate.now());
-    }
+//    @Test
+//    public void shouldCreateANewCalendarWithValidDate(){
+//
+//        ///  GIVEN A START DATE
+//        ///  WHEN trying to create a new calendar with a start day today or in the future
+//        ///  THEN it creates a new calendar with 28 available bookings
+//
+//        bookingCalendar = new BookingCalendar();
+//        bookingCalendar.setStartDay(LocalDate.now());
+//
+//        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(35);
+//        assertThat(bookingCalendar.getReservedBookings().size()).isEqualTo(0);
+//        assertThat(bookingCalendar.getAvailableBookings().get(0).getCalendar().getId()).isNull();
+//        assertThat(bookingCalendar.getStartDay()).isEqualTo(LocalDate.now());
+//    }
 
 
 //    @BeforeEach

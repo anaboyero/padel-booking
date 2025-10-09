@@ -135,6 +135,7 @@ public class BookingControllerTest {
     }
 
     private void createConsecutiveBookings(int num){
+
         for (int i=0; i<num; i++) {
             Booking booking = new Booking();
             booking.setBookingDate(TODAY.plusDays(i));
@@ -147,7 +148,7 @@ public class BookingControllerTest {
     public void shouldReserveAvailableBookingByValidPlayer() throws Exception {
 
         ///  GIVEN an available booking in a calendar and a valid player
-        BookingCalendar calendar = bookingCalendarService.saveBookingCalendar(new BookingCalendar(TODAY));
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
         Booking availableBooking = calendar.getAvailableBookings().get(0);
         Long bookingId = availableBooking.getId();
 
@@ -181,7 +182,7 @@ public class BookingControllerTest {
     public void shouldNotReserveUnavailableBookingByValidPlayer() throws Exception {
 
         ///  GIVEN an unavailable booking in a calendar and a player without residence
-        BookingCalendar calendar = bookingCalendarService.saveBookingCalendar(new BookingCalendar(TODAY));
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
         Booking availableBooking = calendar.getAvailableBookings().get(0);
         Long bookingId = availableBooking.getId();
 

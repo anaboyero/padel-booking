@@ -54,6 +54,13 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
     // Persistir la entidad referenciada: Calendar
     // Asignar ese Calendar al Booking
     // Persistir Booking
+
+//    @Override
+//    public BookingCalendar createBookingCalendar(LocalDate startDay) {
+//
+//
+//    }
+
     @Override
     public BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar){
         log.info("\n **** ENTRO EN SAVE BOOKING CALENDAR");
@@ -101,10 +108,27 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         if (startDate.isBefore(LocalDate.now())) {
             throw new PastDateException("No se puede crear un calendario con fecha de inicio en el pasado");
         }
-        BookingCalendar bookingCalendar = new BookingCalendar(startDate);
-        log.info("\n **** CREO EL CALENDARIO CON START DAY, PERO SIN PERSISTIR");
-        return saveBookingCalendar(bookingCalendar);
+        BookingCalendar bookingCalendar = new BookingCalendar();
+        bookingCalendar.setStartDay(startDate);
+        BookingCalendar savedCalendar = bookingCalendarRepository.save(bookingCalendar);
+
+        List<Booking> availableBookings = new ArrayList<>();
+
+        for (int i = 0; i<7; i++) {
+            LocalDate day = startDate.plusDays(i);
+            for (Booking.TimeSlot timeSlot : Booking.TimeSlot.values()) {
+                Booking booking = new Booking();
+                booking.setBookingDate(day);
+                booking.setTimeSlot(timeSlot);
+                booking.setBookingOwner(null);
+                booking.setCalendar(savedCalendar);
+                Booking savedBooking = bookingRepository.save(booking); // Persist each booking immediately
+                savedCalendar.getAvailableBookings().add(savedBooking);
+            }
+        }
+        return bookingCalendarRepository.save(savedCalendar);
     }
+
 
     @Transactional
     @Override

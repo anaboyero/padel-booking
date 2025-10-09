@@ -2,15 +2,33 @@ package ana.learning.padel.padelBooking.mappers;
 
 import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.model.Booking;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface BookingMapper {
+//@Mapper(componentModel = "spring")
+@Component
+public class BookingMapper {
 
-    @Mapping(source = "bookingOwner.id", target = "bookingOwnerId")
-    BookingDTO toDTO(Booking booking);
-    @Mapping(source = "bookingOwnerId", target = "bookingOwner.id")
-    Booking toBooking(BookingDTO dto);
+    public BookingDTO toDTO(Booking booking) {
+        if (booking == null) {
+            return null;
+        }
+        BookingDTO dto = new BookingDTO();
+        dto.setId(booking.getId());
+        dto.setBookingDate(booking.getBookingDate());
+        dto.setTimeSlot(booking.getTimeSlot());
+        if (booking.getBookingOwner()==null) {
+            dto.setBookingOwnerId(null);
+        }
+        else {
+        dto.setBookingOwnerId(booking.getBookingOwner().getId());
+        }
+        if (booking.getCalendar()==null) {
+            dto.setCalendarId(null);
+        }
+        else {
+        dto.setCalendarId(booking.getCalendar().getId());
+        }
+        return dto;
+    }
+
 }
-

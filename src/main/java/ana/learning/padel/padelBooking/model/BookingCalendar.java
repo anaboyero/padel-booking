@@ -35,52 +35,25 @@ public class BookingCalendar {
         reservedBookings  = new ArrayList<>();
     }
 
-    public BookingCalendar(LocalDate startDay) {
-        if (startDay.isBefore(LocalDate.now())) {
-            log.error("The start date for the booking calendar cannot be in the past.");
-            throw new PastDateException("The start date for the booking calendar cannot be in the past.");
-        }
-        this.startDay = startDay;
-        reservedBookings  = new ArrayList<>();
-        setAvailableBookings(fillAvailableBookings());
-    }
-
-
-
-    private List<Booking> fillAvailableBookings(){
-        List<Booking> availableBookings  = new ArrayList<>();
-        for (int i = 0; i<7; i++) {
-            LocalDate day = startDay.plusDays(i);
-            for (Booking.TimeSlot timeSlot : Booking.TimeSlot.values()) {
-                Booking booking = new Booking();
-                booking.setBookingDate(day);
-                booking.setTimeSlot(timeSlot);
-                booking.setId(null);
-                booking.setBookingOwner(null);
-                booking.setCalendar(this);
-                availableBookings.add(booking);
-            }
-        }
-        return availableBookings;
-    }
-
-//    @Transactional
-//    public void updateBookingStatus(Booking booking) {
-//        reservedBookings.add(booking);
-//        availableBookings.remove(booking);
+//    public BookingCalendar(LocalDate startDay) {
+//        if (startDay.isBefore(LocalDate.now())) {
+//            log.error("The start date for the booking calendar cannot be in the past.");
+//            throw new PastDateException("The start date for the booking calendar cannot be in the past.");
+//        }
+//        this.startDay = startDay;
+//        reservedBookings  = new ArrayList<>();
+//        setAvailableBookings(fillAvailableBookings());
 //    }
 
-//    private List<Booking> generateAvailableBookings(){
-//        availableBookings  = new ArrayList<>();
-//        if (startDay == null) {
-//            log.warn("No se ha podido generar un calendario de reservas porque no hay fecha de inicio.");
-//        }
+//    private List<Booking> fillAvailableBookings(){
+//        List<Booking> availableBookings  = new ArrayList<>();
 //        for (int i = 0; i<7; i++) {
 //            LocalDate day = startDay.plusDays(i);
 //            for (Booking.TimeSlot timeSlot : Booking.TimeSlot.values()) {
 //                Booking booking = new Booking();
 //                booking.setBookingDate(day);
 //                booking.setTimeSlot(timeSlot);
+//                booking.setId(null);
 //                booking.setBookingOwner(null);
 //                booking.setCalendar(this);
 //                availableBookings.add(booking);
@@ -103,7 +76,7 @@ public class BookingCalendar {
 
     public void setStartDay(LocalDate startDay) {
         this.startDay = startDay;
-        setAvailableBookings(fillAvailableBookings());
+//        setAvailableBookings(fillAvailableBookings());
     }
 
     public List<Booking> getAvailableBookings() {
@@ -132,44 +105,4 @@ public class BookingCalendar {
                 '}';
     }
 
-//    public Optional<Booking> reserveBooking(Booking tentativeBooking){
-//        if (isBookingValid(tentativeBooking) && (availableBookings.contains(tentativeBooking))) {
-//                availableBookings.remove(tentativeBooking);
-//                reservedBookings.add(tentativeBooking);
-//                log.info("\n*** Congratulations, you just booked a reservation!");
-//                return Optional.of(tentativeBooking);
-//        }
-//        log.info("\n*** Sorry, we couldn't process your booking. This may be due to a lack of availability or invalid booking details");
-//        log.info("\n*** EL FALLO ES ISBOOKINGVALID?" + !isBookingValid(tentativeBooking));
-//        log.info("\n*** RECORDEMOS: TENTATIVE BOOKING ES" + tentativeBooking);
-//        log.info("\n*** RECORDEMOS: START DAY IN CALENDAR ES" + startDay);
-//
-//        log.info("\n*** EL FALLO ES CALENDARIO NO CONTIENE EL BOOKING?" + !availableBookings.contains(tentativeBooking));
-//
-//        return Optional.empty();
-//    }
-
-//    private boolean isBookingValid(Booking tentativeBooking) {
-//        if (isDateBeyondCalendarRange(tentativeBooking)) {
-//            log.info("\n*** NO SE PUEDE RESERVAR PORQUE + isDateBeyondCalendarRange(tentativeBooking)");
-//            return false;
-//        }
-//        if (tentativeBooking.getBookingOwner()==null) {
-//            log.info("\n*** NO SE PUEDE RESERVAR PORQUE + tentativeBooking.getBookingOwner()==null");
-//            return false;
-//        }
-//        if (tentativeBooking.getBookingOwner().getResidence() == null) {
-//            log.info("\n*** NO SE PUEDE RESERVAR PORQUE + tentativeBooking.getBookingOwner()==null");
-//            return false;
-//        }
-//        return true;
-//    }
-//
-//    public boolean isBookingAvailable(Booking tentativeBooking) {
-//        return availableBookings.contains(tentativeBooking);
-//    }
-//
-//    private boolean isDateBeyondCalendarRange(Booking tentativeBooking){
-//        return (tentativeBooking.getBookingDate().isBefore(getStartDay()) || (tentativeBooking.getBookingDate().isAfter(getStartDay().plusDays(8))));
-//        }
 }

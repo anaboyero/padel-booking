@@ -21,6 +21,9 @@ public class BookingCalendarMapperHelper {
         dto.setId(calendar.getId());
         dto.setStartDay(calendar.getStartDay());
 
+        calendar.getAvailableBookings().size(); // Force loading of available bookings
+        calendar.getReservedBookings().size(); // Force loading of available bookings
+
         List<BookingDTO> availableBookings = calendar.getAvailableBookings().stream()
                 .map(bookingMapper::toDTO)
                 .toList();

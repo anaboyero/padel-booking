@@ -93,8 +93,6 @@ public class BookingCalendarControllerTest {
     @Test
     public void shouldCreateCalendarWithStartDay() throws Exception{
 
-        /// GIVEN A START DAY
-
         CreateCalendarRequestDTO createCalendarRequestDTO = new CreateCalendarRequestDTO(TODAY);
 
         MvcResult result = mockMvc.perform(post("/api/v1/booking-calendars")
@@ -268,8 +266,7 @@ public class BookingCalendarControllerTest {
         if (num<0) {return createdCalendars;}
 
         for (int i=0; i<num; i++) {
-            BookingCalendar bookingCalendar = new BookingCalendar(TODAY.plusDays(7L *i));
-            BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(bookingCalendar);
+            BookingCalendar savedCalendar = bookingCalendarService.createBookingCalendar(TODAY.plusDays(7L *i));
             createdCalendars.add(savedCalendar);
         }
         return createdCalendars;
