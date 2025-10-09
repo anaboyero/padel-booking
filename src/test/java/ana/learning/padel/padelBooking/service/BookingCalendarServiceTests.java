@@ -111,9 +111,11 @@ public class BookingCalendarServiceTests {
         ///  WHEN persist the calendar
         BookingCalendar savedCalendar = bookingCalendarService.saveBookingCalendar(calendar);
 
-        ///  THEN AVAILABLE BOOKINGS AND CALENDAR ARE PERSISTED AND THEY ARE LINKED
+        ///  THEN AVAILABLE BOOKINGS AND CALENDAR ARE PERSISTED AND THEY ARE LINKED.
         assertThat(savedCalendar.getId()).isNotNull();
         assertThat(savedCalendar.getAvailableBookings().get(0).getId()).isNotNull();
+        assertThat(savedCalendar.getAvailableBookings().get(0).getCalendar().getId()).isEqualTo(savedCalendar.getId());
+        assertThat(savedCalendar.getAvailableBookings().get(1).getCalendar().getId()).isEqualTo(savedCalendar.getId());
         assertThat((calendar.getAvailableBookings()).size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
     }
 

@@ -269,25 +269,25 @@ public class PlayerControllerTest {
 ////        assertThat(testBooking.getBookingOwner()).isNull();
 //    }
 
-    @Test
-    public void shouldReturnBadRequest_WhenTryingToCancelAPastBooking() throws Exception {
-        /// GIVEN A PLAYER WITH A BOOKING
-        Booking testBooking = new Booking();
-        testBooking.setBookingDate(YESTERDAY);
-        testBooking.setTimeSlot(SLOT);
-        setPlayerWithResidenceAndBooking(testBooking);
-
-        /// WHEN TRYING TO CANCEL THE BOOKING
-        /// THEN RETURNS BAD REQUEST
-
-        mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
-                .andExpect(status().isBadRequest());
-
-        assertThat(testBooking.isAvailable()).isTrue();
-
-    }
+//    @Test
+//    public void shouldReturnBadRequest_WhenTryingToCancelAPastBooking() throws Exception {
+//        /// GIVEN A PLAYER WITH A BOOKING
+//        Booking testBooking = new Booking();
+//        testBooking.setBookingDate(YESTERDAY);
+//        testBooking.setTimeSlot(SLOT);
+//        setPlayerWithResidenceAndBooking(testBooking);
+//
+//        /// WHEN TRYING TO CANCEL THE BOOKING
+//        /// THEN RETURNS BAD REQUEST
+//
+//        mockMvc.perform(patch("/api/v1/players/{id}", savedPlayer.getId())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(bookingMapper.toDTO(savedBookingToCancel))))
+//                .andExpect(status().isBadRequest());
+//
+//        assertThat(testBooking.isAvailable()).isTrue();
+//
+//    }
 
 
     private List<Player> setUpTwoPlayers() {

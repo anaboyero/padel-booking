@@ -108,13 +108,13 @@ public class PlayerController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<PlayerDTO> cancelBookingByPlayer(@PathVariable Long id, @RequestBody BookingDTO bookingDTO) {
-        Optional<Player> result = playerService.cancelBookingByPlayer(bookingMapper.toBooking(bookingDTO), playerService.getPlayerById(id).get());
-        if (result.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        PlayerDTO updatedPlayer = playerMapper.toDTO(result.get());
-        return ResponseEntity.ok().body(updatedPlayer);
-    }
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<PlayerDTO> cancelBookingByPlayer(@PathVariable Long id, @RequestBody BookingDTO bookingDTO) {
+//        Optional<Player> result = playerService.cancelBookingByPlayer(bookingMapper.toBooking(bookingDTO), playerService.getPlayerById(id).get());
+//        if (result.isEmpty()) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//        PlayerDTO updatedPlayer = playerMapper.toDTO(result.get());
+//        return ResponseEntity.ok().body(updatedPlayer);
+//    }
 }

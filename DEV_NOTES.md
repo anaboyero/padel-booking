@@ -1,14 +1,21 @@
-ERROR ACTUAL:         Booking result = bookingCalendarService.reserveBooking(bookingId, playerDTO).get();
-
-Despues de esta reserva me esta colocando las mismas reservas en el calendario, tanto en available como en reserved. 
+FALLOS: Al crear un calendario no guarda en las bookings el id del calendario
 
 
 
-He pausado las cancel booking porque todavia no esta implementada la reserva.
+IMPORTANTE:
+
+He estado un d ía entero con problemas con el metodo de reserve boking. me daba un error de lazy initialization 
+y lo he resuelto cargando las listas de calendar (available y reserved) antes de modificarlas. 
+
+Ahora el test pasa, pero tengo que repasar el tema de los entity managers y el tema de las conexiones a la base de datos. 
+
+
 
 TO DO:
 
-- PRIORIDAD----> Implementar la reserva de booking. Falta el controlador.
+He pausado las cancel booking porque todavia no esta implementada la reserva.
+
+- PRIORIDAD----> Implementar la reserva de booking. Falta ver si funciona en API. 
 - PRIORIDAD----> Implementar la cancelacion de la reserva del booking.
 - Delete calendar by id
 - Delete booking by id

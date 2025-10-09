@@ -9,10 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
+import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class BookingCalendarTests {
 
@@ -26,6 +28,8 @@ public class BookingCalendarTests {
     Player player;
     Booking tentativeBooking;
     Residence residence;
+    @Autowired
+    BookingCalendarRepository bookingCalendarRepository;
 
     private static final Logger log = LoggerFactory.getLogger(BookingCalendarTests.class);
 
@@ -36,6 +40,22 @@ public class BookingCalendarTests {
         ///  Throws an exception WHEN trying to create a new calendar with a start day in the past
 
         assertThrows(PastDateException.class, () -> new BookingCalendar(YESTERDAY));
+    }
+
+    @Test
+    public void shouldCreateANewCalendarWithValidDate(){
+
+        ///  GIVEN A START DATE
+        ///  WHEN trying to create a new calendar with a start day today or in the future
+        ///  THEN it creates a new calendar with 28 available bookings
+
+        bookingCalendar = new BookingCalendar();
+        bookingCalendar.setStartDay(LocalDate.now());
+
+        assertThat(bookingCalendar.getAvailableBookings().size()).isEqualTo(35);
+        assertThat(bookingCalendar.getReservedBookings().size()).isEqualTo(0);
+        assertThat(bookingCalendar.getAvailableBookings().get(0).getCalendar().getId()).isNull();
+        assertThat(bookingCalendar.getStartDay()).isEqualTo(LocalDate.now());
     }
 
 

@@ -56,6 +56,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
     // Persistir Booking
     @Override
     public BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar){
+        log.info("\n **** ENTRO EN SAVE BOOKING CALENDAR");
 
         if (bookingCalendar.getId()!=null) {
             log.info("\n *** El calendario ya tiene id, simplemente lo actualizamos en la base de  datos");
@@ -65,7 +66,12 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         BookingCalendar savedCalendar = bookingCalendarRepository.save(bookingCalendar);
         for (Booking booking : savedCalendar.getAvailableBookings()) {
             booking.setCalendar(savedCalendar);
+            bookingRepository.save(booking);
         }
+        log.info("\n\n\n **** VEAMOS SI LAS BOOKING DEL CALENDAR YA ENLAZAN AL CALENDAR\n");
+        log.info("\n **** ID CALENDAR DE LA PRIMERA BOOKING AVAILABLE");
+        log.info(savedCalendar.getAvailableBookings().get(0).getCalendar().getId().toString());
+
         return bookingCalendarRepository.save(savedCalendar);
     }
 
@@ -96,6 +102,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
             throw new PastDateException("No se puede crear un calendario con fecha de inicio en el pasado");
         }
         BookingCalendar bookingCalendar = new BookingCalendar(startDate);
+        log.info("\n **** CREO EL CALENDARIO CON START DAY, PERO SIN PERSISTIR");
         return saveBookingCalendar(bookingCalendar);
     }
 
@@ -108,6 +115,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         Optional<Player> playerOpt = playerRepository.findById(playerDTO.getId());
 
         if (bookingOpt.isEmpty() || playerOpt.isEmpty()) {
+            log.info("No existe el booking o el player");
             return Optional.empty();
         }
 
@@ -117,6 +125,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
         // Comprobamos que la reserva esté disponible
         if (booking.getBookingOwner() != null || calendar == null) {
+            log.info("La reserva ya tiene dueño o no está asociada a ningún calendario");
             return Optional.empty();
         }
 

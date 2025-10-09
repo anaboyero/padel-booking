@@ -115,15 +115,17 @@ public class MapperTest {
     @Test
     public void shouldMapCalendarToDTO_noReservations() {
         ///  given a calendar
+
         BookingCalendar calendar = new BookingCalendar();
         calendar.setStartDay(TODAY);
         calendar.setId(100L);
-//        assertThat(calendar.getAvailableBookings().size()).isEqualTo(0);
+        assertThat(calendar.getAvailableBookings().size()).isEqualTo(35);
         assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
 
+        ///  WHEN mapping it to DTO
         BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
 
-        // tengo una lista de bookingDTO, no de long.
+        ///  THEN I get a DTO with all the fields, and a list of bookingDTO ids
 
         assertThat(dto.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat(dto.getReservedBookings().size()).isEqualTo(0);
@@ -155,13 +157,17 @@ public class MapperTest {
         ///  GIVEN AN AVAILABLE BOOKING
         BookingCalendar calendar = new BookingCalendar(TODAY);
         Booking availableBooking = calendar.getAvailableBookings().get(0);
+
         /// WHEN mapping it to BookingDTO
         BookingDTO dto = bookingMapper.toDTO(availableBooking);
-        ///  IR RETURNS A BOOKINGDTO WITH ALL THE FIELDS
+        ///  IT RETURNS A BOOKINGDTO WITH ALL THE FIELDS
         assertThat(dto.getBookingOwnerId()).isEqualTo(availableBooking.getId());
         assertThat(dto.getBookingDate()).isEqualTo(availableBooking.getBookingDate());
         assertThat(dto.getTimeSlot()).isEqualTo(availableBooking.getTimeSlot());
         assertThat(dto.getCalendarId()).isEqualTo(availableBooking.getCalendar().getId());
+
+        System.out.println("\n \n ****         ///  IT RETURNS A BOOKINGDTO WITH ALL THE FIELDS\n");
+        System.out.println(dto);
 
     }
 
