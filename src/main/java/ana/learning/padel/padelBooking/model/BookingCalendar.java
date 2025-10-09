@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.transaction.Transactional;
+import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,14 +23,16 @@ public class BookingCalendar {
     private Long id;
     private LocalDate startDay;
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Booking> availableBookings = new ArrayList<>();
+    @Where(clause = "booking_owner_id IS NULL")
+    private List<Booking> availableBookings;
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Booking> reservedBookings = new ArrayList<>();
+    @Where(clause = "booking_owner_id IS NOT NULL")
+    private List<Booking> reservedBookings;
 
 
     public BookingCalendar() {
+        availableBookings = new ArrayList<>();
         reservedBookings  = new ArrayList<>();
-        availableBookings  = new ArrayList<>();
     }
 
     public BookingCalendar(LocalDate startDay) {
@@ -41,9 +44,6 @@ public class BookingCalendar {
         reservedBookings  = new ArrayList<>();
         setAvailableBookings(fillAvailableBookings());
     }
-
-//    Optional<Booking> result = bookingCalendarService.reserveBooking(calendar, availableBooking, player);
-
 
 
 
@@ -103,7 +103,7 @@ public class BookingCalendar {
 
     public void setStartDay(LocalDate startDay) {
         this.startDay = startDay;
-//        generateAvailableBookings();
+        setAvailableBookings(fillAvailableBookings());
     }
 
     public List<Booking> getAvailableBookings() {

@@ -1,3 +1,9 @@
+ERROR ACTUAL:         Booking result = bookingCalendarService.reserveBooking(bookingId, playerDTO).get();
+
+Despues de esta reserva me esta colocando las mismas reservas en el calendario, tanto en available como en reserved. 
+
+
+
 He pausado las cancel booking porque todavia no esta implementada la reserva.
 
 TO DO:

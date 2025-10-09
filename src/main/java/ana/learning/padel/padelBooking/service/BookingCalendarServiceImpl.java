@@ -1,12 +1,15 @@
 package ana.learning.padel.padelBooking.service;
 
 import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
+import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.mappers.BookingCalendarMapperHelper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
+import ana.learning.padel.padelBooking.repository.BookingRepository;
+import ana.learning.padel.padelBooking.repository.PlayerRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,10 @@ import java.util.Optional;
 public class BookingCalendarServiceImpl implements BookingCalendarService{
     @Autowired
     BookingCalendarRepository bookingCalendarRepository;
+    @Autowired
+    BookingRepository bookingRepository;
+    @Autowired
+    PlayerRepository playerRepository;
     @Autowired
     BookingService bookingService;
     @Autowired
@@ -94,54 +101,43 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
     @Transactional
     @Override
-    public Optional<Booking> reserveBooking(BookingCalendar calendar, Booking booking, Player player) {
-        // Caso basico: happy path .
-        // añado owner al booking.
-        // añado boking a reservedCalendar y lo quito de available.
-        // añado booking al player.
-        //  salvo booking en bbdd.
-        // actualizo calendar en bbdd.
-        // actualizo player
+    public Optional<Booking> reserveBooking(Long bookingId, PlayerDTO playerDTO) {
+
+        // Recuperamos las entidades desde los repositorios dentro de la misma transacción
+        Optional<Booking> bookingOpt = bookingRepository.findById(bookingId);
+        Optional<Player> playerOpt = playerRepository.findById(playerDTO.getId());
+
+        if (bookingOpt.isEmpty() || playerOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Booking booking = bookingOpt.get();
+        Player player = playerOpt.get();
+        BookingCalendar calendar = booking.getCalendar();
+
+        // Comprobamos que la reserva esté disponible
+        if (booking.getBookingOwner() != null || calendar == null) {
+            return Optional.empty();
+        }
+
+        // --- Actualizamos relaciones bidireccionales ---
         booking.setBookingOwner(player);
+        player.getBookings().add(booking);
+
+        booking.setCalendar(calendar);
         calendar.getReservedBookings().add(booking);
         calendar.getAvailableBookings().remove(booking);
-        player.getBookings().add(booking);
-        Booking savedBooking = bookingService.saveBooking(booking);
+
+        // --- Forzamos carga de las colecciones lazy iterando sobre ellas ---
+        calendar.getReservedBookings().size();
+        calendar.getAvailableBookings().size();
+        player.getBookings().size();
+
+        // --- Guardamos solo el lado dueño de las relaciones ---
+        Booking savedBooking = bookingRepository.save(booking);
         return Optional.of(savedBooking);
     }
 
-
-//    @Override
-//    public Optional<Booking> reserveBooking(Booking booking, Player player, BookingCalendar calendar) {
-//        return Optional.empty();
-//    }
-
-
-//    @Override
-//    public Optional<Booking> reserveBooking( Booking booking, Player player, BookingCalendar calendar) {
-//
-//        if (!playerService.isAProperPlayerToMakeAReservation(player)) {
-//            log.info("No se puede reservar porque el player no existe o no tiene una residencia completa");
-//            return Optional.empty();
-//        }
-//        if (!isBookingAvailable(booking, calendar)) {
-//            log.info("No se puede reservar porque el booking no está disponible");
-//            return Optional.empty();
-//        }
-//        log.info("La reserva se puede llevar a cabo");
-//
-////        booking.setBookingOwner(player);
-//        player.addBooking(booking);
-//        Booking savedBooking = bookingService.saveBooking(booking);
-//        playerService.savePlayer(player);
-//        return calendar.reserveBooking(savedBooking);
-//
-//
-////        Booking assignedBooking = bookingService.assignBookingToPlayer(temptativeBooking, temptativePlayer);
-////        Booking assignedPlayer = playerService.assignPlayerToBooking(assignedBooking, temptativePlayer);
-//
-////        return this.confirmBooking(assignedBooking, bookingCalendar);
-//    }
 
     @Override
     public void deleteAllBookingCalendars() {

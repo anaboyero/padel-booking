@@ -86,14 +86,41 @@ public class Booking {
         return (getBookingOwner()==null);
     }
 
+//    @Override
+//    public String toString() {
+//        String message = " \n|||" +
+//                "id=" + id +
+//                "/" + bookingDate +
+//                "/" + timeSlot;
+//        if (bookingOwner == null) {
+//            message += "/ AVAILABLE ";
+//        } else {
+//            message += "/ RESERVED by BookingOwnerId:" + bookingOwner.getId() +"\n";
+//        }
+//      return message;
+//    }
+
     @Override
     public String toString() {
-        return "|||" +
-                "id=" + id +
-                "/" + bookingDate +
-                "/" + timeSlot +
-                "/" + bookingOwner +
-                "||| +\n";
+        // 1. Usar StringBuilder para construir la cadena de manera eficiente
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" \n|||")
+                .append("id=").append(id)
+                .append("/").append(bookingDate)
+                .append("/").append(timeSlot);
+
+        // 2. Aplicar la lógica condicional con append
+        if (bookingOwner == null) {
+            sb.append("/ AVAILABLE ");
+        } else {
+            sb.append("/ RESERVED by BookingOwnerId:")
+                    .append(bookingOwner.getId())
+                    .append("\n");
+        }
+
+        // 3. Devolver el resultado final
+        return sb.toString();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ana.learning.padel.padelBooking.service;
 
 import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
+import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
@@ -15,5 +16,5 @@ public interface BookingCalendarService {
     void deleteAllBookingCalendars();
     BookingCalendar createBookingCalendar (LocalDate startDate);
     Optional<BookingCalendarDTO> getBookingCalendarById(Long id);
-    Optional<Booking> reserveBooking(BookingCalendar calendar, ana.learning.padel.padelBooking.model.Booking booking, Player player);
+    Optional<Booking> reserveBooking(Long id, PlayerDTO playerDTO);
 }

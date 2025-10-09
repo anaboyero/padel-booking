@@ -167,6 +167,9 @@ public class BookingControllerTest {
         ///  WHEN making a patch call to reserve the booking for that player
         ///  THEN we get a 200 OK and return the updated booking
 
+        log.info("\n **** BOOKING ID: " + bookingId );
+        log.info("\n **** PLAYER DTO: " + playerDTO.toString() );
+
         MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{id}", bookingId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(playerDTO)))
@@ -177,7 +180,7 @@ public class BookingControllerTest {
     @Test
     public void shouldNotReserveUnavailableBookingByValidPlayer() throws Exception {
 
-        ///  GIVEN an available booking in a calendar and a player without residence
+        ///  GIVEN an unavailable booking in a calendar and a player without residence
         BookingCalendar calendar = bookingCalendarService.saveBookingCalendar(new BookingCalendar(TODAY));
         Booking availableBooking = calendar.getAvailableBookings().get(0);
         Long bookingId = availableBooking.getId();
@@ -193,7 +196,13 @@ public class BookingControllerTest {
         player.setResidence(savedResidence);
         Player savedPlayer = playerService.savePlayer(player);
 
-        savedPlayer.setResidence(null);
+        Player player2 = new Player();
+        player.setName("Sergio");
+        player.setResidence(savedResidence);
+        Player savedPlayer2 = playerService.savePlayer(player);
+
+        bookingCalendarService.reserveBooking(availableBooking.getId(), playerMapper.toDTO(savedPlayer));
+        availableBooking.setBookingOwner(savedPlayer2);
 
         PlayerDTO playerDTO = playerMapper.toDTO(savedPlayer);
 
@@ -203,11 +212,7 @@ public class BookingControllerTest {
         MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{id}", bookingId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(playerDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andReturn();
-
-        assertThrows(IncompletePlayerException.class, () -> playerService.savePlayer(player));
-
-
     }
 }

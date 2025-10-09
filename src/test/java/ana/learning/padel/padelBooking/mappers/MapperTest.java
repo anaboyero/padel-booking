@@ -118,14 +118,14 @@ public class MapperTest {
         BookingCalendar calendar = new BookingCalendar();
         calendar.setStartDay(TODAY);
         calendar.setId(100L);
-        assertThat(calendar.getAvailableBookings().size()).isEqualTo(0);
+//        assertThat(calendar.getAvailableBookings().size()).isEqualTo(0);
         assertThat(calendar.getReservedBookings().size()).isEqualTo(0);
 
         BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar);
 
         // tengo una lista de bookingDTO, no de long.
 
-        assertThat(dto.getAvailableBookings().size()).isEqualTo(0);
+        assertThat(dto.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
         assertThat(dto.getReservedBookings().size()).isEqualTo(0);
         assertThat(dto.getStartDay()).isEqualTo(TODAY);
         assertThat(dto.getId()).isEqualTo(100L);
