@@ -139,48 +139,24 @@ public class BookingCalendarServiceTests {
 
         BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
 
-//        Long calendarId = calendar.getId();
-//        Booking availableBooking = calendar.getAvailableBookings().get(0);
-//        Long bookingId = availableBooking.getId();
-//
-//        ///  WHEN the player reserves the booking
-//        Booking result = bookingCalendarService.reserveBooking(bookingId, playerDTO).get();
-//
-//        ///  THEN the booking has been updated in the database and has the player as owner
-//        ///  And the returned booking is the same as the updated one in the database
-//        ///  And the player has this booking in their list of bookings
-//        /// And the calendar has this booking in its list of reserved bookings and it is no longer in the list of available bookings
-//
-//        assertThat(result.getBookingOwner()).isNotNull();
-//        assertThat(result.getBookingOwner().getBookings().size()).isEqualTo(1);
-//        assertThat(result.getCalendar().getReservedBookings().size()).isEqualTo(1);
-//        assertThat(result.getCalendar().getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
+        Long calendarId = calendar.getId();
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        Long bookingId = availableBooking.getId();
 
-//        BookingCalendar updatedCalendar = bookingCalendarRepository.findById(calendarId).get();
-//        assertThat(updatedCalendar.getReservedBookings().size()).isEqualTo(1);
-//        updatedCalendar.getReservedBookings().size();
-//        Player updatedPlayer = playerRepository.findById(player.getId()).get();
-//        Booking updatedBooking = bookingRepository.findById(bookingId).get();
-//        assertThat(updatedBooking).isEqualTo(result);
-//        assertThat(updatedBooking.getBookingOwner().getId()).isEqualTo(playerId);
-//        assertThat(updatedPlayer.getBookings().size()).isEqualTo(1);
-//        assertThat(updatedCalendar.getReservedBookings().size()).isEqualTo(1);
+        ///  WHEN the player reserves the booking
+        Booking result = bookingCalendarService.reserveBooking(bookingId, playerDTO).get();
 
-        ///  THEN  the booking is reserved for the player, and moved from available to reserved bookings in the calendar and the player has this booking.
-//
-//        BookingCalendar updatedCalendar = bookingCalendarRepository.findById(calendarId).get();
-//        Booking updatedBooking = bookingRepository.findById(bookingId).get();
-//        Player updatedPlayer = playerService.getPlayerById(playerId).get();
-//        assertThat(result).isNotNull();
-//        assertThat(result.getBookingOwner()).isNotNull();
-//        assertThat(result.getCalendar()).isNotNull();
+        ///  THEN the booking has been updated in the database and has the player as owner
+        ///  And the returned booking is the same as the updated one in the database
+        ///  And the player has this booking in their list of bookings
+        /// And the calendar has this booking in its list of reserved bookings and it is no longer in the list of available bookings
 
-        // EL TEMA NO ES QUE NO ACTUALICE BIEN, SINO QUE NO ME DEJA HACER ESTO, ME DICE QUE NO SE PUEDE HACER UNA OPERACIÓN DE LECTURA FUERA DE UNA TRANSACCIÓN
+        assertThat(result.getBookingOwner()).isNotNull();
+        assertThat(result.getBookingOwner().getBookings().size()).isEqualTo(1);
+        assertThat(result.getCalendar()).isNotNull();
+        assertThat(result.getCalendar().getReservedBookings().size()).isEqualTo(1);
+        assertThat(result.getCalendar().getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
 
-//        assertThat(updatedCalendar.getReservedBookings().size()).isEqualTo(1);
-//        assertThat(updatedPlayer.getBookings().size()).isEqualTo(1);
-//        assertThat(updatedCalendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
-//        assertThat(updatedBooking.getBookingOwner().getId()).isEqualTo(playerId);
     }
 
 

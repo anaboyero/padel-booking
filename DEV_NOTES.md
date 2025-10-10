@@ -1,4 +1,4 @@
-FALLOS: Al crear un calendario no guarda en las bookings el id del calendario
+OJO: Falta por terminar el test de shouldReserveABooking
 
 PLAN: VAMOS A PASAR AL SERVICE DE BOOKING CALENDAR TODO EL TEMA DE CREAR EL CALENDARIO A PARTIR DE UNA FECHA.
 POR QUE? PORQUE IMPLICA CREAR BOOKINGS Y PERSISTIRLOS Y ESO IMPLICA BASES DE DATOS.

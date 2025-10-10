@@ -101,6 +101,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
     }
 
 
+
     @Transactional
     @Override
     public Optional<Booking> reserveBooking(Long bookingId, PlayerDTO playerDTO) {
@@ -139,6 +140,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
         // --- Guardamos solo el lado dueño de las relaciones ---
         Booking savedBooking = bookingRepository.save(booking);
+        log.info("ENHORABUENA, RESERVA REALIZADA CORRECTAMENTE");
         return Optional.of(savedBooking);
     }
 
