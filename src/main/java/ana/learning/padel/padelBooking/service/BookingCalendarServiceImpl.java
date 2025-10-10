@@ -48,23 +48,9 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         return (List<BookingCalendar>) bookingCalendarRepository.findAll();
     }
 
-    //Relación: Booking tiene una FK (calendar_id) → Calendar
-    // Por lo tanto, Booking depende de que Calendar ya exista en la base de datos (es decir, ya tenga un id asignado).
-    // Entonces, el "orden lógico" es:
-    // Persistir la entidad referenciada: Calendar
-    // Asignar ese Calendar al Booking
-    // Persistir Booking
-
-//    @Override
-//    public BookingCalendar createBookingCalendar(LocalDate startDay) {
-//
-//
-//    }
 
     @Override
     public BookingCalendar saveBookingCalendar(BookingCalendar bookingCalendar){
-        log.info("\n **** ENTRO EN SAVE BOOKING CALENDAR");
-
         if (bookingCalendar.getId()!=null) {
             log.info("\n *** El calendario ya tiene id, simplemente lo actualizamos en la base de  datos");
             return bookingCalendarRepository.save(bookingCalendar);
@@ -75,23 +61,10 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
             booking.setCalendar(savedCalendar);
             bookingRepository.save(booking);
         }
-        log.info("\n\n\n **** VEAMOS SI LAS BOOKING DEL CALENDAR YA ENLAZAN AL CALENDAR\n");
-        log.info("\n **** ID CALENDAR DE LA PRIMERA BOOKING AVAILABLE");
-        log.info(savedCalendar.getAvailableBookings().get(0).getCalendar().getId().toString());
 
         return bookingCalendarRepository.save(savedCalendar);
     }
 
-//    @Override
-//    public boolean isBookingAvailable(Booking booking, BookingCalendar bookingCalendar){
-//        return bookingCalendar.isBookingAvailable(booking);
-//    }
-//
-//
-//    @Override
-//    public Optional<Booking> confirmBooking(Booking booking, BookingCalendar bookingCalendar){
-//        return bookingCalendar.reserveBooking(booking);
-//    }
 
     @Override
     public Optional<BookingCalendarDTO> getBookingCalendarById(Long id){
@@ -111,8 +84,6 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         BookingCalendar bookingCalendar = new BookingCalendar();
         bookingCalendar.setStartDay(startDate);
         BookingCalendar savedCalendar = bookingCalendarRepository.save(bookingCalendar);
-
-        List<Booking> availableBookings = new ArrayList<>();
 
         for (int i = 0; i<7; i++) {
             LocalDate day = startDate.plusDays(i);

@@ -3,13 +3,17 @@ FALLOS: Al crear un calendario no guarda en las bookings el id del calendario
 PLAN: VAMOS A PASAR AL SERVICE DE BOOKING CALENDAR TODO EL TEMA DE CREAR EL CALENDARIO A PARTIR DE UNA FECHA.
 POR QUE? PORQUE IMPLICA CREAR BOOKINGS Y PERSISTIRLOS Y ESO IMPLICA BASES DE DATOS.
 
+HECHO, COMPILA TODO. FALTA: COMPPOBAR FUNCIONAMIENTO EN LA API.
+
 
 
 
 IMPORTANTE:
 
-He estado un d ía entero con problemas con el metodo de reserve boking. me daba un error de lazy initialization 
+He estado un día entero con problemas con el metodo de reserve boking. me daba un error de lazy initialization 
 y lo he resuelto cargando las listas de calendar (available y reserved) antes de modificarlas. 
+
+Para cargarlas, he usado el metodo size() que es un truco que he visto en internet. 
 
 Ahora el test pasa, pero tengo que repasar el tema de los entity managers y el tema de las conexiones a la base de datos. 
 
