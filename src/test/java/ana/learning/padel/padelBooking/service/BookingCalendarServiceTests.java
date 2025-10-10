@@ -156,7 +156,6 @@ public class BookingCalendarServiceTests {
         assertThat(result.getCalendar()).isNotNull();
         assertThat(result.getCalendar().getReservedBookings().size()).isEqualTo(1);
         assertThat(result.getCalendar().getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
-
     }
 
 
