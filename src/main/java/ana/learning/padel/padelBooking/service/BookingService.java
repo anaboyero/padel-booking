@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.service;
 
+import ana.learning.padel.padelBooking.exceptions.ResourceNotFoundException;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.Player;
 
@@ -10,6 +11,7 @@ public interface BookingService {
     Booking saveBooking(Booking booking);
     List<Booking> getAllBookings();
     Optional<Booking> getBookingById(Long id);
+    void deleteBookingById(Long id) throws ResourceNotFoundException;
 //    Booking assignBookingToPlayer(Booking booking, Player player);
 //    Boolean isAvailable();
 }

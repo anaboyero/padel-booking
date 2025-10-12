@@ -1,7 +1,8 @@
 TO DO:
 
 - PRIORIDAD----> Implementar la cancelacion de la reserva del booking.
-- Delete calendar by id
+- Delete calendar by id --> DONE (a ver cómo gestionamos lo de reservas activas).
+- Si las reservas activas son pasadas, eliminarlas y permitir eliminar el calendario.
 - Delete booking by id
 - Aprender a usar builder con lombok
 

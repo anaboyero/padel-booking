@@ -1,5 +1,6 @@
 package ana.learning.padel.padelBooking.service;
 
+import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
@@ -10,6 +11,8 @@ import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
 import ana.learning.padel.padelBooking.repository.BookingRepository;
 import ana.learning.padel.padelBooking.repository.PlayerRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +41,7 @@ import static org.springframework.test.web.servlet.result.StatusResultMatchersEx
 //@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 public class BookingCalendarServiceTests {
 
     private static final String NAME_OF_PLAYER1 = "Ana";
@@ -66,11 +70,15 @@ public class BookingCalendarServiceTests {
     @Autowired
     private BookingCalendarService bookingCalendarService;
     @Autowired
+    private BookingService bookingService;
+    @Autowired
     private ResidenceService residenceService;
     @Autowired
     private PlayerService playerService;
     @Autowired
     PlayerMapper playerMapper;
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
     @Test
@@ -158,6 +166,57 @@ public class BookingCalendarServiceTests {
         assertThat(result.getCalendar().getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
     }
 
+    @Test
+    public void shouldDeleteBookingById_withoutReservation() {
+        ///  GIVEN a persisted calendar with available bookings
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        Long calendarId = calendar.getId();
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        Long bookingId = availableBooking.getId();
+        assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+
+        ///  WHEN deleting an available booking by its id
+        bookingService.deleteBookingById(bookingId);
+
+        ///  THEN the booking is no longer in the database and it is no longer in the list of available bookings of the calendar
+        Optional<Booking> deletedBooking = bookingRepository.findById(bookingId);
+        assertThat(deletedBooking).isEmpty();
+        calendar.getAvailableBookings().size();
+        assertThat(calendar.getAvailableBookings().get(0).getId()).isNotEqualTo(calendarId);
+    }
+
+    @Test
+    public void shouldDeleteBookingById_withReservation() {
+        ///  GIVEN a persisted calendar with available bookings and a reserved booking
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        Long calendarId = calendar.getId();
+        Residence residence = residenceService.saveResidence(createResidence());
+        Player player = playerService.savePlayer(createPlayer(residence));
+        Booking reservedBooking = bookingCalendarService.reserveBooking(calendar.getAvailableBookings().get(0).getId(), playerMapper.toDTO(player)).get();
+        Long reservedBookingId = reservedBooking.getId();
+        assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK -1);
+        assertThat(calendar.getReservedBookings().size()).isEqualTo(1);
+
+        ///  WHEN deleting an available booking by its id
+        bookingService.deleteBookingById(reservedBookingId);
+
+        ///  THEN the booking is no longer in the database and it is no longer in the list of reserved bookings of the calendar
+
+        // Forzar la recarga desde la BD
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Optional<Booking> deletedBooking = bookingRepository.findById(reservedBookingId);
+        log.info("\n ********* ");
+        log.info(deletedBooking.toString());
+        assertThat(deletedBooking).isEmpty();
+
+        BookingCalendar updatedCalendar = bookingCalendarRepository.findById(calendarId).get();
+        int result = updatedCalendar.getReservedBookings().size();
+        assertThat(result).isEqualTo(0);
+    }
+
 
     private Residence createResidence() {
         Residence residence = new Residence();
@@ -185,6 +244,7 @@ public class BookingCalendarServiceTests {
         booking.setTimeSlot(SLOT);
         return booking;
     }
+
 
 
 }
