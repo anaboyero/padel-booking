@@ -26,5 +26,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error); // 400 Bad Request
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFound(ResourceNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "No se puede eliminar un recurso que no existe.");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(error); // 204 No Content
+    }
+
 
 }

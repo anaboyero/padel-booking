@@ -3,6 +3,7 @@ package ana.learning.padel.padelBooking.service;
 import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
+import ana.learning.padel.padelBooking.exceptions.ResourceNotFoundException;
 import ana.learning.padel.padelBooking.mappers.BookingCalendarMapperHelper;
 import ana.learning.padel.padelBooking.model.Booking;
 import ana.learning.padel.padelBooking.model.BookingCalendar;
@@ -148,5 +149,15 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
     @Override
     public void deleteAllBookingCalendars() {
         bookingCalendarRepository.deleteAll();
+    }
+
+    @Override
+    public void deleteBookingCalendarById(Long id) throws ResourceNotFoundException {
+        if (getBookingCalendarById(id).isPresent()) {
+            bookingCalendarRepository.deleteById(id);
+        }
+        else {
+            throw new ResourceNotFoundException("No existe el calendario con id " + id);
+        }
     }
 }

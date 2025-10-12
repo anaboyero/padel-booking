@@ -4,6 +4,7 @@ package ana.learning.padel.padelBooking.controller;
 import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
 import ana.learning.padel.padelBooking.DTO.CreateCalendarRequestDTO;
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
+import ana.learning.padel.padelBooking.exceptions.ResourceNotFoundException;
 import ana.learning.padel.padelBooking.mappers.BookingCalendarMapperHelper;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
 import ana.learning.padel.padelBooking.model.Booking;
@@ -11,10 +12,7 @@ import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingCalendarRepository;
-import ana.learning.padel.padelBooking.service.BookingCalendarService;
-import ana.learning.padel.padelBooking.service.BookingService;
-import ana.learning.padel.padelBooking.service.PlayerService;
-import ana.learning.padel.padelBooking.service.ResidenceService;
+import ana.learning.padel.padelBooking.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -38,6 +36,8 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -175,28 +175,65 @@ public class BookingCalendarControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         log.info("\n*** Response de get available bookings " + jsonResponse);
     }
-//
-//    @Test
-//    public void shouldDeleteAllCalendars() throws Exception{
-//        /// GIVEN 2 calendars in the repository
-//        BookingCalendar bookingCalendarToday = new BookingCalendar();
-//        bookingCalendarToday.setStartDay(TODAY);
-//        bookingCalendarService.saveBookingCalendar(bookingCalendarToday);
-//
-//        BookingCalendar bookingCalendarNextWeek = new BookingCalendar();
-//        bookingCalendarNextWeek.setStartDay(TODAY.plusDays(7));
-//        bookingCalendarService.saveBookingCalendar(bookingCalendarNextWeek);
-//
-//        /// WHEN deleting all calendars
-//
-//        mockMvc.perform(delete("/api/v1/booking-calendars"))
-//                .andExpect(status().isNoContent());
-//
-//        /// THEN the repository is empty
-//
-//        assertThat(bookingCalendarService.getAllBookingCalendars().size()).isEqualTo(0);
-//
-//    }
+
+    @Test
+    public void shouldDeleteAllCalendars() throws Exception{
+        /// GIVEN 2 calendars in the repository
+        BookingCalendar calendar1 = bookingCalendarService.createBookingCalendar(TODAY);
+        BookingCalendar calendar2 = bookingCalendarService.createBookingCalendar(TODAY.plusDays(7));
+        assertThat(bookingCalendarService.getAllBookingCalendars().size()).isEqualTo(2);
+
+        /// WHEN deleting all calendars
+        mockMvc.perform(delete("/api/v1/booking-calendars"))
+                .andExpect(status().isNoContent());
+
+        /// THEN the repository is empty
+        assertThat(bookingCalendarService.getAllBookingCalendars().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldDeleteCalendarById() throws Exception{
+        /// GIVEN 2 calendars in the repository
+        BookingCalendar calendar1 = bookingCalendarService.createBookingCalendar(TODAY);
+        BookingCalendar calendar2 = bookingCalendarService.createBookingCalendar(TODAY.plusDays(7));
+        Long idOfCalendarToDelete = calendar1.getId();
+        assertThat(bookingCalendarService.getAllBookingCalendars().size()).isEqualTo(2);
+
+        /// WHEN deleting one of the calendars by id
+        mockMvc.perform(delete("/api/v1/booking-calendars/{id}", idOfCalendarToDelete))
+                .andExpect(status().isNoContent());
+
+        /// THEN the repository has one less calendar and the correct one has been deleted
+        List<BookingCalendar> remainingCalendars = bookingCalendarService.getAllBookingCalendars();
+        assertThat(remainingCalendars.size()).isEqualTo(1);
+        assertThat(remainingCalendars.get(0).getId()).isEqualTo(calendar2.getId());
+    }
+
+    @Test
+    public void shouldDThrowExceptionWhenTryingToDeleteNonExistingCalendar() throws Exception{
+        /// GIVEN 1 calendar in the repository
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        Long calendarId = calendar.getId();
+        log.info("El id del calendario creado es " + calendarId);
+        log.info("El id falso que vamos a intentar borrar es " + (calendarId + 1L));
+        assertThat(bookingCalendarService.getAllBookingCalendars().size()).isEqualTo(1);
+
+        /// WHEN trying to delete a non existing calendar by id
+        /// THEN it throws an excepcion and the repository still has the calendar
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                ()-> bookingCalendarService.deleteBookingCalendarById(calendarId +1L));
+
+        assertEquals("No existe el calendario con id " + (calendarId +1L), exception.getMessage());
+
+        List<BookingCalendar> remainingCalendars = bookingCalendarService.getAllBookingCalendars();
+        assertThat(remainingCalendars.size()).isEqualTo(1);
+        assertThat(remainingCalendars.get(0).getId()).isEqualTo(calendarId);
+    }
+
+
+
+
 //
 //
 ////  @Disabled("Este test está desactivado temporalmente")
