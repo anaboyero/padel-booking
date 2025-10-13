@@ -53,7 +53,6 @@ public class BookingServiceImpl implements BookingService {
         System.out.println("Vamos a ver si lo ha eliminado de verdad o qué");
         System.out.println(bookingRepository.findById(id));
 
-
     }
 
 

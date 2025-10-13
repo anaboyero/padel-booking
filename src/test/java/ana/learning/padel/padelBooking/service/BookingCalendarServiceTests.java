@@ -1,6 +1,7 @@
 package ana.learning.padel.padelBooking.service;
 
 import ana.learning.padel.padelBooking.DTO.BookingCalendarDTO;
+import ana.learning.padel.padelBooking.DTO.BookingDTO;
 import ana.learning.padel.padelBooking.DTO.PlayerDTO;
 import ana.learning.padel.padelBooking.exceptions.PastDateException;
 import ana.learning.padel.padelBooking.mappers.PlayerMapper;
@@ -164,6 +165,61 @@ public class BookingCalendarServiceTests {
         assertThat(result.getCalendar()).isNotNull();
         assertThat(result.getCalendar().getReservedBookings().size()).isEqualTo(1);
         assertThat(result.getCalendar().getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
+    }
+
+    @Test
+    public void shouldCancelABooking() {
+        ///  GIVEN a valid player with a booking reservation
+        Residence residence = residenceService.saveResidence(createResidence());
+        Player player = playerService.savePlayer(createPlayer(residence));
+        Long playerId = player.getId();
+        PlayerDTO playerDTO = playerMapper.toDTO(player);
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        Long calendarId = calendar.getId();
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        Long bookingId = availableBooking.getId();
+        Booking reservation = bookingCalendarService.reserveBooking(bookingId, playerDTO).get();
+
+        assertThat(reservation.getBookingOwner().getId()).isEqualTo(playerId);
+        assertThat(reservation.getBookingOwner().getBookings().size()).isEqualTo(1);
+        assertThat(reservation.getCalendar().getReservedBookings().size()).isEqualTo(1);
+        assertThat(reservation.getCalendar().getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK - 1);
+
+        ///  WHEN trying to cancel the booking
+
+        Booking updatedBooking = bookingCalendarService.cancelBooking(bookingId).get();
+
+        ///  THEN the booking is available and has not any player as an owner
+        ///  the booking is not in reserved bookings of the calendar, but in the available list of bookings
+
+        assertThat(updatedBooking.getBookingOwner()).isNull();
+        assertThat(updatedBooking.getCalendar().getReservedBookings().size()).isEqualTo(0);
+        assertThat(updatedBooking.getCalendar().getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK);
+    }
+
+    @Test
+    public void shouldNotCancelAnAvailableBooking() {
+        ///  GIVEN an available booking
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        Long calendarId = calendar.getId();
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        Long bookingId = availableBooking.getId();
+
+        ///  WHEN trying to cancel the booking
+        Optional<Booking> updatedBooking = bookingCalendarService.cancelBooking(bookingId);
+
+        ///  THEN return the same booking without any change.
+        assertThat(updatedBooking).isEmpty();
+    }
+
+    @Test
+    public void shouldNotCancelAnNonExistingBooking() {
+
+        ///  WHEN trying to cancel un non existing booking
+        Optional<Booking> updatedBooking = bookingCalendarService.cancelBooking(100L);
+
+        ///  THEN return and Optional empty.
+        assertThat(updatedBooking).isEmpty();
     }
 
     @Test

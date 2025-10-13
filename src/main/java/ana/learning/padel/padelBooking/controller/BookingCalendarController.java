@@ -101,8 +101,8 @@ public class BookingCalendarController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BookingCalendarDTO> deleteBookingCalendarById(@PathVariable Long id) {
-        Optional <BookingCalendarDTO> calendar = bookingCalendarService.getBookingCalendarById(id);
+    public ResponseEntity<BookingCalendar> deleteBookingCalendarById(@PathVariable Long id) {
+        Optional <BookingCalendar> calendar = bookingCalendarService.getBookingCalendarById(id);
         if (calendar.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

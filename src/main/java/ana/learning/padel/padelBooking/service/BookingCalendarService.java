@@ -16,7 +16,8 @@ public interface BookingCalendarService {
     List<BookingCalendar> getAllBookingCalendars();
     void deleteAllBookingCalendars();
     BookingCalendar createBookingCalendar (LocalDate startDate);
-    Optional<BookingCalendarDTO> getBookingCalendarById(Long id);
+    Optional<BookingCalendar> getBookingCalendarById(Long id);
     Optional<Booking> reserveBooking(Long id, PlayerDTO playerDTO);
     void deleteBookingCalendarById(Long id) throws ResourceNotFoundException;
+    public Optional<Booking> cancelBooking(Long id);
 }

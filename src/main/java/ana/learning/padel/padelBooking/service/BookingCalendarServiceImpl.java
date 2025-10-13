@@ -66,15 +66,33 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         return bookingCalendarRepository.save(savedCalendar);
     }
 
+    @Override
+    public Optional<Booking> cancelBooking(Long id) {
+        if (bookingService.getBookingById(id).isEmpty()) {
+            return Optional.empty();
+        }
+        Booking booking = bookingService.getBookingById(id).get();
+        if (booking.getBookingOwner()==null) {
+            return Optional.empty();
+        }
+        // Elimino la relacion entre booking y el owner.
+        // Elimino del calendario la reserva y la coloco en availableBookings.
+        // Salvo la reserva?
+        booking.getBookingOwner().getBookings().remove(booking);
+        booking.setBookingOwner(null);
+        booking.getCalendar().getReservedBookings().remove(booking);
+        booking.getCalendar().getAvailableBookings().add(booking);
+        return Optional.of(bookingRepository.save(booking));
+    }
+
 
     @Override
-    public Optional<BookingCalendarDTO> getBookingCalendarById(Long id){
+    public Optional<BookingCalendar> getBookingCalendarById(Long id){
         Optional<BookingCalendar> calendar = bookingCalendarRepository.findById(id);
         if (calendar.isEmpty()) {
             return Optional.empty();
         }
-        BookingCalendarDTO dto = bookingCalendarMapperHelper.customToDTO(calendar.get());
-        return Optional.of(dto);
+        return Optional.of(calendar.get());
     }
 
     @Override

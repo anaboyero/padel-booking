@@ -72,20 +72,20 @@ public class Player {
                 '}';
     }
 
-    //Incluir validaciones aqui o deberian estar en el service?
-    public Player cancelBooking(Booking bookingToCancel) {
-        for (Booking booking: bookings) {
-            if (booking.getId().equals(bookingToCancel.getId())) { // Estoy comparando por ID.
-                if(booking.getBookingDate().isBefore(java.time.LocalDate.now())){
-                    System.out.println("\n ***No se puede cancelar una reserva pasada");
-                    return this;
-                }
-                bookings.remove(booking);
-                return this;
-            }
-        }
-        return this;
-    }
+//    //Incluir validaciones aqui o deberian estar en el service?
+//    public Player cancelBooking(Booking bookingToCancel) {
+//        for (Booking booking: bookings) {
+//            if (booking.getId().equals(bookingToCancel.getId())) { // Estoy comparando por ID.
+//                if(booking.getBookingDate().isBefore(java.time.LocalDate.now())){
+//                    System.out.println("\n ***No se puede cancelar una reserva pasada");
+//                    return this;
+//                }
+//                bookings.remove(booking);
+//                return this;
+//            }
+//        }
+//        return this;
+//    }
 
     public boolean isValidPlayer() {
         return (getName()!=null && getId()!= null && getResidence()!=null && getResidence().getId()!=null);

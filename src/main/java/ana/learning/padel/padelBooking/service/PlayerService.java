@@ -11,22 +11,13 @@ import java.util.Optional;
 
 public interface PlayerService {
     public Player savePlayer(Player player);
-
     List<Player> getAllPlayers();
-
     void deleteAllPlayers();
-
     void deletePlayerById(Long id);
-
     Optional<Player> getPlayerById(Long id);
-
     Optional<Player> addResidenceToPlayer(Player player, Residence residence);
-
     boolean hasAProperResidence(Player player);
-
     boolean isAProperPlayerToMakeAReservation(Player player);
-
     Optional<Player> cancelBookingByPlayer(Booking bookingToCancel, Player player);
-
     Player addBookingToPlayer(Player player0, Booking booking);
 }
