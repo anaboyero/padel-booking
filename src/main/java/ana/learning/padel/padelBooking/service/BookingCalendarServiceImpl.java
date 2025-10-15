@@ -152,8 +152,10 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         // --- Guardamos solo el lado dueño de las relaciones ---
         Booking savedBooking = bookingRepository.save(booking);
         log.info("ENHORABUENA, RESERVA REALIZADA CORRECTAMENTE");
-        // Forzar carga de relaciones necesarias
-//        savedBooking.getBookingOwner().getBookings().size();
+//         Forzar carga de relaciones necesarias
+        savedBooking.getCalendar().getReservedBookings().size();
+        savedBooking.getCalendar().getAvailableBookings().size();
+        savedBooking.getBookingOwner().getBookings().size();
         return Optional.of(savedBooking);
     }
 

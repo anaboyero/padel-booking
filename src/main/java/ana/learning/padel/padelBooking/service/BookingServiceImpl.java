@@ -64,11 +64,13 @@ public class BookingServiceImpl implements BookingService {
 
         if (booking.isPresent() && booking.get().getBookingOwner() != null) {
             Booking bookingToCancel = booking.get();
+            bookingToCancel.setCalendar(booking.get().getCalendar());
             bookingToCancel.getBookingOwner().getBookings().remove(bookingToCancel);
             bookingToCancel.setBookingOwner(null);
-            bookingToCancel.getCalendar().getReservedBookings().remove(bookingToCancel);
             bookingToCancel.getCalendar().getAvailableBookings().add(bookingToCancel);
-            return Optional.of(bookingToCancel);
+            bookingToCancel.getCalendar().getReservedBookings().remove(bookingToCancel);
+            Booking saved = bookingRepository.save(bookingToCancel);
+            return Optional.of(saved);
         }
         return Optional.empty();
     }
