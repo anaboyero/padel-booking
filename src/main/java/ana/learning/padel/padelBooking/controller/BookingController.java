@@ -77,5 +77,4 @@ public class BookingController {
         }
         return ResponseEntity.ok().body(bookingMapper.toDTO(result.get()));
     }
-
 }

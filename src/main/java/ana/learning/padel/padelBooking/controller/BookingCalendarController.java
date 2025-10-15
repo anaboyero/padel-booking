@@ -75,25 +75,6 @@ public class BookingCalendarController {
     }
 
 
-//    @PostMapping("/{calendarId}/bookings/{bookingId}")
-//    public ResponseEntity<BookingDTO> reserveBooking(@PathVariable Long calendarId, @PathVariable Long bookingId, @RequestBody Player player){
-//
-//        Optional<Booking> temptativeBooking = bookingService.getBookingById(bookingId);
-//        Optional<Player> temptativePlayer = playerService.getPlayerById(player.getId());
-//        Optional<BookingCalendar> temptativeCalendar = bookingCalendarService.getBookingCalendarById(calendarId);
-//
-//        if ((temptativeBooking.isEmpty()) || (temptativePlayer.isEmpty()) || (temptativeCalendar.isEmpty()) ) {
-//            return ResponseEntity.badRequest().body(null);
-//        }
-//
-//        Optional<Booking> reservation = bookingCalendarService.reserveBooking(temptativeBooking.get(), temptativePlayer.get(), temptativeCalendar.get());
-//
-//        if (reservation.isEmpty()) {
-//            return ResponseEntity.badRequest().body(null);
-//        }
-//        return ResponseEntity.ok().body(bookingMapper.toDTO(reservation.get()));
-//    }
-
     @DeleteMapping
     public ResponseEntity<BookingCalendarDTO> deleteAllBookingCalendars() {
         bookingCalendarService.deleteAllBookingCalendars();

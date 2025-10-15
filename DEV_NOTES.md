@@ -1,3 +1,11 @@
+COMPROBACION API:
+
+- Player: DONE
+- Calendar: DONE
+- Booking: DONE
+- Al reservar, no está actualizando en el DTO del player el bookingownerid ni el calendarioid.
+- 
+
 TO DO:
 
 - Cambiar: que el servicio devuelva POJOS en lugar de ENTITIES????
