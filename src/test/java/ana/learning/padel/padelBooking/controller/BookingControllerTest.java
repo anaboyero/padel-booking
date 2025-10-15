@@ -9,6 +9,8 @@ import ana.learning.padel.padelBooking.model.BookingCalendar;
 import ana.learning.padel.padelBooking.model.Player;
 import ana.learning.padel.padelBooking.model.Residence;
 import ana.learning.padel.padelBooking.repository.BookingRepository;
+import ana.learning.padel.padelBooking.repository.PlayerRepository;
+import ana.learning.padel.padelBooking.repository.ResidenceRepository;
 import ana.learning.padel.padelBooking.service.BookingCalendarService;
 import ana.learning.padel.padelBooking.service.BookingService;
 import ana.learning.padel.padelBooking.service.PlayerService;
@@ -65,17 +67,21 @@ public class BookingControllerTest {
     private final BookingService bookingService;
     private final BookingCalendarService bookingCalendarService;
     private final PlayerService playerService;
+    private final PlayerRepository playerRepository;
     private final ResidenceService residenceService;
+    private final ResidenceRepository residenceRepository;
     private final BookingRepository bookingRepository;
     private final PlayerMapper playerMapper;
 
-    public BookingControllerTest(MockMvc mockMvc, BookingService bookingService, BookingRepository bookingRepository, BookingCalendarService bookingCalendarService, PlayerService playerService, ResidenceService residenceService, PlayerMapper playerMapper, ObjectMapper objectMapper) {
+    public BookingControllerTest(MockMvc mockMvc, BookingService bookingService, BookingRepository bookingRepository, BookingCalendarService bookingCalendarService, PlayerService playerService, PlayerRepository playerRepository, ResidenceService residenceService, ResidenceRepository residenceRepository, PlayerMapper playerMapper, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.bookingService = bookingService;
         this.bookingRepository = bookingRepository;
         this.bookingCalendarService = bookingCalendarService;
         this.playerService = playerService;
+        this.playerRepository = playerRepository;
         this.residenceService = residenceService;
+        this.residenceRepository = residenceRepository;
         this.playerMapper = playerMapper;
         this.objectMapper = objectMapper;
     }
@@ -210,40 +216,41 @@ public class BookingControllerTest {
         ///  WHEN making a patch call to reserve the booking for that player
         ///  THEN we get a BAD REQUEST
 
-        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{bookingId}/{playerId}", bookingId, playerDTO.getId())
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(playerDTO.getId()))
-                )
+        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{bookingId}/{playerId}", bookingId, playerDTO.getId()))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
 
-//    @Test
-//    public void shouldCancelReservation() throws Exception {
-//        ///  GIVEN a reserved booking in a calendar
-//        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
-//        Booking availableBooking = calendar.getAvailableBookings().get(0);
-//        Residence residence = createAndPersistResidence();
-//        Player player = new Player();
-//        player.setName("Sergio");
-//        player.setResidence(residence);
-////        Player savedPlayer = playerService.savePlayer(player);
-//        bookingCalendarService.reserveBooking(availableBooking.getId(), player);
-//
-//
-//
-//
-//        ///  WHEN making a patch call to cancel the reservation
-//        ///  THEN  we get a 200 OK and return the updated booking
-//
-//    }
+    @Test
+    public void shouldCancelReservation() throws Exception {
+        ///  GIVEN a reserved booking in a calendar
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        Long bookingId = availableBooking.getId();
+        Residence residence = createAndPersistResidence();
+        Player player = new Player();
+        player.setName("Sergio");
+        player.setResidence(residence);
+        Player savedPlayer = playerRepository.save(player);
+        availableBooking.setBookingOwner(player);
+        Booking savedBooking = bookingRepository.save(availableBooking);
+
+        ///  WHEN making a patch call to cancel the reservation
+        ///  THEN  we get a 200 OK and return the updated booking
+
+        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{bookingId}", bookingId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(org.springframework.http.MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.bookingOwnerId").isEmpty())
+                .andExpect(jsonPath("$.id").value(bookingId))
+                .andReturn();
+    }
 
     private Residence createAndPersistResidence() {
         Residence residence = new Residence();
         residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
         residence.setFloor(RESIDENCE_5FLOOR);
         residence.setLetter(RESIDENCE_LETTER_A);
-        residence.setId(1L);
-        return residence;
+        return residenceRepository.save(residence);
     }
 }

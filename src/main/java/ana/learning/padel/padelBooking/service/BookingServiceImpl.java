@@ -55,6 +55,23 @@ public class BookingServiceImpl implements BookingService {
 
     }
 
+    @Override
+    @Transactional
+    public Optional<Booking> cancelBooking(Long id) throws ResourceNotFoundException {
+        // Si existe el booking y tiene dueño, deshago las relaciones y lo dejo como disponible
+        // Si no, devuelvo Optional.empty()
+
+        if (bookingRepository.findById(id).isPresent()) {
+            Booking bookingToCancel = bookingRepository.findById(id).get();
+            bookingToCancel.getBookingOwner().getBookings().remove(bookingToCancel);
+            bookingToCancel.setBookingOwner(null);
+            bookingToCancel.getCalendar().getReservedBookings().remove(bookingToCancel);
+            bookingToCancel.getCalendar().getAvailableBookings().add(bookingToCancel);
+            return Optional.of(bookingToCancel);
+        }
+        return Optional.empty();
+    }
+
 
 
 }

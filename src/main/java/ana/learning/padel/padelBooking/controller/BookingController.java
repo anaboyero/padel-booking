@@ -69,11 +69,14 @@ public class BookingController {
         return ResponseEntity.ok(dto);
     }
 
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<BookingDTO> cancelBooking(@PathVariable Long id) {
-//        Booking booking = boookingService.cancelBooking(id);
-//    }
-
+    @PatchMapping("/{id}")
+    public ResponseEntity<BookingDTO> cancelBooking(@PathVariable Long id) {
+        Optional<Booking> result = bookingService.cancelBooking(id);
+        if (result.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(bookingMapper.toDTO(result.get()));
+    }
 
 
 }

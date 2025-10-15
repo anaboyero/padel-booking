@@ -12,6 +12,7 @@ public interface BookingService {
     List<Booking> getAllBookings();
     Optional<Booking> getBookingById(Long id);
     void deleteBookingById(Long id) throws ResourceNotFoundException;
+    Optional<Booking> cancelBooking(Long id);
 //    Booking assignBookingToPlayer(Booking booking, Player player);
 //    Boolean isAvailable();
 }
