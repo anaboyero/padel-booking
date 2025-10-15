@@ -72,11 +72,10 @@ public class BookingController {
     @PatchMapping("/{id}")
     public ResponseEntity<BookingDTO> cancelBooking(@PathVariable Long id) {
         Optional<Booking> result = bookingService.cancelBooking(id);
-        if (result.isEmpty() || result.get().getBookingOwner()==null) {
+        if (result.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().body(bookingMapper.toDTO(result.get()));
     }
-
 
 }

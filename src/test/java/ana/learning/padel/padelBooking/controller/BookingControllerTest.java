@@ -232,8 +232,9 @@ public class BookingControllerTest {
         player.setName("Sergio");
         player.setResidence(residence);
         Player savedPlayer = playerRepository.save(player);
-        availableBooking.setBookingOwner(player);
-        Booking savedBooking = bookingRepository.save(availableBooking);
+        availableBooking.setBookingOwner(savedPlayer);
+        availableBooking.getBookingOwner().getBookings().add(availableBooking);
+        bookingRepository.save(availableBooking);
 
         ///  WHEN making a patch call to cancel the reservation
         ///  THEN  we get a 200 OK and return the updated booking
