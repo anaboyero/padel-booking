@@ -138,7 +138,7 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
         Player player = playerOpt.get();
         BookingCalendar calendar = booking.getCalendar();
 
-        // Comprobamos que la reserva esté disponible
+        // Comprobamos que la reserva está disponible.
         if (booking.getBookingOwner() != null || calendar == null) {
             log.info("La reserva ya tiene dueño o no está asociada a ningún calendario");
             return Optional.empty();
@@ -146,20 +146,14 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
         // --- Actualizamos relaciones bidireccionales ---
         booking.setBookingOwner(player);
-        player.getBookings().add(booking);
-
-        booking.setCalendar(calendar);
-        calendar.getReservedBookings().add(booking);
-        calendar.getAvailableBookings().remove(booking);
-
-        // --- Forzamos carga de las colecciones lazy iterando sobre ellas ---
-        calendar.getReservedBookings().size();
-        calendar.getAvailableBookings().size();
-        player.getBookings().size();
-
+        booking.getBookingOwner().getBookings().add(booking);
+        booking.getCalendar().getReservedBookings().add(booking);
+        booking.getCalendar().getAvailableBookings().remove(booking);
         // --- Guardamos solo el lado dueño de las relaciones ---
         Booking savedBooking = bookingRepository.save(booking);
         log.info("ENHORABUENA, RESERVA REALIZADA CORRECTAMENTE");
+        // Forzar carga de relaciones necesarias
+//        savedBooking.getBookingOwner().getBookings().size();
         return Optional.of(savedBooking);
     }
 

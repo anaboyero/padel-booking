@@ -13,6 +13,7 @@ import ana.learning.padel.padelBooking.repository.BookingRepository;
 import ana.learning.padel.padelBooking.repository.PlayerRepository;
 import ana.learning.padel.padelBooking.repository.ResidenceRepository;
 import ana.learning.padel.padelBooking.service.BookingCalendarService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,6 +190,7 @@ public class MapperTest {
     }
 
     @Test
+    @Transactional
     public void shouldMapPlayerToDTO_withReservation() {
         Booking booking = bookingCalendarService.createBookingCalendar(TODAY).getAvailableBookings().get(0);
 
@@ -204,11 +206,13 @@ public class MapperTest {
 
         Booking reservation = bookingCalendarService.reserveBooking(booking.getId(), savedPlayer.getId()).get();
 
+        // Refresco
+        reservation.getBookingOwner().getId();
+
         PlayerDTO dto = playerMapper.toDTO(reservation.getBookingOwner());
 
         assertThat(dto.getId()).isEqualTo(savedPlayer.getId());
         assertThat(dto.getBookings().size()).isEqualTo(1);
-
     }
 
 }
