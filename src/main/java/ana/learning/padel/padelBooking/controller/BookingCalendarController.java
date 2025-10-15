@@ -109,4 +109,5 @@ public class BookingCalendarController {
         bookingCalendarService.deleteBookingCalendarById(id);
         return ResponseEntity.noContent().build();
     }
+
 }

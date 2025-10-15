@@ -153,7 +153,7 @@ public class BookingCalendarServiceTests {
         Long bookingId = availableBooking.getId();
 
         ///  WHEN the player reserves the booking
-        Booking result = bookingCalendarService.reserveBooking(bookingId, playerDTO).get();
+        Booking result = bookingCalendarService.reserveBooking(bookingId, playerDTO.getId()).get();
 
         ///  THEN the booking has been updated in the database and has the player as owner
         ///  And the returned booking is the same as the updated one in the database
@@ -178,7 +178,7 @@ public class BookingCalendarServiceTests {
         Long calendarId = calendar.getId();
         Booking availableBooking = calendar.getAvailableBookings().get(0);
         Long bookingId = availableBooking.getId();
-        Booking reservation = bookingCalendarService.reserveBooking(bookingId, playerDTO).get();
+        Booking reservation = bookingCalendarService.reserveBooking(bookingId, playerDTO.getId()).get();
 
         assertThat(reservation.getBookingOwner().getId()).isEqualTo(playerId);
         assertThat(reservation.getBookingOwner().getBookings().size()).isEqualTo(1);
@@ -248,7 +248,7 @@ public class BookingCalendarServiceTests {
         Long calendarId = calendar.getId();
         Residence residence = residenceService.saveResidence(createResidence());
         Player player = playerService.savePlayer(createPlayer(residence));
-        Booking reservedBooking = bookingCalendarService.reserveBooking(calendar.getAvailableBookings().get(0).getId(), playerMapper.toDTO(player)).get();
+        Booking reservedBooking = bookingCalendarService.reserveBooking(calendar.getAvailableBookings().get(0).getId(),player.getId()).get();
         Long reservedBookingId = reservedBooking.getId();
         assertThat(calendar.getAvailableBookings().size()).isEqualTo(MAX_NUM_OF_SLOTS_PER_WEEK -1);
         assertThat(calendar.getReservedBookings().size()).isEqualTo(1);

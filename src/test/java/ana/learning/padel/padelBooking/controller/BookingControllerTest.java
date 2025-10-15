@@ -171,9 +171,9 @@ public class BookingControllerTest {
         log.info("\n **** BOOKING ID: " + bookingId );
         log.info("\n **** PLAYER DTO: " + playerDTO.toString() );
 
-        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{id}", bookingId)
+        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{bookingId}/{playerId}", bookingId, playerDTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(playerDTO)))
+                .content(objectMapper.writeValueAsString(playerDTO.getId())))
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -202,7 +202,7 @@ public class BookingControllerTest {
         player.setResidence(savedResidence);
         Player savedPlayer2 = playerService.savePlayer(player);
 
-        bookingCalendarService.reserveBooking(availableBooking.getId(), playerMapper.toDTO(savedPlayer));
+        bookingCalendarService.reserveBooking(availableBooking.getId(), savedPlayer.getId());
         availableBooking.setBookingOwner(savedPlayer2);
 
         PlayerDTO playerDTO = playerMapper.toDTO(savedPlayer);
@@ -210,10 +210,40 @@ public class BookingControllerTest {
         ///  WHEN making a patch call to reserve the booking for that player
         ///  THEN we get a BAD REQUEST
 
-        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{id}", bookingId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(playerDTO)))
+        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{bookingId}/{playerId}", bookingId, playerDTO.getId())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(playerDTO.getId()))
+                )
                 .andExpect(status().isBadRequest())
                 .andReturn();
+    }
+
+//    @Test
+//    public void shouldCancelReservation() throws Exception {
+//        ///  GIVEN a reserved booking in a calendar
+//        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+//        Booking availableBooking = calendar.getAvailableBookings().get(0);
+//        Residence residence = createAndPersistResidence();
+//        Player player = new Player();
+//        player.setName("Sergio");
+//        player.setResidence(residence);
+////        Player savedPlayer = playerService.savePlayer(player);
+//        bookingCalendarService.reserveBooking(availableBooking.getId(), player);
+//
+//
+//
+//
+//        ///  WHEN making a patch call to cancel the reservation
+//        ///  THEN  we get a 200 OK and return the updated booking
+//
+//    }
+
+    private Residence createAndPersistResidence() {
+        Residence residence = new Residence();
+        residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
+        residence.setFloor(RESIDENCE_5FLOOR);
+        residence.setLetter(RESIDENCE_LETTER_A);
+        residence.setId(1L);
+        return residence;
     }
 }

@@ -123,11 +123,11 @@ public class BookingCalendarServiceImpl implements BookingCalendarService{
 
     @Transactional
     @Override
-    public Optional<Booking> reserveBooking(Long bookingId, PlayerDTO playerDTO) {
+    public Optional<Booking> reserveBooking(Long bookingId, Long playerId) {
 
         // Recuperamos las entidades desde los repositorios dentro de la misma transacción
         Optional<Booking> bookingOpt = bookingRepository.findById(bookingId);
-        Optional<Player> playerOpt = playerRepository.findById(playerDTO.getId());
+        Optional<Player> playerOpt = playerRepository.findById(playerId);
 
         if (bookingOpt.isEmpty() || playerOpt.isEmpty()) {
             log.info("No existe el booking o el player");

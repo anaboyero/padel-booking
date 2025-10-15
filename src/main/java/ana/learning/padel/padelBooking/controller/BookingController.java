@@ -58,16 +58,22 @@ public class BookingController {
         return ResponseEntity.ok(bookingDTO);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<BookingDTO> reserveBooking(@PathVariable Long id, @RequestBody PlayerDTO playerDTO) {
+    @PatchMapping("/{idBooking}/{idPlayer}")
+    public ResponseEntity<BookingDTO> reserveBooking(@PathVariable Long idBooking, @PathVariable Long idPlayer) {
 
-        Optional<Booking> result = bookingCalendarService.reserveBooking(id, playerDTO);
+        Optional<Booking> result = bookingCalendarService.reserveBooking(idBooking, idPlayer);
         if(result.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         BookingDTO dto = bookingMapper.toDTO(result.get());
         return ResponseEntity.ok(dto);
     }
+
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<BookingDTO> cancelBooking(@PathVariable Long id) {
+//        Booking booking = boookingService.cancelBooking(id);
+//    }
+
 
 
 }

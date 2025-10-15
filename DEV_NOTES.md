@@ -1,12 +1,18 @@
 TO DO:
 
-- Cambiar: que el servicio devuelva MOJOS en lugar de ENTITIES..
+- Cambiar: que el servicio devuelva POJOS en lugar de ENTITIES????
 - PRIORIDAD----> Implementar la cancelacion de la reserva del booking. DONE, pero no hay seguridad de que solo pueda cancelarla el player que la hizo.
 - Delete calendar by id --> DONE (a ver cómo gestionamos lo de reservas activas).
 - - Delete booking by id--> DONE (a ver cómo gestionamos lo de reservas activas)
 - Delete all bookings of a calendar.
 - Si las reservas activas son pasadas, eliminarlas y permitir eliminar el calendario.
 - Aprender a usar builder con lombok
+- 
+Tiene sentido tener un metodo de servicio que reciba id y dto, pero tambien un metodo de servicio mas puro de jva que opere con entidades????? 
+
+Lo digo porque entiendo que el controlador debe manejar dto y el servicio entidades, pero no sé si es correcto tener dos metodos en el servicio que hagan lo mismo pero uno con dto y otro con entidades.
+
+
 
 IMPORTANTE:
 
