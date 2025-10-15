@@ -246,6 +246,28 @@ public class BookingControllerTest {
                 .andReturn();
     }
 
+    @Test
+    public void shouldNotCancelReservation_whenIsAvailable() throws Exception {
+        ///  GIVEN an available booking in a calendar
+        BookingCalendar calendar = bookingCalendarService.createBookingCalendar(TODAY);
+        Booking availableBooking = calendar.getAvailableBookings().get(0);
+        Long bookingId = availableBooking.getId();
+
+        ///  WHEN making a patch call to cancel the reservation
+        ///  THEN  we get a Bad Request
+
+        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{bookingId}", bookingId))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    public void shouldNotCancelReservation_whenBookingDoesNotExist() throws Exception {
+        MvcResult result = mockMvc.perform(patch("/api/v1/bookings/{bookingId}", 1L))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
     private Residence createAndPersistResidence() {
         Residence residence = new Residence();
         residence.setBuilding(RESIDENCE_BUILDING_EMPECINADO21);
