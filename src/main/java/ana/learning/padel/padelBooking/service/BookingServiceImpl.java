@@ -63,13 +63,12 @@ public class BookingServiceImpl implements BookingService {
         Optional<Booking> booking = bookingRepository.findById(id);
 
         if (booking.isPresent() && booking.get().getBookingOwner() != null) {
-            Booking bookingToCancel = booking.get();
-            bookingToCancel.setCalendar(booking.get().getCalendar());
-            bookingToCancel.getBookingOwner().getBookings().remove(bookingToCancel);
-            bookingToCancel.setBookingOwner(null);
-            bookingToCancel.getCalendar().getAvailableBookings().add(bookingToCancel);
-            bookingToCancel.getCalendar().getReservedBookings().remove(bookingToCancel);
-            Booking saved = bookingRepository.save(bookingToCancel);
+            booking.get().setCalendar(booking.get().getCalendar());
+            booking.get().getBookingOwner().getBookings().remove(booking.get());
+            booking.get().setBookingOwner(null);
+            booking.get().getCalendar().getAvailableBookings().add(booking.get());
+            booking.get().getCalendar().getReservedBookings().remove(booking.get());
+            Booking saved = bookingRepository.save(booking.get());
             return Optional.of(saved);
         }
         return Optional.empty();
