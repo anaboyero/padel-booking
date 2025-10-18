@@ -1,12 +1,6 @@
-COMPROBACION API:
+***** PRIMERA FASE DEL PROYECTO (MVP) HECHA: api funciona, con lógica de negocio, persistencia en memoria (H2) y testa unitarios y de integración. DONE
 
-- Al cancelar la reserva no esta devolviendo la reserva al available del calendario. 
-
-TO DO:
-
-- PRIORIDAD----> Implementar la cancelacion de la reserva del booking. DONE, pero no hay seguridad de que solo pueda cancelarla el player que la hizo.
-- Si las reservas activas son pasadas, eliminarlas y permitir eliminar el calendario.
-- Aprender a usar builder con lombok
+****** PRIMERA FASE DEL PROYECTO: IMPLEMENTAR EN LA NUBE.
 
 
 IMPORTANTE:
@@ -17,21 +11,16 @@ y lo he resuelto cargando las listas de calendar (available y reserved) antes de
 Para cargarlas, he usado el metodo size() que es un truco que he visto en internet.
 
 
+MEJORAS A FUTURO:
 
-
-MOLARIA: Tener bien definidos y separados los unit test de los integration test.
-
-- Manejo de excepciones:
-
+- PRIORIDAD----> Implementar la cancelacion de la reserva del booking. DONE, pero no hay seguridad de que solo pueda cancelarla el player que la hizo.
+- Si las reservas activas son pasadas, eliminarlas y permitir eliminar el calendario.
+- Aprender a usar builder con lombok
+- MOLARIA: Tener bien definidos y separados los unit test de los integration test.
+- Manejo de excepciones: se pueden implementar más excepciones personalizadas.
 - Uso de SQL para persistencia de datos.
 - Llevar a cloud.
 
-
-FALLOS:
-
-- PRIORIDAD: ESTOY CON EL CONTROLADOR DE BOOKING CALENDAR, QUE PARECE QUE NO ME ESTÁ FUNCIONANDO BIEN.
-- player tries to book an available booking---> DONE, PERO ENTRO EN UN BUCLE PORQUE ESTOY DEVOLVIENDO DENTRO DEL BOOKINGOWNER UNA LISTA DE BOOKINGS QUE APARECE NULL.
-  http://localhost:8080/api/v1/booking-calendars/337/bookings/8101
 
 
 
